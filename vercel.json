@@ -1,0 +1,15 @@
+{
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "crons": [
+    {
+      "path": "/api/cron/sync-live",
+      "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/cron/generate-questions",
+      "schedule": "0 * * * *"
+    }
+  ]
+}
+
