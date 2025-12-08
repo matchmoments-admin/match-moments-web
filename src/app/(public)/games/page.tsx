@@ -8,6 +8,8 @@ import { getCached } from '@/lib/cache/redis';
 import { CacheKeys, CacheStrategy } from '@/lib/cache/strategies';
 import { format } from 'date-fns';
 
+export const dynamic = 'force-dynamic';
+
 async function fetchLiveGames() {
   return getCached(CacheKeys.FIXTURES_LIVE, () => getLiveFixtures(), CacheStrategy.fixturesLive);
 }

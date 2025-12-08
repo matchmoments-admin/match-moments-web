@@ -52,9 +52,15 @@ export const authOptions: NextAuthOptions = {
           );
 
           if (sfUser) {
-            session.user.id = sfUser.Id;
-            session.user.name = sfUser.Name;
-            session.user.dashboardRole = sfUser.Dashboard_Role__c as DashboardRole;
+            if (sfUser.Id) {
+              session.user.id = sfUser.Id;
+            }
+            if (sfUser.Name) {
+              session.user.name = sfUser.Name;
+            }
+            if (sfUser.Dashboard_Role__c) {
+              session.user.dashboardRole = sfUser.Dashboard_Role__c as DashboardRole;
+            }
           }
         } catch (error) {
           console.error('[AUTH] Error fetching user session:', error);

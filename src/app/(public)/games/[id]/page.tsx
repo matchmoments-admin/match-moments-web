@@ -9,6 +9,8 @@ import { CacheKeys, CacheStrategy } from '@/lib/cache/strategies';
 import { Clock, MapPin, Users } from 'lucide-react';
 import Image from 'next/image';
 
+export const dynamic = 'force-dynamic';
+
 async function fetchFixture(id: string) {
   return getCached(CacheKeys.FIXTURE_DETAIL(id), () => getFixtureData(id), CacheStrategy.fixtureDetail);
 }
@@ -24,7 +26,10 @@ export default async function GameDetailPage({
     notFound();
   }
 
-  const isLive = fixture.Status__c.includes('Live');
+  // Type assertion for Salesforce custom fields
+  const fixtureData = fixture as any;
+
+  const isLive = fixtureData.Status__c?.includes('Live') ?? false;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -32,14 +37,14 @@ export default async function GameDetailPage({
       <Card className="p-6 mb-8">
         <div className="flex items-center justify-between mb-6">
           <div className="text-sm text-muted-foreground">
-            {fixture.Competition__r?.Name || 'Unknown Competition'}
+            {fixtureData.Competition__r?.Name || 'Unknown Competition'}
           </div>
           <Badge
             variant={isLive ? 'destructive' : 'secondary'}
             className={isLive ? 'bg-red-500 animate-pulse-live' : ''}
           >
             {isLive && <span className="mr-1">●</span>}
-            {fixture.Status__c}
+            {fixtureData.Status__c || 'Unknown'}
           </Badge>
         </div>
 
@@ -49,23 +54,23 @@ export default async function GameDetailPage({
           <div className="text-center">
             <div className="relative h-20 w-20 mx-auto mb-4">
               <Image
-                src={fixture.Home_Team__r?.Logo_URL__c || '/placeholder-team.png'}
-                alt={fixture.Home_Team__r?.Name}
+                src={fixtureData.Home_Team__r?.Logo_URL__c || '/placeholder-team.png'}
+                alt={fixtureData.Home_Team__r?.Name || 'Home Team'}
                 fill
                 className="object-contain"
               />
             </div>
-            <h2 className="text-2xl font-bold mb-1">{fixture.Home_Team__r?.Name || 'TBD'}</h2>
-            <div className="text-5xl font-black">{fixture.Home_Score_Final__c || 0}</div>
+            <h2 className="text-2xl font-bold mb-1">{fixtureData.Home_Team__r?.Name || 'TBD'}</h2>
+            <div className="text-5xl font-black">{fixtureData.Home_Score_Final__c ?? 0}</div>
           </div>
 
           {/* VS Divider */}
           <div className="text-center">
             <div className="text-2xl font-bold text-muted-foreground">VS</div>
-            {fixture.Current_Period__r && (
+            {fixtureData.Current_Period__r && (
               <div className="mt-2 text-sm text-muted-foreground">
-                {fixture.Current_Period__r.Period_Type__c}{' '}
-                {fixture.Current_Period__r.Period_Number__c}
+                {fixtureData.Current_Period__r?.Period_Type__c}{' '}
+                {fixtureData.Current_Period__r?.Period_Number__c}
               </div>
             )}
           </div>
@@ -74,35 +79,35 @@ export default async function GameDetailPage({
           <div className="text-center">
             <div className="relative h-20 w-20 mx-auto mb-4">
               <Image
-                src={fixture.Away_Team__r?.Logo_URL__c || '/placeholder-team.png'}
-                alt={fixture.Away_Team__r?.Name}
+                src={fixtureData.Away_Team__r?.Logo_URL__c || '/placeholder-team.png'}
+                alt={fixtureData.Away_Team__r?.Name || 'Away Team'}
                 fill
                 className="object-contain"
               />
             </div>
-            <h2 className="text-2xl font-bold mb-1">{fixture.Away_Team__r?.Name || 'TBD'}</h2>
-            <div className="text-5xl font-black">{fixture.Away_Score_Final__c || 0}</div>
+            <h2 className="text-2xl font-bold mb-1">{fixtureData.Away_Team__r?.Name || 'TBD'}</h2>
+            <div className="text-5xl font-black">{fixtureData.Away_Score_Final__c ?? 0}</div>
           </div>
         </div>
 
         {/* Match Info */}
         <div className="flex flex-wrap items-center justify-center gap-6 mt-6 pt-6 border-t border-border text-sm text-muted-foreground">
-          {fixture.Fixture_DateTime__c && (
+          {fixtureData.Fixture_DateTime__c && (
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4" />
-              {new Date(fixture.Fixture_DateTime__c).toLocaleString()}
+              {new Date(fixtureData.Fixture_DateTime__c).toLocaleString()}
             </div>
           )}
-          {fixture.Venue__c && (
+          {fixtureData.Venue__c && (
             <div className="flex items-center gap-2">
               <MapPin className="h-4 w-4" />
-              {fixture.Venue__c}
+              {fixtureData.Venue__c}
             </div>
           )}
-          {fixture.Attendance__c && (
+          {fixtureData.Attendance__c && (
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4" />
-              {fixture.Attendance__c.toLocaleString()} attendance
+              {fixtureData.Attendance__c.toLocaleString()} attendance
             </div>
           )}
         </div>
@@ -120,16 +125,16 @@ export default async function GameDetailPage({
           {/* Period Breakdown */}
           {fixture.periods && fixture.periods.length > 0 && (
             <PeriodBreakdown
-              homeTeam={fixture.Home_Team__r?.Name || 'Home'}
-              awayTeam={fixture.Away_Team__r?.Name || 'Away'}
+              homeTeam={fixtureData.Home_Team__r?.Name || 'Home'}
+              awayTeam={fixtureData.Away_Team__r?.Name || 'Away'}
               periods={fixture.periods.map((p: any) => ({
                 number: p.Period_Number__c,
                 type: p.Period_Type__c,
                 homeScore: p.Home_Score_Period__c || 0,
                 awayScore: p.Away_Score_Period__c || 0,
               }))}
-              finalHome={fixture.Home_Score_Final__c || 0}
-              finalAway={fixture.Away_Score_Final__c || 0}
+              finalHome={fixtureData.Home_Score_Final__c ?? 0}
+              finalAway={fixtureData.Away_Score_Final__c ?? 0}
             />
           )}
 
