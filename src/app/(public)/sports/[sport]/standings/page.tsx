@@ -137,7 +137,7 @@ export default async function StandingsPage({
       key: 'rank',
       label: 'Rank',
       align: 'center',
-      render: (_: any, _row: any, index: number) => (
+      render: (_: any, _row: any, index?: number) => (
         <div className="font-bold text-lg">{index !== undefined ? index + 1 : '-'}</div>
       ),
     },
@@ -196,7 +196,7 @@ export default async function StandingsPage({
       key: 'rank',
       label: 'Rank',
       align: 'center',
-      render: (_: any, _row: any, index: number) => (
+      render: (_: any, _row: any, index?: number) => (
         <div className="font-bold text-lg">{index !== undefined ? index + 1 : '-'}</div>
       ),
     },
