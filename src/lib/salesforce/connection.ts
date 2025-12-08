@@ -1,8 +1,8 @@
-import jsforce from 'jsforce';
+import { Connection, OAuth2 } from 'jsforce';
 
-let connectionPool: jsforce.Connection | null = null;
+let connectionPool: Connection | null = null;
 
-export async function getSalesforceConnection(): Promise<jsforce.Connection> {
+export async function getSalesforceConnection(): Promise<Connection> {
   // Return existing connection if valid
   if (connectionPool && connectionPool.accessToken) {
     try {
@@ -18,14 +18,14 @@ export async function getSalesforceConnection(): Promise<jsforce.Connection> {
 
   // Create new connection with OAuth 2.0
   if (process.env.SALESFORCE_CLIENT_ID && process.env.SALESFORCE_CLIENT_SECRET) {
-    const oauth2 = new jsforce.OAuth2({
+    const oauth2 = new OAuth2({
       loginUrl: process.env.SALESFORCE_LOGIN_URL || 'https://login.salesforce.com',
       clientId: process.env.SALESFORCE_CLIENT_ID,
       clientSecret: process.env.SALESFORCE_CLIENT_SECRET,
       redirectUri: process.env.SALESFORCE_REDIRECT_URI || 'http://localhost:3000/api/auth/salesforce/callback',
     });
 
-    const conn = new jsforce.Connection({
+    const conn = new Connection({
       oauth2,
       instanceUrl: process.env.SALESFORCE_INSTANCE_URL,
       accessToken: process.env.SALESFORCE_ACCESS_TOKEN,
@@ -39,7 +39,7 @@ export async function getSalesforceConnection(): Promise<jsforce.Connection> {
 
   // Fallback to username/password flow for development
   if (process.env.SALESFORCE_USERNAME && process.env.SALESFORCE_PASSWORD) {
-    const conn = new jsforce.Connection({
+    const conn = new Connection({
       loginUrl: process.env.SALESFORCE_LOGIN_URL || 'https://login.salesforce.com',
     });
 
