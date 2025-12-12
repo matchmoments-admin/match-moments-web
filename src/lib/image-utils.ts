@@ -1,7 +1,7 @@
 /**
  * Image utilities for Match Moments sports website
- * Uses proper Unsplash images following their guidelines
- * Images from https://unsplash.com/s/photos/sport
+ * Uses Unsplash Source API for random sport-themed images
+ * Images from https://unsplash.com/s/photos/Sport
  */
 
 export interface UnsplashImageOptions {
@@ -12,171 +12,107 @@ export interface UnsplashImageOptions {
 }
 
 /**
- * Curated Unsplash sport images with proper photo IDs
- * All images from Unsplash: https://unsplash.com/s/photos/sport
+ * Generate a random sport-themed image URL from Unsplash
+ * Uses Unsplash Source API for truly random but relevant sports images
+ * Format: https://source.unsplash.com/{WIDTH}x{HEIGHT}/?{QUERY}
  */
-const UNSPLASH_SPORTS_IMAGES = {
-  // Basketball images
-  basketball: [
-    'OtXADkUh3-I', // Basketball game action
-    'sYbH8JH9fqg', // Basketball player shooting
-    'JKjBsuKpatU', // Basketball court aerial
-    'WYd_PkCa1BY', // Basketball dunk
-  ],
-  // Football/NFL images  
-  football: [
-    '2EGNqazbAMk', // Football player running
-    'tTuYcaS_ydI', // American football game
-    '7EbGqGP_c8w', // Football stadium
-    'BKKYrahJ-N4', // Football action
-  ],
-  // Soccer images
-  soccer: [
-    '7EbGqGP_c8w', // Soccer stadium
-    'o0S0f5WvyRE', // Soccer player action
-    'WNk-f-TnZDw', // Soccer ball close-up
-    'jBxdgT4wLSM', // Soccer match
-  ],
-  // General sports/athletics
-  athletics: [
-    '5IHz5WhosQE', // Runner on track (Braden Collum)
-    'U2q75VJmvE8', // Cyclist group
-    '_rZnChsIUuI', // Athlete jumping
-    'gjK9lBPCca8', // Swimming
-  ],
-  // Tennis
-  tennis: [
-    'KxkUWc_J3tM', // Tennis player serving
-    'Q-JtiMmONrk', // Tennis court
-  ],
-  // Gym/fitness
-  fitness: [
-    'CQfNt66ttZM', // Weight lifting
-    'FP7cfYPPUKM', // Yoga group
-    'wnX4F1D3c-0', // Dumbbells
-  ],
-  // General action sports
-  action: [
-    'n6gnCa77Urc', // Mountain biking
-    'o3v8g-V2rVI', // Rock climbing  
-    '8mqOw4K-Hbw', // Running at sunset
-  ],
-};
-
-/**
- * Generate a placeholder image URL with specific dimensions
- * Using Picsum.photos for reliable placeholder images
- * Format: https://picsum.photos/{WIDTH}/{HEIGHT}?grayscale&blur=1
- */
-export function getUnsplashImage(photoId: string, width: number = 1200, height: number = 800): string {
-  // Use photoId as seed for consistent images per category
-  const seed = photoId.replace(/[^a-zA-Z0-9]/g, '');
-  return `https://picsum.photos/seed/${seed}/${width}/${height}`;
+export function getUnsplashImage(query: string, width: number = 1200, height: number = 800): string {
+  // Use Unsplash Source API for random images with specific queries
+  return `https://source.unsplash.com/${width}x${height}/?${query}`;
 }
 
 /**
- * Get a consistent image from a category (using index based on category to avoid randomness)
- * This prevents images from changing on every render
- */
-function getImageFromCategory(category: keyof typeof UNSPLASH_SPORTS_IMAGES, index: number = 0): string {
-  const images = UNSPLASH_SPORTS_IMAGES[category];
-  // Use modulo to ensure index is always valid
-  const safeIndex = index % images.length;
-  return images[safeIndex];
-}
-
-/**
- * Get a sports-themed image by category
+ * Get a sports-themed image by category with random selection
  */
 export function getSportsImage(
-  category: 'nfl' | 'nba' | 'nhl' | 'soccer' | 'baseball' | 'basketball' | 'football' | 'general' = 'general',
+  category: 'nfl' | 'nba' | 'nhl' | 'soccer' | 'baseball' | 'basketball' | 'football' | 'cricket' | 'tennis' | 'rugby' | 'general' = 'general',
   dimensions: { width: number; height: number } = { width: 1200, height: 800 }
 ): string {
-  const categoryMap: Record<string, keyof typeof UNSPLASH_SPORTS_IMAGES> = {
-    nfl: 'football',
-    nba: 'basketball',
-    basketball: 'basketball',
-    football: 'football',
-    soccer: 'soccer',
-    tennis: 'tennis',
-    general: 'athletics',
+  // Map categories to specific Unsplash search queries for better results
+  const queryMap: Record<string, string> = {
+    nfl: 'american-football,nfl',
+    nba: 'basketball,nba',
+    basketball: 'basketball,sports',
+    football: 'american-football',
+    soccer: 'soccer,football',
+    baseball: 'baseball,sports',
+    tennis: 'tennis,sports',
+    cricket: 'cricket,sports',
+    rugby: 'rugby,sports',
+    nhl: 'hockey,nhl',
+    general: 'sports,athletes',
   };
 
-  const imageCategory = categoryMap[category] || 'athletics';
-  // Use first image from category for consistency
-  const photoId = getImageFromCategory(imageCategory, 0);
-  
-  return getUnsplashImage(photoId, dimensions.width, dimensions.height);
+  const query = queryMap[category] || 'sports';
+  return getUnsplashImage(query, dimensions.width, dimensions.height);
 }
 
 /**
  * Get a hero image (larger dimensions) - uses high-impact sports photos
  */
 export function getHeroImage(category?: string): string {
-  // Use dramatic action shots for hero images
-  const heroPhotoIds = [
-    '5IHz5WhosQE', // Runner on track - dramatic
-    'OtXADkUh3-I', // Basketball game action
-    '2EGNqazbAMk', // Football player running
-    '7EbGqGP_c8w', // Stadium shot
-  ];
+  const queries: Record<string, string> = {
+    nfl: 'american-football,action',
+    nba: 'basketball,action',
+    soccer: 'soccer,action',
+    basketball: 'basketball,action',
+    tennis: 'tennis,action',
+    default: 'sports,action,dramatic',
+  };
   
-  // Use category-based index for consistency, default to first
-  const categoryIndex = category ? category.charCodeAt(0) % heroPhotoIds.length : 0;
-  const photoId = heroPhotoIds[categoryIndex];
-  return getUnsplashImage(photoId, 1920, 1080);
+  const query = category ? (queries[category] || queries.default) : queries.default;
+  return getUnsplashImage(query, 1920, 1080);
 }
 
 /**
- * Get a card image (standard dimensions)
+ * Get a card image (standard dimensions) - sport-specific
  */
 export function getCardImage(category?: string): string {
-  const cardPhotoIds = [
-    'OtXADkUh3-I', // Basketball
-    '2EGNqazbAMk', // Football
-    '5IHz5WhosQE', // Running
-    'U2q75VJmvE8', // Cycling
-    'CQfNt66ttZM', // Weight lifting
-    'WNk-f-TnZDw', // Soccer
-  ];
+  const queries: Record<string, string> = {
+    nfl: 'american-football',
+    nba: 'basketball',
+    soccer: 'soccer',
+    basketball: 'basketball',
+    tennis: 'tennis',
+    cricket: 'cricket',
+    default: 'sports,athletes',
+  };
   
-  // Use category-based index for consistency
-  const categoryIndex = category ? category.charCodeAt(0) % cardPhotoIds.length : 0;
-  const photoId = cardPhotoIds[categoryIndex];
-  return getUnsplashImage(photoId, 800, 600);
+  const query = category ? (queries[category] || queries.default) : queries.default;
+  return getUnsplashImage(query, 800, 600);
 }
 
 /**
- * Get a thumbnail image (small dimensions)
+ * Get a thumbnail image (small dimensions) - sport-specific
  */
 export function getThumbnailImage(category?: string): string {
-  const thumbnailPhotoIds = [
-    'OtXADkUh3-I', // Basketball
-    '5IHz5WhosQE', // Running
-    'CQfNt66ttZM', // Gym
-  ];
+  const queries: Record<string, string> = {
+    nfl: 'american-football',
+    nba: 'basketball',
+    soccer: 'soccer',
+    basketball: 'basketball',
+    tennis: 'tennis',
+    default: 'sports',
+  };
   
-  // Use category-based index for consistency
-  const categoryIndex = category ? category.charCodeAt(0) % thumbnailPhotoIds.length : 0;
-  const photoId = thumbnailPhotoIds[categoryIndex];
-  return getUnsplashImage(photoId, 400, 300);
+  const query = category ? (queries[category] || queries.default) : queries.default;
+  return getUnsplashImage(query, 400, 300);
 }
 
 /**
- * Get podcast/video artwork (square)
+ * Get podcast/video artwork (square) - sport-specific
  */
 export function getPodcastArtwork(index: number = 0): string {
-  // Use fitness/sports imagery for podcast covers
-  const podcastPhotoIds = [
-    'FP7cfYPPUKM', // Yoga group - community vibe
-    'CQfNt66ttZM', // Weight lifting
-    'wnX4F1D3c-0', // Dumbbells
+  const queries = [
+    'sports,podcast',
+    'basketball,podcast',
+    'football,podcast',
+    'soccer,podcast',
   ];
   
-  // Use index for consistency
-  const safeIndex = index % podcastPhotoIds.length;
-  const photoId = podcastPhotoIds[safeIndex];
-  return getUnsplashImage(photoId, 600, 600);
+  const safeIndex = index % queries.length;
+  const query = queries[safeIndex];
+  return getUnsplashImage(query, 600, 600);
 }
 
 /**

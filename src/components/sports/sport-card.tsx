@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { SportType, SPORT_METADATA } from '@/types/sports';
-import { getSportIconComponent } from '@/lib/sport-icons';
+import { SportIcon } from '@/components/ui/sport-icon';
 
 interface SportCardProps {
   sport: SportType;
@@ -19,7 +19,6 @@ export function SportCard({
 }: SportCardProps) {
   const metadata = SPORT_METADATA[sport];
   const defaultHref = href || `/sports/${sport}`;
-  const SportIcon = getSportIconComponent(sport);
 
   if (variant === 'hero') {
     return (
@@ -27,7 +26,7 @@ export function SportCard({
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-black to-gray-800 p-8 text-white transition-transform hover:scale-[1.02]">
           <div className="relative z-10">
             <div className="mb-3">
-              <SportIcon className="h-16 w-16" strokeWidth={1.5} />
+              <SportIcon sport={sport} className="h-16 w-16" />
             </div>
             <h3 className="text-3xl font-bold mb-2">{metadata.name}</h3>
             <p className="text-lg opacity-90 mb-4">{metadata.globalFans} fans worldwide</p>
@@ -46,7 +45,7 @@ export function SportCard({
     return (
       <Link href={defaultHref} className="group">
         <div className="flex items-center gap-4 rounded-2xl bg-white border border-gray-200 p-4 transition-all hover:border-black hover:shadow-md">
-          <SportIcon className="h-10 w-10 text-black" strokeWidth={1.5} />
+          <SportIcon sport={sport} className="h-10 w-10 text-black" />
           <div className="flex-1">
             <h4 className="text-lg font-bold">{metadata.name}</h4>
             <p className="text-sm text-gray-600">{metadata.globalFans} fans</p>
@@ -61,7 +60,7 @@ export function SportCard({
     <Link href={defaultHref} className="group">
       <div className="relative overflow-hidden rounded-3xl bg-white border border-gray-200 p-6 transition-all hover:border-black hover:shadow-lg">
         <div className="mb-4">
-          <SportIcon className="h-12 w-12 text-black" strokeWidth={1.5} />
+          <SportIcon sport={sport} className="h-12 w-12 text-black" />
         </div>
         <h3 className="text-2xl font-bold mb-2">{metadata.name}</h3>
         <p className="text-sm text-gray-600 mb-4">{metadata.globalFans} fans worldwide</p>
