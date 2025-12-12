@@ -12,6 +12,9 @@ interface ArticleCardProps {
   imageAlt: string;
   href: string;
   variant?: 'featured' | 'standard' | 'small';
+  author?: string;
+  readTime?: string;
+  date?: string;
 }
 
 export function ArticleCard({
@@ -23,35 +26,53 @@ export function ArticleCard({
   imageAlt,
   href,
   variant = 'standard',
+  author,
+  readTime,
+  date,
 }: ArticleCardProps) {
   const isFeatured = variant === 'featured';
   const isSmall = variant === 'small';
 
   return (
-    <article className="group cursor-pointer">
+    <article className="group cursor-pointer rounded-[32px] overflow-hidden">
       <Link href={href}>
-        <div className={`relative overflow-hidden ${isSmall ? 'aspect-square mb-2' : 'aspect-[4/3] mb-4'}`}>
+        <div className={`relative overflow-hidden ${isSmall ? 'aspect-square' : 'aspect-[4/3]'}`}>
           <Image
             src={imageUrl}
             alt={imageAlt}
             fill
-            className="object-cover group-hover:opacity-90 transition-opacity"
+            className="object-cover transition-opacity duration-150 ease-in-out group-hover:opacity-90"
             sizes={isFeatured ? '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw' : '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'}
           />
         </div>
-        <div>
+        <div className="p-6">
           <Link
             href={categoryHref}
-            className={`font-bold text-black hover:underline ${isSmall ? 'text-sm' : 'text-2xl'}`}
+            className="text-sm font-bold text-[#696969] hover:underline transition-all duration-150"
             onClick={(e) => e.stopPropagation()}
           >
             {category}
           </Link>
-          <h2 className={`font-bold text-black mt-2 group-hover:underline ${isFeatured ? 'text-3xl' : isSmall ? 'text-base' : 'text-2xl'}`}>
-            {title}
-          </h2>
+          {isFeatured ? (
+            <h3 className="text-[28px] font-bold leading-[33.6px] tracking-[-0.516056px] mt-2 group-hover:underline transition-all duration-150">
+              {title}
+            </h3>
+          ) : (
+            <h2 className={`font-medium text-black mt-2 group-hover:underline transition-all duration-150 ${
+              isSmall ? 'text-base leading-6' : 'text-2xl leading-[28.8px] tracking-[-0.621127px]'
+            }`}>
+              {title}
+            </h2>
+          )}
+          {(author || readTime || date) && (
+            <div className="text-base font-normal text-[#696969] mt-2">
+              {author && <span>By {author}</span>}
+              {date && <span> • {date}</span>}
+              {readTime && <span> • {readTime} min read</span>}
+            </div>
+          )}
           {description && !isSmall && (
-            <p className={`font-light text-black mt-2 ${isFeatured ? 'text-xl' : 'text-base'}`}>
+            <p className="text-base font-normal text-[#696969] mt-2">
               {description}
             </p>
           )}

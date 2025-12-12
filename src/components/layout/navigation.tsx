@@ -1,34 +1,46 @@
 'use client';
 
 import Link from 'next/link';
-import { Search } from 'lucide-react';
+import { Search, Menu } from 'lucide-react';
 
 export function Navigation() {
   return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b border-black/10">
-      <div className="mx-auto max-w-[1140px] px-2">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="text-xl font-bold text-black hover:no-underline">
+    <header className="w-full bg-white">
+      <div className="flex items-center justify-between h-[146px] px-8 max-w-[1920px] mx-auto">
+        {/* Logo */}
+        <Link href="/" className="flex items-center">
+          <span className="text-xl font-bold text-black hover:no-underline">
             Match Moments
-          </Link>
+          </span>
+        </Link>
 
-          {/* Right Actions */}
-          <nav className="flex items-center gap-6">
-            <Link 
-              href="/games" 
-              className="text-xl font-normal text-black hover:underline"
-            >
-              Read
-            </Link>
-            <button 
-              className="text-xl text-black hover:underline"
-              aria-label="Open Search"
-            >
-              <Search className="h-5 w-5" />
-            </button>
-          </nav>
-        </div>
+        {/* Navigation */}
+        <nav className="flex items-center gap-4">
+          <Link 
+            href="/games" 
+            className="text-base font-normal text-black hover:underline transition-all duration-150"
+          >
+            Games
+          </Link>
+          <Link 
+            href="/sports" 
+            className="text-base font-normal text-black hover:underline transition-all duration-150"
+          >
+            Sports
+          </Link>
+          <button 
+            className="text-base font-normal text-black hover:underline transition-all duration-150 p-2"
+            aria-label="Open Search"
+          >
+            <Search className="h-5 w-5" />
+          </button>
+          <button 
+            className="text-base font-normal text-black hover:underline transition-all duration-150 p-2 md:hidden"
+            aria-label="Open Menu"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+        </nav>
       </div>
     </header>
   );

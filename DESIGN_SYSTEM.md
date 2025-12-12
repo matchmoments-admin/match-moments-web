@@ -1,6 +1,7 @@
 # Match Moments Design System
+## Based on The Ringer Design
 
-This document contains the complete design system for Match Moments, featuring a minimal black and white aesthetic with clean typography.
+This document contains the complete design system extracted from The Ringer website (theringer.com), adapted for Match Moments sports website. The design features a clean, modern aesthetic with GT America typography and a sophisticated black and white color palette.
 
 ## Table of Contents
 1. [Design Tokens](#design-tokens)
@@ -10,6 +11,7 @@ This document contains the complete design system for Match Moments, featuring a
 5. [Components](#components)
 6. [Layout](#layout)
 7. [CSS/Tailwind Mappings](#csstailwind-mappings)
+8. [Motion & Transitions](#motion--transitions)
 
 ---
 
@@ -17,104 +19,175 @@ This document contains the complete design system for Match Moments, featuring a
 
 ### Base Unit
 - **Base Unit**: 4px (implied from spacing patterns)
-- **Spacing Scale**: Multiples of 4px (4, 8, 12, 16, 20, 24, 30, 32, etc.)
+- **Spacing Scale**: Multiples of 4px (4, 8, 12, 16, 20, 24, 32, 48, 64, 96px)
+- **Border Radius**: 0.5rem (8px) default, 16px (cards), 32px (large cards)
+
+### CSS Variables (Root Level)
+```css
+:root {
+  /* Colors */
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+  --primary: 240 5.9% 10%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 240 4.8% 95.9%;
+  --secondary-foreground: 240 5.9% 10%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+  --accent: 240 4.8% 95.9%;
+  --accent-foreground: 240 5.9% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 5.9% 90%;
+  --input: 0 0% 0%/20%;
+  --ring: 240 5.9% 10%;
+  --radius: 0.5rem;
+  
+  /* Typography */
+  --font-gt-america: '__gtAmerica_ce3cd8', '__gtAmerica_Fallback_ce3cd8', 'GT America', sans-serif;
+  --font-gt-america-expanded: '__gtAmericaExpanded_999689', '__gtAmericaExpanded_Fallback_999689', 'GT America Expanded', sans-serif;
+  --font-bradford: '__bradford_82a743', '__bradford_Fallback_82a743', 'Bradford', serif;
+  --font-flood: "flood-std", sans-serif;
+  
+  /* Text Size Modifier */
+  --text-size-modifier: 1;
+}
+```
 
 ---
 
 ## Typography
 
 ### Font Family
-- **Primary Font**: `europa, sans-serif`
-- **Fallback**: `sans-serif`
 
-**Note**: Europa is a commercial font. For implementation, we'll use a similar geometric sans-serif font like:
-- Inter (Google Fonts)
-- Work Sans (Google Fonts)
-- Or purchase Europa font license
+**Primary Font**: GT America
+- **Font Stack**: `var(--font-gt-america)` or `'GT America', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`
+- **Fallback**: System sans-serif stack
+
+**Note**: GT America is a commercial font. For implementation without licensing:
+- **Alternative**: Inter (Google Fonts) - closest match
+- **Alternative**: Work Sans (Google Fonts) - geometric alternative
+- **Alternative**: System font stack with `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto`
 
 ### Type Scale
 
-| Element | Font Size | Font Weight | Line Height | Usage |
-|---------|-----------|-------------|-------------|-------|
-| H1 (Article Title) | 60px | 700 (Bold) | 72px | Main article headlines |
-| H1 (Category Page) | 60px | 700 (Bold) | 72px | Category page titles |
-| H2 (Large) | 30px | 700 (Bold) | ~36px | Section headings, featured articles |
-| H2 (Card) | 12px | 300 (Light) | 14px | Small card headings (varies) |
-| H3 | 26px | 700 (Bold) | ~32px | Subsection headings |
-| H4 | 24px | 700 (Bold) | ~28px | Card titles, smaller headings |
-| H4 (Small) | 12px | 300 (Light) | 14px | Small card titles |
-| Body (Large) | 20px | 300 (Light) | 32px | Main body text |
-| Body (Standard) | 16px | 300 (Light) | 20px | Article content, descriptions |
-| Category Link | 24px | 700 (Bold) | ~28px | Category badges |
-| Meta/Date | 20px | 400 (Regular) | ~24px | Article metadata |
-| Small Text | 12px-14px | 300-400 | ~16px | Captions, labels |
+| Element | Font Size | Font Weight | Line Height | Letter Spacing | Usage |
+|---------|-----------|-------------|-------------|----------------|-------|
+| H1 (Hero/Article Title) | 56px | 700 (Bold) | 56px | -1.41634px | Main article headlines, hero titles |
+| H1 (Category Page) | 56px | 700 (Bold) | 56px | -1.41634px | Category page titles |
+| H2 (Section) | 24px | 500 (Medium) | 28.8px | -0.621127px | Section headings |
+| H3 (Subsection) | 28px | 700 (Bold) | 33.6px | -0.516056px | Subsection headings, card titles |
+| H4 (Small Heading) | 14px | 700 (Bold) | 21px | normal | Small card headings, labels |
+| Body (Large) | 32px | 700 (Bold) | 38.4px | -0.552113px | Large body text (hero sections) |
+| Body (Standard) | 16px | 400 (Regular) | 24px | normal | Article content, descriptions |
+| Body (Article Content) | 16px | 400 (Regular) | 19.2px | normal | Article body text |
+| Link/Button | 16px | 400 (Regular) | 24px | normal | Navigation links, buttons |
+| Meta/Byline | 16px | 400 (Regular) | 24px | normal | Article metadata, author info |
+| Small Text | 12px-14px | 400-700 | 16px-21px | normal | Captions, labels, timestamps |
 
 ### Font Weights
-- **300**: Light (body text)
-- **400**: Regular (meta, links)
-- **700**: Bold (headings, category links)
+- **400**: Regular (body text, links, buttons)
+- **500**: Medium (section headings)
+- **700**: Bold (headings, category links, emphasis)
 
 ### Line Heights
-- **Tight**: 1.0-1.2 (headings)
-- **Normal**: 1.4-1.6 (body text)
-- **Relaxed**: 1.6+ (large body text)
+- **Tight**: 1.0 (H1 hero titles)
+- **Normal**: 1.2-1.5 (headings)
+- **Relaxed**: 1.5-1.6 (body text)
+
+### Letter Spacing
+- **Tight**: Negative values for large headings (-1.41634px for 56px)
+- **Normal**: Default (0) for body text and smaller headings
 
 ---
 
 ## Colors
 
 ### Primary Colors
-- **Background**: `#FFFFFF` (rgb(255, 255, 255))
-- **Text**: `#000000` (rgb(0, 0, 0))
-- **Links**: `#000000` (rgb(0, 0, 0))
 
-### Color Palette
-Match Moments uses a minimal black and white color scheme with:
-- Pure white backgrounds
-- Pure black text
-- No accent colors (monochromatic design)
-- Images provide color accents
+| Color | Hex | RGB | HSL | Usage |
+|-------|-----|-----|-----|-------|
+| Background | `#FFFFFF` | `rgb(255, 255, 255)` | `0 0% 100%` | Page backgrounds |
+| Foreground (Text) | `#000000` | `rgb(0, 0, 0)` | `240 10% 3.9%` | Primary text |
+| Muted Text | `#696969` | `rgb(105, 105, 105)` | `240 3.8% 46.1%` | Secondary text, metadata |
+| Border | `#E5E7EB` | `rgb(229, 231, 235)` | `240 5.9% 90%` | Borders, dividers |
 
-### CSS Variables (Recommended)
+### Semantic Colors
+
+| Semantic | Hex | Usage |
+|---------|-----|-------|
+| Primary | `#1A1A1A` | Primary actions, headings |
+| Secondary | `#F5F5F6` | Secondary backgrounds |
+| Muted | `#F5F5F6` | Muted backgrounds |
+| Accent | `#F5F5F6` | Accent backgrounds |
+| Destructive | `#EF4444` | Error states, destructive actions |
+
+### Color Palette Philosophy
+- **Minimal**: Primarily black and white
+- **Monochromatic**: No accent colors in UI (images provide color)
+- **High Contrast**: Black text on white backgrounds (21:1 ratio)
+- **Subtle Grays**: Used sparingly for metadata and secondary information
+
+### CSS Variables Usage
 ```css
-:root {
-  --color-background: #FFFFFF;
-  --color-text: #000000;
-  --color-link: #000000;
-  --color-link-hover: #000000; /* May have slight opacity on hover */
-}
+/* Background */
+background-color: hsl(var(--background));
+
+/* Text */
+color: hsl(var(--foreground));
+
+/* Muted Text */
+color: hsl(var(--muted-foreground));
+
+/* Borders */
+border-color: hsl(var(--border));
 ```
 
 ---
 
 ## Spacing
 
-### Container
-- **Max Width**: 1140px
-- **Padding**: 0px 8px (horizontal)
-- **Margin**: 0px auto (centered)
+### Container Widths
 
-### Article Content
-- **Max Width**: 1140px
-- **Padding**: 0px 8px
-- **Margin**: 0px 30px (horizontal)
+| Container Type | Max Width | Padding | Margin |
+|---------------|-----------|---------|--------|
+| Main Container | 1920px | 0px 32px 96px | 0px auto |
+| Article Container | 800px | 0px | 0px auto |
+| Content Container | 1904px | 0px | 0px auto |
+| Section Container | 50% | 0px | 64px 0px |
 
 ### Spacing Scale
-Based on observed spacing:
-- **xs**: 4px
-- **sm**: 8px
-- **md**: 12px
-- **lg**: 16px
-- **xl**: 20px
-- **2xl**: 24px
-- **3xl**: 30px
-- **4xl**: 32px
-- **5xl**: 40px
-- **6xl**: 48px
+
+Based on 4px base unit:
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| xs | 4px | Tight spacing, icon padding |
+| sm | 8px | Small gaps, compact padding |
+| md | 12px | Medium gaps |
+| lg | 16px | Standard gaps, card padding |
+| xl | 20px | Large gaps |
+| 2xl | 24px | Section spacing |
+| 3xl | 32px | Major section spacing |
+| 4xl | 48px | Large section spacing |
+| 5xl | 64px | Extra large spacing |
+| 6xl | 96px | Hero section spacing |
+
+### Component Spacing
+
+| Component | Padding | Margin | Gap |
+|-----------|---------|--------|-----|
+| Article Card | 0px | 0px | normal |
+| Section | 0px 0px 32px | 0px | normal |
+| Header | 0px | 0px | normal |
+| Footer | 48px 0px 0px | 0px | normal |
 
 ### Grid Gaps
-- **Article Grid Gap**: ~20-30px (varies by layout)
-- **Card Internal Padding**: ~16-24px
+- **Article Grid**: 24px-32px (varies by layout)
+- **Card Internal**: 16px-24px
+- **Section Gaps**: 32px vertical
 
 ---
 
@@ -123,21 +196,34 @@ Based on observed spacing:
 ### Navigation/Header
 
 **Structure:**
-- Logo: "Match Moments" text, left-aligned
-- Menu toggle: "Read" button/link
-- Search icon: Right side
+- Logo: Left-aligned, image or text
+- Discover Menu: Dropdown button with icon
+- Search: Icon button
+- Navigation: Videos, Podcasts links
+- Menu Toggle: Hamburger menu (mobile)
 
 **Styling:**
-- Background: White
-- Border: Bottom border (if any)
-- Height: ~64-80px
-- Font: 20px, weight 400-700
+- Background: Transparent/White
+- Height: 146px (includes navigation menu)
+- Border: None (or subtle bottom border)
+- Font: 16px, weight 400
+- Padding: 0px
 
 **Tailwind Classes:**
 ```html
-<header class="sticky top-0 z-50 w-full bg-white border-b border-black/10">
-  <div class="mx-auto max-w-[1140px] px-2">
-    <!-- Header content -->
+<header class="w-full bg-white">
+  <div class="flex items-center justify-between h-[146px] px-8">
+    <!-- Logo -->
+    <a href="/" class="flex items-center">
+      <img src="/logo.svg" alt="Match Moments" />
+    </a>
+    
+    <!-- Navigation -->
+    <nav class="flex items-center gap-4">
+      <a href="/videos" class="text-base font-normal">Videos</a>
+      <a href="/podcasts" class="text-base font-normal">Podcasts</a>
+      <button class="text-base font-normal">Menu</button>
+    </nav>
   </div>
 </header>
 ```
@@ -146,42 +232,71 @@ Based on observed spacing:
 
 **Variants:**
 
-#### 1. Featured/Large Card
-- **Image**: Full-width, aspect ratio ~16:9 or 4:3
-- **Category Badge**: Above image, 24px, bold
-- **Title**: H2 (30px) or H4 (24px), bold
-- **Description**: 16px, light, 1-2 lines
-- **Spacing**: Generous padding, large gaps
+#### 1. Featured Hero Card
+- **Image**: Full-width, aspect ratio varies
+- **Category Badge**: 14px, bold, above image
+- **Title**: 28px, bold, line-height 33.6px
+- **Meta**: 16px, regular, "By Author • X min read"
+- **Border Radius**: 32px
+- **Spacing**: Generous padding
 
-#### 2. Standard Card
-- **Image**: Smaller, aspect ratio maintained
-- **Category**: 24px, bold
-- **Title**: H4 (24px) or smaller, bold
-- **Description**: 16px, light
-- **Spacing**: Moderate padding
+#### 2. Standard Article Card
+- **Image**: Full-width, aspect ratio maintained
+- **Category**: 14px, bold, muted color
+- **Title**: 24px, medium (500), line-height 28.8px
+- **Meta**: 16px, regular
+- **Border Radius**: 32px
+- **Spacing**: Standard padding
 
-#### 3. Small/Popular Card
-- **Image**: Thumbnail size
-- **Category**: Small text (12-14px)
-- **Title**: Smaller heading
-- **No description** (or very short)
+#### 3. Small List Card
+- **Image**: Thumbnail or no image
+- **Category**: 14px, bold
+- **Title**: 24px, medium
+- **Meta**: 16px, regular
+- **Border Radius**: 16px or 32px
+- **Spacing**: Compact padding
 
 **Common Styles:**
-- No border radius (sharp corners)
+- Border Radius: 32px (large cards), 16px (small cards)
 - No shadows (flat design)
 - Images are clickable
 - Entire card is clickable
-- Hover: Subtle opacity change or underline
+- Hover: Subtle opacity change or underline on title
 
 **Tailwind Classes:**
 ```html
-<article class="group cursor-pointer">
-  <a href="...">
-    <img src="..." alt="..." class="w-full object-cover" />
-    <div class="mt-4">
-      <span class="text-2xl font-bold">Category</span>
-      <h2 class="text-3xl font-bold mt-2">Title</h2>
-      <p class="text-base font-light mt-2">Description</p>
+<!-- Featured Card -->
+<article class="group cursor-pointer rounded-[32px] overflow-hidden">
+  <a href="/article" class="block">
+    <div class="relative aspect-[4/3] overflow-hidden">
+      <img src="..." alt="..." class="w-full h-full object-cover" />
+    </div>
+    <div class="p-6">
+      <span class="text-sm font-bold text-[#696969]">Category</span>
+      <h3 class="text-[28px] font-bold leading-[33.6px] mt-2 group-hover:underline">
+        Article Title
+      </h3>
+      <div class="text-base font-normal mt-2 text-[#696969]">
+        By Author • 10 min read
+      </div>
+    </div>
+  </a>
+</article>
+
+<!-- Standard Card -->
+<article class="group cursor-pointer rounded-[32px] overflow-hidden">
+  <a href="/article" class="block">
+    <div class="relative aspect-[4/3] overflow-hidden">
+      <img src="..." alt="..." class="w-full h-full object-cover" />
+    </div>
+    <div class="p-6">
+      <span class="text-sm font-bold text-[#696969]">Category</span>
+      <h2 class="text-2xl font-medium leading-[28.8px] mt-2 tracking-[-0.621127px] group-hover:underline">
+        Article Title
+      </h2>
+      <div class="text-base font-normal mt-2 text-[#696969]">
+        By Author • 10 min read
+      </div>
     </div>
   </a>
 </article>
@@ -191,18 +306,82 @@ Based on observed spacing:
 
 **Styles:**
 - Minimal styling
-- Text-based (no heavy borders)
-- Underline on hover (if any)
-- Font: 20px, weight 400-700
+- Text-based (no heavy borders or backgrounds)
+- Font: 16px, weight 400
+- Color: Black (#000000)
+- Hover: Underline or opacity change
 - No background colors (text only)
+
+**Variants:**
+- **Default**: Text button, no background
+- **Icon Button**: Icon with optional text
+- **Link Button**: Styled as link
+
+**Tailwind Classes:**
+```html
+<button class="text-base font-normal text-black hover:underline">
+  Button Text
+</button>
+```
 
 ### Links
 
 **Default:**
 - Color: Black (#000000)
 - Text decoration: None
-- Font: Inherits from parent
+- Font: 16px, weight 400, line-height 24px
 - Hover: Underline or opacity change
+
+**Tailwind Classes:**
+```html
+<a href="..." class="text-base font-normal text-black hover:underline">
+  Link Text
+</a>
+```
+
+### Article Page
+
+**Structure:**
+- Hero Image: Full-width, with overlay
+- Title: 56px, bold, white text on image overlay
+- Meta: Author, date, read time
+- Content: Article body text
+- Related Articles: Grid of related content
+
+**Styling:**
+- Title: 56px, bold, line-height 56px, letter-spacing -1.41634px
+- Body: 16px, regular, line-height 19.2px
+- Max Width: 800px for content
+- Padding: 0px (full-width images)
+
+**Tailwind Classes:**
+```html
+<article>
+  <!-- Hero Section -->
+  <div class="relative w-full h-[600px]">
+    <img src="..." alt="..." class="w-full h-full object-cover" />
+    <div class="absolute inset-0 bg-black/40 flex items-end">
+      <div class="max-w-[800px] mx-auto px-8 pb-8">
+        <h1 class="text-[56px] font-bold leading-[56px] tracking-[-1.41634px] text-white">
+          Article Title
+        </h1>
+        <div class="text-base font-normal text-white/90 mt-4">
+          By Author • Dec. 10 • 7 min read
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Content -->
+  <div class="max-w-[800px] mx-auto px-8 py-12">
+    <div class="prose prose-lg">
+      <p class="text-base font-normal leading-[19.2px]">
+        Article content...
+      </p>
+    </div>
+  </div>
+</article>
+```
 
 ### Footer
 
@@ -211,12 +390,54 @@ Based on observed spacing:
 - About/Contact links
 - Social media links
 - Copyright notice
+- Archive link
 
 **Styling:**
-- Background: White or light gray
+- Background: White
 - Text: Black
 - Links: Black, underline on hover
 - Sections: Organized in columns
+- Padding: 48px top
+
+**Tailwind Classes:**
+```html
+<footer class="w-full bg-white border-t border-[#E5E7EB]">
+  <div class="max-w-[1920px] mx-auto px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Newsletter -->
+      <div>
+        <h3 class="text-xl font-bold mb-4">Newsletter</h3>
+        <p class="text-base font-normal text-[#696969] mb-4">
+          Just the hits, straight to your inbox every week
+        </p>
+        <!-- Form -->
+      </div>
+      
+      <!-- Links -->
+      <div>
+        <h3 class="text-xl font-bold mb-4">Links</h3>
+        <ul class="space-y-2">
+          <li><a href="/contact" class="text-base font-normal hover:underline">Contact</a></li>
+          <li><a href="/masthead" class="text-base font-normal hover:underline">Masthead</a></li>
+        </ul>
+      </div>
+      
+      <!-- Social -->
+      <div>
+        <h3 class="text-xl font-bold mb-4">Follow Us</h3>
+        <div class="flex gap-4">
+          <a href="..." class="text-base font-normal hover:underline">Instagram</a>
+          <a href="..." class="text-base font-normal hover:underline">Twitter</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-12 pt-8 border-t border-[#E5E7EB] text-center text-sm text-[#696969]">
+      © 2025 Match Moments
+    </div>
+  </div>
+</footer>
+```
 
 ---
 
@@ -225,31 +446,52 @@ Based on observed spacing:
 ### Grid System
 
 #### Homepage Layout
-1. **Hero Section**: Featured article(s), full-width
-2. **Featured Articles**: 2-3 column grid
-3. **Regular Articles**: 2-3 column grid
-4. **Popular Section**: Horizontal scroll or grid
-5. **Recent Articles**: 3 column grid
+1. **Hero Carousel**: Full-width, featured articles with navigation
+2. **The Latest Section**: Grid of 4 articles (2x2 or 4x1)
+3. **Featured Section**: Large featured article + sidebar
+4. **Noteworthy Reads**: List of article links
+5. **Category Sections**: Themed content sections (NBA, NFL, etc.)
+6. **Podcast Section**: Podcast cards with play buttons
+7. **Video Section**: Video thumbnails with metadata
 
 #### Category/List Page Layout
-- Page title (H1): 60px, bold
-- Article grid: 2-3 columns
-- Consistent card styling
+- **Hero Banner**: Full-width image with category title (56px, white text)
+- **Article Grid**: Responsive grid (1 col mobile, 2-3 cols desktop)
+- **Pagination**: Bottom navigation
 
 #### Article Page Layout
-- Title (H1): 60px, bold, margin-bottom: 30px
-- Featured image: Full-width
-- Meta: Date, author, share buttons
-- Content: Max-width 1140px, centered
-- Body text: 16px, light, line-height 20px
+- **Hero Image**: Full-width with title overlay
+- **Content**: Max-width 800px, centered
+- **Body Text**: 16px, regular, line-height 19.2px
+- **Related Articles**: Grid below content
 
 ### Breakpoints
 
-Based on container width and responsive behavior:
-- **Mobile**: < 768px
-- **Tablet**: 768px - 1024px
-- **Desktop**: > 1024px
-- **Large Desktop**: > 1140px (container max-width)
+| Breakpoint | Width | Usage |
+|------------|-------|-------|
+| Mobile | < 768px | Single column, stacked layout |
+| Tablet | 768px - 1024px | 2 columns for article grids |
+| Desktop | 1024px - 1920px | 3-4 columns for article grids |
+| Large Desktop | > 1920px | Max-width container, centered |
+
+### Container System
+
+```html
+<!-- Main Container -->
+<div class="max-w-[1920px] mx-auto px-8 pb-24">
+  <!-- Content -->
+</div>
+
+<!-- Article Container -->
+<div class="max-w-[800px] mx-auto px-8">
+  <!-- Article Content -->
+</div>
+
+<!-- Section Container -->
+<section class="max-w-[1904px] mx-auto px-8">
+  <!-- Section Content -->
+</section>
+```
 
 ---
 
@@ -258,52 +500,112 @@ Based on container width and responsive behavior:
 ### Typography
 
 ```css
-/* H1 - Article Title */
-.text-6xl { font-size: 60px; }
+/* H1 - Hero/Article Title */
+.text-[56px] { font-size: 56px; }
 .font-bold { font-weight: 700; }
-.leading-[72px] { line-height: 72px; }
+.leading-[56px] { line-height: 56px; }
+.tracking-[-1.41634px] { letter-spacing: -1.41634px; }
 
 /* H2 - Section Headings */
-.text-3xl { font-size: 30px; }
-
-/* H4 - Card Titles */
 .text-2xl { font-size: 24px; }
+.font-medium { font-weight: 500; }
+.leading-[28.8px] { line-height: 28.8px; }
+.tracking-[-0.621127px] { letter-spacing: -0.621127px; }
 
-/* Body Large */
-.text-xl { font-size: 20px; }
-.font-light { font-weight: 300; }
-.leading-8 { line-height: 32px; }
+/* H3 - Subsection Headings */
+.text-[28px] { font-size: 28px; }
+.leading-[33.6px] { line-height: 33.6px; }
+.tracking-[-0.516056px] { letter-spacing: -0.516056px; }
+
+/* H4 - Small Headings */
+.text-sm { font-size: 14px; }
+.leading-[21px] { line-height: 21px; }
 
 /* Body Standard */
 .text-base { font-size: 16px; }
-.leading-5 { line-height: 20px; }
+.font-normal { font-weight: 400; }
+.leading-6 { line-height: 24px; }
 
-/* Category Links */
-.text-2xl { font-size: 24px; }
-.font-bold { font-weight: 700; }
+/* Body Article Content */
+.leading-[19.2px] { line-height: 19.2px; }
+
+/* Large Body */
+.text-[32px] { font-size: 32px; }
+.leading-[38.4px] { line-height: 38.4px; }
+.tracking-[-0.552113px] { letter-spacing: -0.552113px; }
 ```
 
 ### Colors
 
 ```css
+/* Background */
 .bg-white { background-color: #FFFFFF; }
+
+/* Text */
 .text-black { color: #000000; }
+.text-[#696969] { color: #696969; } /* Muted text */
+
+/* Borders */
+.border-[#E5E7EB] { border-color: #E5E7EB; }
 ```
 
 ### Spacing
 
 ```css
-.max-w-[1140px] { max-width: 1140px; }
-.px-2 { padding-left: 8px; padding-right: 8px; }
+/* Container */
+.max-w-[1920px] { max-width: 1920px; }
+.max-w-[800px] { max-width: 800px; }
+.max-w-[1904px] { max-width: 1904px; }
+
+/* Padding */
+.px-8 { padding-left: 32px; padding-right: 32px; }
+.py-12 { padding-top: 48px; padding-bottom: 48px; }
+.pb-24 { padding-bottom: 96px; }
+
+/* Margin */
 .mx-auto { margin-left: auto; margin-right: auto; }
+.mt-2 { margin-top: 8px; }
+.mt-4 { margin-top: 16px; }
+.mt-12 { margin-top: 48px; }
 ```
 
-### Container
+### Border Radius
 
+```css
+.rounded-[16px] { border-radius: 16px; }
+.rounded-[32px] { border-radius: 32px; }
+```
+
+---
+
+## Motion & Transitions
+
+### Transitions
+
+| Property | Duration | Easing | Usage |
+|----------|----------|--------|-------|
+| Opacity | 150ms | ease-in-out | Hover states, image overlays |
+| Transform | 200ms | ease-in-out | Card hovers, button interactions |
+| Color | 150ms | ease-in-out | Link hovers, text color changes |
+
+### Animation Patterns
+
+**Hover States:**
+- Links: Underline on hover (150ms transition)
+- Cards: Slight opacity change (0.9) on image
+- Buttons: Underline or opacity change
+
+**Tailwind Classes:**
 ```html
-<div class="mx-auto max-w-[1140px] px-2">
-  <!-- Content -->
-</div>
+<!-- Hover Transition -->
+<a href="..." class="transition-all duration-150 ease-in-out hover:underline">
+  Link Text
+</a>
+
+<!-- Card Hover -->
+<article class="group cursor-pointer">
+  <img src="..." class="transition-opacity duration-150 ease-in-out group-hover:opacity-90" />
+</article>
 ```
 
 ---
@@ -313,29 +615,29 @@ Based on container width and responsive behavior:
 ### Article Card (Featured)
 
 ```tsx
-<article className="group cursor-pointer">
+<article className="group cursor-pointer rounded-[32px] overflow-hidden">
   <Link href="/article">
     <div className="relative aspect-[4/3] overflow-hidden">
       <Image
         src={imageUrl}
         alt={title}
         fill
-        className="object-cover group-hover:opacity-90 transition-opacity"
+        className="object-cover transition-opacity duration-150 ease-in-out group-hover:opacity-90"
       />
     </div>
-    <div className="mt-4">
+    <div className="p-6">
       <Link
         href={`/category/${category}`}
-        className="text-2xl font-bold hover:underline"
+        className="text-sm font-bold text-[#696969] hover:underline"
       >
         {category}
       </Link>
-      <h2 className="text-3xl font-bold mt-2 group-hover:underline">
+      <h3 className="text-[28px] font-bold leading-[33.6px] tracking-[-0.516056px] mt-2 group-hover:underline">
         {title}
-      </h2>
-      <p className="text-base font-light mt-2 text-black/80">
-        {description}
-      </p>
+      </h3>
+      <div className="text-base font-normal text-[#696969] mt-2">
+        By {author} • {readTime} min read
+      </div>
     </div>
   </Link>
 </article>
@@ -344,9 +646,9 @@ Based on container width and responsive behavior:
 ### Article Card (Standard)
 
 ```tsx
-<article className="group cursor-pointer">
+<article className="group cursor-pointer rounded-[32px] overflow-hidden">
   <Link href="/article">
-    <div className="relative aspect-[4/3] overflow-hidden mb-4">
+    <div className="relative aspect-[4/3] overflow-hidden">
       <Image
         src={imageUrl}
         alt={title}
@@ -354,18 +656,20 @@ Based on container width and responsive behavior:
         className="object-cover"
       />
     </div>
-    <Link
-      href={`/category/${category}`}
-      className="text-2xl font-bold hover:underline"
-    >
-      {category}
-    </Link>
-    <h4 className="text-2xl font-bold mt-2 group-hover:underline">
-      {title}
-    </h4>
-    <p className="text-base font-light mt-2 text-black/80">
-      {description}
-    </p>
+    <div className="p-6">
+      <Link
+        href={`/category/${category}`}
+        className="text-sm font-bold text-[#696969] hover:underline"
+      >
+        {category}
+      </Link>
+      <h2 className="text-2xl font-medium leading-[28.8px] tracking-[-0.621127px] mt-2 group-hover:underline">
+        {title}
+      </h2>
+      <div className="text-base font-normal text-[#696969] mt-2">
+        By {author} • {readTime} min read
+      </div>
+    </div>
   </Link>
 </article>
 ```
@@ -373,56 +677,116 @@ Based on container width and responsive behavior:
 ### Navigation
 
 ```tsx
-<header className="sticky top-0 z-50 w-full bg-white border-b border-black/10">
-  <div className="mx-auto max-w-[1140px] px-2">
-    <div className="flex items-center justify-between h-16">
-      <Link href="/" className="text-xl font-bold">
-        Match Moments
+<header className="w-full bg-white">
+  <div className="flex items-center justify-between h-[146px] px-8 max-w-[1920px] mx-auto">
+    <Link href="/" className="flex items-center">
+      <Image src="/logo.svg" alt="Match Moments" width={120} height={40} />
+    </Link>
+    <nav className="flex items-center gap-4">
+      <Link href="/videos" className="text-base font-normal text-black hover:underline transition-all duration-150">
+        Videos
       </Link>
-      <nav className="flex items-center gap-4">
-        <button className="text-xl">Read</button>
-        <button className="text-xl">Search</button>
-      </nav>
-    </div>
+      <Link href="/podcasts" className="text-base font-normal text-black hover:underline transition-all duration-150">
+        Podcasts
+      </Link>
+      <button className="text-base font-normal text-black hover:underline transition-all duration-150">
+        Menu
+      </button>
+    </nav>
   </div>
 </header>
+```
+
+### Article Hero Section
+
+```tsx
+<div className="relative w-full h-[600px]">
+  <Image
+    src={heroImage}
+    alt={title}
+    fill
+    className="object-cover"
+  />
+  <div className="absolute inset-0 bg-black/40 flex items-end">
+    <div className="max-w-[800px] mx-auto px-8 pb-8 w-full">
+      <h1 className="text-[56px] font-bold leading-[56px] tracking-[-1.41634px] text-white">
+        {title}
+      </h1>
+      <div className="text-base font-normal text-white/90 mt-4">
+        By {author} • {date} • {readTime} min read
+      </div>
+    </div>
+  </div>
+</div>
 ```
 
 ---
 
 ## Implementation Notes
 
-1. **Font**: Use Inter or Work Sans from Google Fonts as Europa alternative
-2. **Images**: All images should maintain aspect ratios, use Next.js Image component
-3. **Links**: All text links should be black, no underlines by default
-4. **Hover States**: Subtle opacity changes or underlines
-5. **No Shadows**: Flat design, no box shadows
-6. **No Border Radius**: Sharp corners (except images may have slight radius)
-7. **Spacing**: Generous whitespace, clean layouts
-8. **Typography**: Heavy use of light font weights (300) for body text
-9. **Bold Headings**: All headings use bold (700) weight
-10. **Container**: Always center content with max-width 1140px
+1. **Font**: Use Inter from Google Fonts as GT America alternative, or purchase GT America license
+2. **Images**: All images should maintain aspect ratios, use Next.js Image component with `fill` or explicit dimensions
+3. **Links**: All text links should be black, no underlines by default, underline on hover
+4. **Hover States**: Subtle opacity changes (0.9) or underlines with 150ms transitions
+5. **Border Radius**: Use 32px for large cards, 16px for small cards
+6. **Spacing**: Use 4px base unit, generous whitespace between sections (32px-96px)
+7. **Typography**: Use negative letter-spacing for large headings (56px, 28px)
+8. **Container**: Use max-width 1920px for main container, 800px for article content
+9. **Responsive**: Mobile-first approach, single column on mobile, 2-3 columns on desktop
+10. **Colors**: Strictly black and white with subtle grays for metadata
 
 ---
 
 ## Accessibility
 
-- Ensure sufficient color contrast (black on white = 21:1, excellent)
-- Use semantic HTML (article, header, nav, main, footer)
-- Provide alt text for all images
-- Maintain focus states for keyboard navigation
-- Use proper heading hierarchy (h1 → h2 → h3, etc.)
+- **Color Contrast**: Black on white = 21:1 (excellent, exceeds WCAG AAA)
+- **Semantic HTML**: Use proper semantic elements (article, header, nav, main, footer)
+- **Alt Text**: Provide descriptive alt text for all images
+- **Focus States**: Maintain visible focus states for keyboard navigation
+- **Heading Hierarchy**: Use proper heading hierarchy (h1 → h2 → h3, etc.)
+- **ARIA Labels**: Use ARIA labels for icon-only buttons
+- **Keyboard Navigation**: Ensure all interactive elements are keyboard accessible
 
 ---
 
 ## Responsive Design
 
-- Mobile: Single column, stacked layout
-- Tablet: 2 columns for article grids
-- Desktop: 3 columns for article grids
-- Large Desktop: Maintain 3 columns, content centered
+### Mobile (< 768px)
+- Single column layout
+- Stacked navigation (hamburger menu)
+- Full-width images
+- Reduced padding (16px instead of 32px)
+- Smaller font sizes (adjust text-size-modifier)
+
+### Tablet (768px - 1024px)
+- 2 columns for article grids
+- Horizontal navigation
+- Standard padding (24px)
+- Standard font sizes
+
+### Desktop (> 1024px)
+- 3-4 columns for article grids
+- Full navigation menu
+- Maximum padding (32px)
+- Full font sizes
+
+### Large Desktop (> 1920px)
+- Max-width container (1920px) centered
+- Maintain 3-4 columns
+- Maximum spacing
+
+---
+
+## Next.js 16 Specific Notes
+
+1. **Image Component**: Use Next.js Image component with `fill` for responsive images
+2. **Font Loading**: Use `next/font` for optimal font loading (Inter or GT America)
+3. **CSS Modules**: Use Tailwind CSS classes, no need for CSS modules
+4. **Server Components**: Prefer Server Components for static content
+5. **Client Components**: Use 'use client' only for interactive components
+6. **Metadata**: Use Next.js metadata API for SEO
 
 ---
 
 *Last Updated: December 12, 2025*
-
+*Based on: The Ringer (theringer.com)*

@@ -60,15 +60,18 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      <main className="mx-auto max-w-[1140px] px-2 py-8">
-        {/* Featured Articles Section */}
-        <section className="mb-12">
-          <div className="grid md:grid-cols-2 gap-8 mb-8">
+      <main className="max-w-[1920px] mx-auto px-8 pb-24">
+        {/* Featured Hero Section */}
+        <section className="mb-12 pb-8">
+          <div className="grid md:grid-cols-2 gap-8">
             {featuredArticles.map((article, index) => (
               <ArticleCard
                 key={index}
                 {...article}
                 variant="featured"
+                author="Match Moments Staff"
+                readTime="5"
+                date="Dec. 12"
               />
             ))}
             {articles.slice(0, 1).map((article, index) => (
@@ -76,13 +79,48 @@ export default async function Home() {
                 key={`standard-${index}`}
                 {...article}
                 variant="standard"
+                author="Match Moments Staff"
+                readTime="3"
+                date="Dec. 12"
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* The Latest Section */}
+        <section className="mb-12 pb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-medium leading-[28.8px] tracking-[-0.621127px]">The Latest</h2>
+            <Link href="/games" className="text-base font-normal text-black hover:underline transition-all duration-150">
+              View All
+            </Link>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {articles.map((article, index) => (
+              <ArticleCard
+                key={index}
+                {...article}
+                variant="standard"
+                author="Match Moments Staff"
+                readTime="5"
+                date="Dec. 12"
+              />
+            ))}
+            {articles.map((article, index) => (
+              <ArticleCard
+                key={`repeat-${index}`}
+                {...article}
+                variant="standard"
+                author="Match Moments Staff"
+                readTime="4"
+                date="Dec. 11"
               />
             ))}
           </div>
         </section>
 
         {/* Large Featured Article */}
-        <section className="mb-12">
+        <section className="mb-12 pb-8">
           <ArticleCard
             title="Top 10 Sports Moments of 2025"
             description="Explore Match Moments' 10 most captivating sports moments of 2025, from championship victories to record-breaking performances."
@@ -92,39 +130,26 @@ export default async function Home() {
             imageAlt="Top sports moments"
             href="/moments"
             variant="featured"
+            author="Match Moments Staff"
+            readTime="10"
+            date="Dec. 10"
           />
-        </section>
-
-        {/* Article Grid */}
-        <section className="mb-12">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {articles.map((article, index) => (
-              <ArticleCard
-                key={index}
-                {...article}
-                variant="standard"
-              />
-            ))}
-            {articles.map((article, index) => (
-              <ArticleCard
-                key={`repeat-${index}`}
-                {...article}
-                variant="standard"
-              />
-            ))}
-          </div>
         </section>
 
         {/* Live Games Section */}
         {liveGames.length > 0 && (
-          <section className="mb-12">
+          <section className="mb-12 pb-8">
             <div className="flex items-center gap-2 mb-6">
-              <div className="h-3 w-3 bg-red-500 animate-pulse-live" />
-              <h2 className="text-3xl font-bold">Live Now</h2>
+              <div className="h-3 w-3 bg-red-500 rounded-full animate-pulse-live" />
+              <h2 className="text-2xl font-medium leading-[28.8px] tracking-[-0.621127px]">Live Now</h2>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {liveGames.slice(0, 3).map((game: any) => (
-                <Link key={game.Id} href={`/games/${game.Id}`} className="block border border-black/10 p-4 hover:opacity-90 transition-opacity">
+              {liveGames.slice(0, 3).map((game: { Id: string; Home_Team__r?: { Name?: string; Logo_URL__c?: string }; Away_Team__r?: { Name?: string; Logo_URL__c?: string }; Home_Score_Final__c?: number; Away_Score_Final__c?: number; Status__c?: string; Current_Period__r?: { Period_Type__c?: string }; Venue__c?: string }) => (
+                <Link
+                  key={game.Id}
+                  href={`/games/${game.Id}`}
+                  className="block rounded-[32px] border border-[#E5E7EB] p-6 hover:opacity-90 transition-opacity duration-150"
+                >
                   <LiveScore
                     fixture={{
                       id: game.Id,
@@ -146,23 +171,26 @@ export default async function Home() {
                 </Link>
               ))}
             </div>
-            <div className="mt-6 text-center">
-              <Link href="/games" className="text-xl font-light text-black hover:underline">
+            <div className="mt-8 text-center">
+              <Link href="/games" className="text-base font-normal text-black hover:underline transition-all duration-150">
                 More Recent Games
               </Link>
             </div>
           </section>
         )}
 
-        {/* More Articles Grid */}
-        <section>
-          <h3 className="text-3xl font-bold mb-6">Popular</h3>
+        {/* Popular Section */}
+        <section className="mb-12 pb-8">
+          <h3 className="text-[28px] font-bold leading-[33.6px] tracking-[-0.516056px] mb-6">Popular</h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {articles.map((article, index) => (
               <ArticleCard
                 key={`popular-${index}`}
                 {...article}
-                variant="small"
+                variant="standard"
+                author="Match Moments Staff"
+                readTime="5"
+                date="Dec. 12"
               />
             ))}
           </div>
