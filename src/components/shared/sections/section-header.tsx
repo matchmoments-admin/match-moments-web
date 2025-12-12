@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ICONS } from '@/lib/sport-icons';
 import { iconClass, ICON_TRANSITIONS } from '@/lib/icon-styles';
 
 export interface SectionHeaderProps {
@@ -34,7 +34,7 @@ export function SectionHeader({
             className="flex items-center gap-2 text-base font-normal hover:underline"
           >
             {viewAllText}
-            <ChevronRightIcon className={iconClass('arrow', ICON_TRANSITIONS.default)} />
+            <ICONS.chevronRight className={iconClass('arrow', ICON_TRANSITIONS.default)} />
           </Link>
         )}
       </div>

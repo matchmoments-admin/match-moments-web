@@ -1,28 +1,31 @@
 # Match Moments Web Platform
 
-A comprehensive sports data platform built with Next.js 14, featuring live scores, AI-powered trivia, match statistics, and admin dashboard with role-based access control. Integrated with Salesforce CRM for data management.
+A comprehensive sports media platform built with Next.js 16, featuring match moments, highlights, competitions, and player statistics. Focused on women's sports (60% of coverage) with a modern, minimalist design inspired by The Ringer.
 
 ## 🌟 Features
 
 ### Public Features
-- **Live Scores**: Real-time match updates across multiple sports
-- **Match Statistics**: Comprehensive stats, standings, and player performance data
-- **AI-Powered Trivia**: Test knowledge with questions generated from real match data
-- **Women's Sports Focus**: 60% of coverage dedicated to women's sports
+- **Match Moments**: Trending highlights and key moments from live matches
+- **Live Scores**: Real-time match updates with period breakdowns
+- **Competitions**: Browse leagues and tournaments (WSL, WNBA, Tennis Grand Slams, etc.)
+- **Teams & Players**: Detailed profiles with statistics and recent moments
+- **Gender-First Navigation**: Women's sports prominently featured
+- **Modern Design**: Clean, minimalist black & white aesthetic
 
-### Admin Dashboard
-- **Role-Based Access Control**: Super Admin, CEO, Sales, Marketing, Operations, Customer Success
-- **Revenue Tracking**: MRR, ARR, revenue by stream and gender
-- **Sales Pipeline**: Opportunity management, forecasting, win rates
-- **Customer Management**: Health scores, churn risk tracking
-- **Operations Monitoring**: API usage, system health, background jobs
+### Design System
+- **Typography**: Inter font family (GT America alternative)
+- **Colors**: Monochromatic palette with accent colors for events
+- **Icons**: react-icons library with Material Design & Ionicons
+- **Components**: shadcn/ui with custom sports components
+- **Responsive**: Mobile-first design with smooth animations
 
 ## 🚀 Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **UI Components**: shadcn/ui
+- **Styling**: Tailwind CSS v4
+- **UI Components**: shadcn/ui + custom sports components
+- **Icons**: react-icons (Material Design, Ionicons, Bootstrap Icons)
 - **Authentication**: NextAuth.js with Google OAuth
 - **CRM Integration**: Salesforce (jsforce)
 - **Caching**: Redis (ioredis)
@@ -195,18 +198,27 @@ match-moments-web/
 
 ## 🎨 Design System
 
+See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for complete design specifications.
+
 ### Colors
-- Primary: `#1a1a1a` (dark)
-- Accent: `#0066cc` (blue)
-- Live indicator: `#ff0000` (red with pulse animation)
-- Success: `#00c853`
-- Warning: `#ffa000`
-- Error: `#d32f2f`
+- **Background**: #FFFFFF (white)
+- **Text**: #000000 (black)
+- **Muted**: #696969 (gray)
+- **Border**: #E5E7EB (light gray)
+- **Accent**: Blues, purples (gender-specific)
 
 ### Typography
-- Font: System fonts (Geist Sans, Geist Mono)
-- Scale: 12px to 48px
-- Weights: 400, 500, 600, 700, 900
+- **Font**: Inter (GT America alternative)
+- **H1**: 56px, bold, tight tracking
+- **H2**: 24px, medium
+- **Body**: 16px, regular, 24px line-height
+- **Weights**: 400 (regular), 500 (medium), 700 (bold)
+
+### Icons
+- **Library**: react-icons
+- **Sports**: Material Design icons (MdSportsSoccer, MdSportsBasketball, etc.)
+- **UI**: Ionicons 5 (IoSearchOutline, IoMenuOutline, etc.)
+- **Special**: Bootstrap icons (BsFireFlame, BsTrophy)
 
 ## 🚢 Deployment
 
@@ -335,5 +347,5 @@ MIT License - see LICENSE file for details
 
 **Built with ❤️ for Women's Sports**
 
-For detailed setup instructions, see [SETUP.md](SETUP.md)
+For design specifications, see [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)
 For Salesforce backend, see [match-moments-salesforce](https://github.com/matchmoments-admin/match-moments-salesforce)

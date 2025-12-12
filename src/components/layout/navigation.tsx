@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { MagnifyingGlassIcon, Bars3Icon } from '@heroicons/react/24/outline';
+import { ICONS } from '@/lib/sport-icons';
 import { iconClass, ICON_TRANSITIONS } from '@/lib/icon-styles';
 
 export function Navigation() {
@@ -33,13 +33,13 @@ export function Navigation() {
             className="text-base font-normal text-black hover:underline transition-all duration-150 p-2"
             aria-label="Open Search"
           >
-            <MagnifyingGlassIcon className={iconClass('nav', ICON_TRANSITIONS.default)} />
+            <ICONS.search className={iconClass('nav', ICON_TRANSITIONS.default)} />
           </button>
           <button 
             className="text-base font-normal text-black hover:underline transition-all duration-150 p-2 md:hidden"
             aria-label="Open Menu"
           >
-            <Bars3Icon className={iconClass('nav', ICON_TRANSITIONS.default)} />
+            <ICONS.menu className={iconClass('nav', ICON_TRANSITIONS.default)} />
           </button>
         </nav>
       </div>

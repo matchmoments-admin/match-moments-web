@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ArrowsUpDownIcon, ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
+import { IoSwapVerticalOutline, IoArrowUpOutline, IoArrowDownOutline } from 'react-icons/io5';
 import { useState } from 'react';
 import { iconClass, ICON_TRANSITIONS } from '@/lib/icon-styles';
 
@@ -80,12 +80,12 @@ export function DataTable<T extends Record<string, any>>({
                     <span className="ml-auto">
                       {sortColumn === column.key ? (
                         sortDirection === 'asc' ? (
-                          <ArrowUpIcon className={iconClass('inline', ICON_TRANSITIONS.default)} />
+                          <IoArrowUpOutline className={iconClass('inline', ICON_TRANSITIONS.default)} />
                         ) : (
-                          <ArrowDownIcon className={iconClass('inline', ICON_TRANSITIONS.default)} />
+                          <IoArrowDownOutline className={iconClass('inline', ICON_TRANSITIONS.default)} />
                         )
                       ) : (
-                        <ArrowsUpDownIcon className={iconClass('inline', 'opacity-30', ICON_TRANSITIONS.default)} />
+                        <IoSwapVerticalOutline className={iconClass('inline', 'opacity-30', ICON_TRANSITIONS.default)} />
                       )}
                     </span>
                   )}

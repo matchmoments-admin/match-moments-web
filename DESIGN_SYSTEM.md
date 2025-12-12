@@ -1401,6 +1401,72 @@ background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
 
 ---
 
+## Icon System
+
+### Library
+- **react-icons** (v5.3.0) - Single icon library for entire project
+- Access 50+ icon sets: Material Design, Ionicons, Bootstrap Icons, Font Awesome, etc.
+- Browse icons: https://react-icons.github.io/react-icons/
+
+### Icon Usage
+
+#### Sports Icons (Material Design)
+```tsx
+import { MdSportsSoccer, MdSportsBasketball, MdSportsTennis } from 'react-icons/md';
+
+<MdSportsSoccer className="h-12 w-12" />
+<MdSportsBasketball className="h-12 w-12" />
+```
+
+#### UI Icons (Ionicons 5)
+```tsx
+import { IoSearchOutline, IoMenuOutline, IoCloseOutline } from 'react-icons/io5';
+
+<IoSearchOutline className="h-6 w-6" />
+<IoMenuOutline className="h-6 w-6" />
+```
+
+#### Using Centralized Icons
+```tsx
+import { ICONS } from '@/lib/sport-icons';
+
+<ICONS.search />
+<ICONS.flame />
+<ICONS.trophy />
+```
+
+### Icon Mapping
+
+| Purpose | Icon | Import |
+|---------|------|--------|
+| Soccer | MdSportsSoccer | react-icons/md |
+| Basketball | MdSportsBasketball | react-icons/md |
+| Tennis | MdSportsTennis | react-icons/md |
+| Cricket | MdSportsCricket | react-icons/md |
+| NFL/Football | MdSportsFootball | react-icons/md |
+| Rugby | MdSportsRugby | react-icons/md |
+| Search | IoSearchOutline | react-icons/io5 |
+| Menu | IoMenuOutline | react-icons/io5 |
+| Close | IoCloseOutline | react-icons/io5 |
+| Video | IoVideocamOutline | react-icons/io5 |
+| Microphone | IoMicOutline | react-icons/io5 |
+| Play | IoPlayOutline | react-icons/io5 |
+| Flame/Trending | BsFireFlame | react-icons/bs |
+| Trophy | BsTrophy | react-icons/bs |
+
+### Icon Sizing
+- **Inline**: h-4 w-4 (16px)
+- **Navigation**: h-6 w-6 (24px)
+- **Cards**: h-8 w-8 (32px)
+- **Hero/Large**: h-12 w-12 (48px)
+
+### Icon Colors
+- Use `text-current` to inherit parent color
+- Use `className="text-black"` for specific colors
+- Event-specific colors: yellow (cards), red (red cards)
+
+---
+
 ## Next.js 16 Specific Notes
 
 1. **Image Component**: Use Next.js Image component with `fill` for responsive images
@@ -1414,3 +1480,4 @@ background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
 
 *Last Updated: December 12, 2025*
 *Based on: The Ringer (theringer.com)*
+*Icons: react-icons v5.3.0*

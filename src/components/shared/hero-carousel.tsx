@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronLeftIcon, ChevronRightIcon, PlayIcon } from '@heroicons/react/24/outline';
+import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
+import { ICONS } from '@/lib/sport-icons';
 import { iconClass, ICON_TRANSITIONS } from '@/lib/icon-styles';
 
 export interface HeroSlide {
@@ -76,7 +77,7 @@ export function HeroCarousel({
       {slide.hasPlayButton && (
         <Link href={slide.href}>
           <button className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 transition-all hover:scale-110 hover:bg-white md:h-16 md:w-16">
-            <PlayIcon className={iconClass('nav', 'ml-1 text-black md:h-8 md:w-8', ICON_TRANSITIONS.default)} fill="black" />
+            <ICONS.play className={iconClass('nav', 'ml-1 text-black md:h-8 md:w-8', ICON_TRANSITIONS.default)} />
           </button>
         </Link>
       )}
@@ -117,7 +118,7 @@ export function HeroCarousel({
             className="absolute left-4 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white text-black transition-all hover:bg-gray-100 md:left-6 md:h-10 md:w-10"
             aria-label="Previous slide"
           >
-            <ChevronLeftIcon className={iconClass('nav', 'md:h-6 md:w-6', ICON_TRANSITIONS.default)} />
+            <IoChevronBackOutline className={iconClass('nav', 'md:h-6 md:w-6', ICON_TRANSITIONS.default)} />
           </button>
 
           <button
@@ -125,7 +126,7 @@ export function HeroCarousel({
             className="absolute right-4 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white text-black transition-all hover:bg-gray-100 md:right-6 md:h-10 md:w-10"
             aria-label="Next slide"
           >
-            <ChevronRightIcon className={iconClass('nav', 'md:h-6 md:w-6', ICON_TRANSITIONS.default)} />
+            <IoChevronForwardOutline className={iconClass('nav', 'md:h-6 md:w-6', ICON_TRANSITIONS.default)} />
           </button>
         </>
       )}

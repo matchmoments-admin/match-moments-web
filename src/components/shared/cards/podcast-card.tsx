@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { PlayIcon, MicrophoneIcon, VideoCameraIcon } from '@heroicons/react/24/outline';
+import { ICONS } from '@/lib/sport-icons';
 import { iconClass, ICON_TRANSITIONS } from '@/lib/icon-styles';
 
 export interface PodcastCardProps {
@@ -45,7 +45,7 @@ export function PodcastCard({
           {/* Play Button */}
           <div className="absolute inset-0 flex items-center justify-center">
             <button className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 transition-all group-hover:scale-110 group-hover:bg-white">
-              <PlayIcon className={iconClass('nav', 'ml-1 text-black', ICON_TRANSITIONS.default)} fill="black" />
+              <ICONS.play className={iconClass('nav', 'ml-1 text-black', ICON_TRANSITIONS.default)} />
             </button>
           </div>
         </div>
@@ -60,9 +60,9 @@ export function PodcastCard({
               }`}
             >
               {isPodcast ? (
-                <MicrophoneIcon className={iconClass('inline', 'text-white', ICON_TRANSITIONS.default)} />
+                <ICONS.microphone className={iconClass('inline', 'text-white', ICON_TRANSITIONS.default)} />
               ) : (
-                <VideoCameraIcon className={iconClass('inline', 'text-white', ICON_TRANSITIONS.default)} />
+                <ICONS.video className={iconClass('inline', 'text-white', ICON_TRANSITIONS.default)} />
               )}
             </div>
             <span className="text-category">

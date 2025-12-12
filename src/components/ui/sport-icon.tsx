@@ -1,30 +1,19 @@
 /**
  * Sport Icon Component
- * Renders SIDEARM-style sport-specific SVG icons
+ * Renders sport-specific icons from react-icons
  */
 
-import type { SVGProps } from 'react';
+import type { ComponentProps } from 'react';
 import type { SportType } from '@/types/sports';
-import { getSportIconData } from '@/lib/sport-icons';
+import { getSportIconComponent } from '@/lib/sport-icons';
 
-interface SportIconProps extends SVGProps<SVGSVGElement> {
+interface SportIconProps extends Omit<ComponentProps<'svg'>, 'ref'> {
   sport: SportType;
 }
 
-export function SportIcon({ sport, ...props }: SportIconProps) {
-  const iconData = getSportIconData(sport);
-
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox={iconData.viewBox}
-      fill="currentColor"
-      {...props}
-    >
-      {iconData.paths.map((path, index) => (
-        <path key={index} d={path} />
-      ))}
-    </svg>
-  );
+export function SportIcon({ sport, className, ...props }: SportIconProps) {
+  const IconComponent = getSportIconComponent(sport);
+  
+  return <IconComponent className={className} {...props} />;
 }
 

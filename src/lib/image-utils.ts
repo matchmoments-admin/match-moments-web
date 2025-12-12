@@ -1,10 +1,10 @@
 /**
  * Image utilities for Match Moments sports website
- * Uses Unsplash Source API for random sport-themed images
- * Images from https://unsplash.com/s/photos/Sport
+ * Uses Lorem Picsum for placeholder images (reliable service)
+ * For production, replace with actual sports images from your CDN
  */
 
-export interface UnsplashImageOptions {
+export interface ImageOptions {
   width?: number;
   height?: number;
   query?: string;
@@ -12,13 +12,13 @@ export interface UnsplashImageOptions {
 }
 
 /**
- * Generate a random sport-themed image URL from Unsplash
- * Uses Unsplash Source API for truly random but relevant sports images
- * Format: https://source.unsplash.com/{WIDTH}x{HEIGHT}/?{QUERY}
+ * Generate a placeholder image URL using Lorem Picsum
+ * Format: https://picsum.photos/{WIDTH}/{HEIGHT}?random={SEED}
  */
-export function getUnsplashImage(query: string, width: number = 1200, height: number = 800): string {
-  // Use Unsplash Source API for random images with specific queries
-  return `https://source.unsplash.com/${width}x${height}/?${query}`;
+export function getPlaceholderImageUrl(width: number = 1200, height: number = 800, seed?: string): string {
+  // Use Lorem Picsum for reliable placeholder images
+  const randomSeed = seed || Math.floor(Math.random() * 1000);
+  return `https://picsum.photos/${width}/${height}?random=${randomSeed}`;
 }
 
 /**
@@ -28,91 +28,91 @@ export function getSportsImage(
   category: 'nfl' | 'nba' | 'nhl' | 'soccer' | 'baseball' | 'basketball' | 'football' | 'cricket' | 'tennis' | 'rugby' | 'general' = 'general',
   dimensions: { width: number; height: number } = { width: 1200, height: 800 }
 ): string {
-  // Map categories to specific Unsplash search queries for better results
-  const queryMap: Record<string, string> = {
-    nfl: 'american-football,nfl',
-    nba: 'basketball,nba',
-    basketball: 'basketball,sports',
-    football: 'american-football',
-    soccer: 'soccer,football',
-    baseball: 'baseball,sports',
-    tennis: 'tennis,sports',
-    cricket: 'cricket,sports',
-    rugby: 'rugby,sports',
-    nhl: 'hockey,nhl',
-    general: 'sports,athletes',
+  // Map categories to specific seed values for consistent but varied images
+  const seedMap: Record<string, string> = {
+    nfl: 'football',
+    nba: 'basketball',
+    basketball: 'basketball',
+    football: 'football',
+    soccer: 'soccer',
+    baseball: 'baseball',
+    tennis: 'tennis',
+    cricket: 'cricket',
+    rugby: 'rugby',
+    nhl: 'hockey',
+    general: 'sports',
   };
 
-  const query = queryMap[category] || 'sports';
-  return getUnsplashImage(query, dimensions.width, dimensions.height);
+  const seed = seedMap[category] || 'sports';
+  return getPlaceholderImageUrl(dimensions.width, dimensions.height, seed);
 }
 
 /**
- * Get a hero image (larger dimensions) - uses high-impact sports photos
+ * Get a hero image (larger dimensions) - uses high-impact photos
  */
 export function getHeroImage(category?: string): string {
-  const queries: Record<string, string> = {
-    nfl: 'american-football,action',
-    nba: 'basketball,action',
-    soccer: 'soccer,action',
-    basketball: 'basketball,action',
-    tennis: 'tennis,action',
-    default: 'sports,action,dramatic',
+  const seeds: Record<string, string> = {
+    nfl: 'hero-nfl',
+    nba: 'hero-nba',
+    soccer: 'hero-soccer',
+    basketball: 'hero-basketball',
+    tennis: 'hero-tennis',
+    default: 'hero-sports',
   };
   
-  const query = category ? (queries[category] || queries.default) : queries.default;
-  return getUnsplashImage(query, 1920, 1080);
+  const seed = category ? (seeds[category] || seeds.default) : seeds.default;
+  return getPlaceholderImageUrl(1920, 1080, seed);
 }
 
 /**
  * Get a card image (standard dimensions) - sport-specific
  */
 export function getCardImage(category?: string): string {
-  const queries: Record<string, string> = {
-    nfl: 'american-football',
-    nba: 'basketball',
-    soccer: 'soccer',
-    basketball: 'basketball',
-    tennis: 'tennis',
-    cricket: 'cricket',
-    default: 'sports,athletes',
+  const seeds: Record<string, string> = {
+    nfl: 'card-nfl',
+    nba: 'card-nba',
+    soccer: 'card-soccer',
+    basketball: 'card-basketball',
+    tennis: 'card-tennis',
+    cricket: 'card-cricket',
+    default: 'card-sports',
   };
   
-  const query = category ? (queries[category] || queries.default) : queries.default;
-  return getUnsplashImage(query, 800, 600);
+  const seed = category ? (seeds[category] || seeds.default) : seeds.default;
+  return getPlaceholderImageUrl(800, 600, seed);
 }
 
 /**
  * Get a thumbnail image (small dimensions) - sport-specific
  */
 export function getThumbnailImage(category?: string): string {
-  const queries: Record<string, string> = {
-    nfl: 'american-football',
-    nba: 'basketball',
-    soccer: 'soccer',
-    basketball: 'basketball',
-    tennis: 'tennis',
-    default: 'sports',
+  const seeds: Record<string, string> = {
+    nfl: 'thumb-nfl',
+    nba: 'thumb-nba',
+    soccer: 'thumb-soccer',
+    basketball: 'thumb-basketball',
+    tennis: 'thumb-tennis',
+    default: 'thumb-sports',
   };
   
-  const query = category ? (queries[category] || queries.default) : queries.default;
-  return getUnsplashImage(query, 400, 300);
+  const seed = category ? (seeds[category] || seeds.default) : seeds.default;
+  return getPlaceholderImageUrl(400, 300, seed);
 }
 
 /**
  * Get podcast/video artwork (square) - sport-specific
  */
 export function getPodcastArtwork(index: number = 0): string {
-  const queries = [
-    'sports,podcast',
-    'basketball,podcast',
-    'football,podcast',
-    'soccer,podcast',
+  const seeds = [
+    'podcast-1',
+    'podcast-2',
+    'podcast-3',
+    'podcast-4',
   ];
   
-  const safeIndex = index % queries.length;
-  const query = queries[safeIndex];
-  return getUnsplashImage(query, 600, 600);
+  const safeIndex = index % seeds.length;
+  const seed = seeds[safeIndex];
+  return getPlaceholderImageUrl(600, 600, seed);
 }
 
 /**
@@ -141,8 +141,7 @@ export function getPlaceholderImage(
   height: number,
   category: string = 'sports'
 ): string {
-  // Use a generic sports photo for placeholders
-  return getUnsplashImage('5IHz5WhosQE', width, height);
+  return getPlaceholderImageUrl(width, height, category);
 }
 
 /**
@@ -159,22 +158,13 @@ export function getImageByAspectRatio(
   };
 
   const { width, height } = dimensions[aspectRatio];
-  const photoId = '5IHz5WhosQE'; // Runner on track - versatile image
-  return getUnsplashImage(photoId, width, height);
+  return getPlaceholderImageUrl(width, height, category);
 }
 
 /**
- * Attribution helper - Always credit Unsplash photographers
- * Usage: Add this to image alt text or nearby the image
+ * Attribution helper for Lorem Picsum
  */
-export function getUnsplashAttribution(photographerName: string, photoUrl: string): string {
-  return `Photo by ${photographerName} on Unsplash`;
-}
-
-/**
- * Generate Unsplash photo page URL for attribution links
- */
-export function getUnsplashPhotoUrl(photoId: string): string {
-  return `https://unsplash.com/photos/${photoId}`;
+export function getImageAttribution(): string {
+  return 'Placeholder images provided by Lorem Picsum (https://picsum.photos)';
 }
 
