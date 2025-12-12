@@ -3,6 +3,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Clock } from 'lucide-react';
 import Image from 'next/image';
+import { iconClass, ICON_TRANSITIONS } from '@/lib/icon-styles';
 
 interface LiveScoreProps {
   fixture: {
@@ -47,7 +48,7 @@ export function LiveScore({ fixture, onClick }: LiveScoreProps) {
           </Badge>
           {fixture.currentPeriod && (
             <div className="flex items-center text-sm text-neutral-600">
-              <Clock className="h-4 w-4 mr-1" />
+              <Clock className={iconClass('inline', 'mr-1', ICON_TRANSITIONS.default)} />
               {fixture.currentPeriod}
             </div>
           )}

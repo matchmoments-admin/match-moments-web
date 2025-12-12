@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
+import { iconClass, ICON_TRANSITIONS } from '@/lib/icon-styles';
 
 export interface SectionHeaderProps {
   title: string;
@@ -33,7 +34,7 @@ export function SectionHeader({
             className="flex items-center gap-2 text-base font-normal hover:underline"
           >
             {viewAllText}
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className={iconClass('arrow', ICON_TRANSITIONS.default)} />
           </Link>
         )}
       </div>

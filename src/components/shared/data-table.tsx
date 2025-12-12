@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/table';
 import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { useState } from 'react';
+import { iconClass, ICON_TRANSITIONS } from '@/lib/icon-styles';
 
 export interface Column<T = any> {
   key: string;
@@ -79,12 +80,12 @@ export function DataTable<T extends Record<string, any>>({
                     <span className="ml-auto">
                       {sortColumn === column.key ? (
                         sortDirection === 'asc' ? (
-                          <ArrowUp className="h-4 w-4" />
+                          <ArrowUp className={iconClass('inline', ICON_TRANSITIONS.default)} />
                         ) : (
-                          <ArrowDown className="h-4 w-4" />
+                          <ArrowDown className={iconClass('inline', ICON_TRANSITIONS.default)} />
                         )
                       ) : (
-                        <ArrowUpDown className="h-4 w-4 opacity-30" />
+                        <ArrowUpDown className={iconClass('inline', 'opacity-30', ICON_TRANSITIONS.default)} />
                       )}
                     </span>
                   )}

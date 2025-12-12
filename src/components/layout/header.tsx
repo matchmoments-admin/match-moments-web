@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Menu, Search, Video, Mic } from 'lucide-react';
 import { useScroll } from '@/hooks/use-scroll';
 import { Sidebar } from './sidebar';
+import { iconClass, ICON_TRANSITIONS } from '@/lib/icon-styles';
 
 export function Header() {
   const { isScrolled } = useScroll({ threshold: 10 });
@@ -30,7 +31,7 @@ export function Header() {
             onClick={() => setIsSearchOpen(!isSearchOpen)}
             className="hidden rounded-full bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200 md:flex md:items-center md:gap-2"
           >
-            <Search className="h-4 w-4" />
+            <Search className={iconClass('inline', ICON_TRANSITIONS.default)} />
             <span className="font-normal">Discover</span>
             <span className="font-bold">anything</span>
           </button>
@@ -42,7 +43,7 @@ export function Header() {
               onClick={() => setIsSearchOpen(!isSearchOpen)}
               className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 md:hidden"
             >
-              <Search className="h-5 w-5" />
+              <Search className={iconClass('nav', ICON_TRANSITIONS.default)} />
             </button>
 
             {/* Videos Link */}
@@ -50,7 +51,7 @@ export function Header() {
               href="/videos"
               className="hidden items-center gap-2 text-base font-normal hover:underline md:flex"
             >
-              <Video className="h-5 w-5" />
+              <Video className={iconClass('media', ICON_TRANSITIONS.default)} />
               Videos
             </Link>
 
@@ -59,7 +60,7 @@ export function Header() {
               href="/podcasts"
               className="hidden items-center gap-2 text-base font-normal hover:underline md:flex"
             >
-              <Mic className="h-5 w-5" />
+              <Mic className={iconClass('media', ICON_TRANSITIONS.default)} />
               Podcasts
             </Link>
 
@@ -69,7 +70,7 @@ export function Header() {
               className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100"
               aria-label="Open menu"
             >
-              <Menu className="h-6 w-6" />
+              <Menu className={iconClass('action', ICON_TRANSITIONS.default)} />
             </button>
           </nav>
         </div>

@@ -64,11 +64,14 @@ const UNSPLASH_SPORTS_IMAGES = {
 };
 
 /**
- * Generate an Unsplash image URL with specific dimensions
- * Format: https://images.unsplash.com/photo-{PHOTO_ID}?w={WIDTH}&h={HEIGHT}&fit=crop&q=80
+ * Generate a placeholder image URL with specific dimensions
+ * Using Picsum.photos for reliable placeholder images
+ * Format: https://picsum.photos/{WIDTH}/{HEIGHT}?grayscale&blur=1
  */
 export function getUnsplashImage(photoId: string, width: number = 1200, height: number = 800): string {
-  return `https://images.unsplash.com/photo-${photoId}?w=${width}&h=${height}&fit=crop&q=80`;
+  // Use photoId as seed for consistent images per category
+  const seed = photoId.replace(/[^a-zA-Z0-9]/g, '');
+  return `https://picsum.photos/seed/${seed}/${width}/${height}`;
 }
 
 /**
