@@ -144,32 +144,35 @@ export default async function Home() {
               <h2 className="text-2xl font-medium leading-[28.8px] tracking-[-0.621127px]">Live Now</h2>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {liveGames.slice(0, 3).map((game: { Id: string; Home_Team__r?: { Name?: string; Logo_URL__c?: string }; Away_Team__r?: { Name?: string; Logo_URL__c?: string }; Home_Score_Final__c?: number; Away_Score_Final__c?: number; Status__c?: string; Current_Period__r?: { Period_Type__c?: string }; Venue__c?: string }) => (
-                <Link
-                  key={game.Id}
-                  href={`/games/${game.Id}`}
-                  className="block rounded-[32px] border border-[#E5E7EB] p-6 hover:opacity-90 transition-opacity duration-150"
-                >
-                  <LiveScore
-                    fixture={{
-                      id: game.Id,
-                      homeTeam: {
-                        name: game.Home_Team__r?.Name || 'TBD',
-                        logo: game.Home_Team__r?.Logo_URL__c || '/placeholder-team.png',
-                        score: game.Home_Score_Final__c || 0,
-                      },
-                      awayTeam: {
-                        name: game.Away_Team__r?.Name || 'TBD',
-                        logo: game.Away_Team__r?.Logo_URL__c || '/placeholder-team.png',
-                        score: game.Away_Score_Final__c || 0,
-                      },
-                      status: game.Status__c,
-                      currentPeriod: game.Current_Period__r?.Period_Type__c,
-                      venue: game.Venue__c,
-                    }}
-                  />
-                </Link>
-              ))}
+              {liveGames.slice(0, 3).map((game) => {
+                const gameId = game.Id as string;
+                return (
+                  <Link
+                    key={gameId}
+                    href={`/games/${gameId}`}
+                    className="block rounded-[32px] border border-[#E5E7EB] p-6 hover:opacity-90 transition-opacity duration-150"
+                  >
+                    <LiveScore
+                      fixture={{
+                        id: gameId,
+                        homeTeam: {
+                          name: (game.Home_Team__r as { Name?: string })?.Name || 'TBD',
+                          logo: (game.Home_Team__r as { Logo_URL__c?: string })?.Logo_URL__c || '/placeholder-team.png',
+                          score: (game.Home_Score_Final__c as number) || 0,
+                        },
+                        awayTeam: {
+                          name: (game.Away_Team__r as { Name?: string })?.Name || 'TBD',
+                          logo: (game.Away_Team__r as { Logo_URL__c?: string })?.Logo_URL__c || '/placeholder-team.png',
+                          score: (game.Away_Score_Final__c as number) || 0,
+                        },
+                        status: game.Status__c as string,
+                        currentPeriod: (game.Current_Period__r as { Period_Type__c?: string })?.Period_Type__c,
+                        venue: game.Venue__c as string,
+                      }}
+                    />
+                  </Link>
+                );
+              })}
             </div>
             <div className="mt-8 text-center">
               <Link href="/games" className="text-base font-normal text-black hover:underline transition-all duration-150">
