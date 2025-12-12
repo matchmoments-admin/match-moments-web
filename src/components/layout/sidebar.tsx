@@ -61,45 +61,161 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           <ICONS.close className={iconClass('action', ICON_TRANSITIONS.default)} />
         </button>
 
-        {/* Menu Content */}
-        <nav className="mt-16 space-y-6">
-          {/* Main Categories */}
-          <SidebarLink href="/sports" onClick={onClose}>
-            Sports
-          </SidebarLink>
-          <SidebarLink href="/pop-culture" onClick={onClose}>
-            Pop Culture
-          </SidebarLink>
-          <SidebarLink href="/topics" onClick={onClose}>
-            All Topics
-          </SidebarLink>
+        {/* Menu Content - Scrollable */}
+        <nav className="mt-16 h-[calc(100%-80px)] space-y-6 overflow-y-auto pb-8">
+          {/* Core Content & Features */}
+          <div className="space-y-2">
+            <SectionTitle>Core Content & Features</SectionTitle>
+            <SidebarLink href="/" onClick={onClose}>
+              Home
+            </SidebarLink>
+            <SidebarLink href="/games" onClick={onClose}>
+              Games
+            </SidebarLink>
+            <SidebarLink href="/news" onClick={onClose}>
+              News
+            </SidebarLink>
+            <SidebarLink href="/sports" onClick={onClose}>
+              Sports
+            </SidebarLink>
+            <SidebarLink href="/standings" onClick={onClose}>
+              Standings
+            </SidebarLink>
+            <SidebarLink href="/moments" onClick={onClose}>
+              Moments
+            </SidebarLink>
+            <SidebarLink href="/lineups" onClick={onClose}>
+              Lineups
+            </SidebarLink>
+            <SidebarLink href="/trivia" onClick={onClose}>
+              Questions/Trivia
+            </SidebarLink>
+          </div>
 
           {/* Divider */}
-          <div className="my-8 border-t border-white/20"></div>
+          <div className="my-6 border-t border-white/20"></div>
 
-          {/* Media Links with Icons */}
-          <SidebarMediaLink
-            href="/podcasts"
-            icon={<ICONS.microphone className={iconClass('nav', 'text-white', ICON_TRANSITIONS.default)} />}
-            iconBg="bg-gray-700"
-            onClick={onClose}
-          >
-            Podcasts
-          </SidebarMediaLink>
+          {/* Creator & AI Tools */}
+          <div className="space-y-2">
+            <SectionTitle>Creator & AI Tools</SectionTitle>
+            <SidebarLink href="/creator-tools" onClick={onClose}>
+              Creator Tools
+            </SidebarLink>
+            <SidebarSubLink href="/creator-tools/trivia-generator" onClick={onClose}>
+              Trivia Generator
+            </SidebarSubLink>
+            <SidebarSubLink href="/creator-tools/lineup-predictor" onClick={onClose}>
+              Lineup Predictor
+            </SidebarSubLink>
+            <SidebarSubLink href="/creator-tools/talking-points" onClick={onClose}>
+              Talking Points
+            </SidebarSubLink>
+            <SidebarSubLink href="/creator-tools/social-content" onClick={onClose}>
+              Social Media Content
+            </SidebarSubLink>
+            <SidebarSubLink href="/creator-tools/match-preview" onClick={onClose}>
+              Match Preview/Recap
+            </SidebarSubLink>
+          </div>
 
-          <SidebarMediaLink
-            href="/videos"
-            icon={<ICONS.video className={iconClass('nav', 'text-white', ICON_TRANSITIONS.default)} />}
-            iconBg="bg-gray-600"
-            onClick={onClose}
-          >
-            Videos
-          </SidebarMediaLink>
+          {/* Divider */}
+          <div className="my-6 border-t border-white/20"></div>
 
-          {/* Additional Links */}
-          <div className="mt-12 space-y-4 border-t border-white/20 pt-8">
+          {/* Analysis & Insights */}
+          <div className="space-y-2">
+            <SectionTitle>Analysis & Insights</SectionTitle>
+            <SidebarLink href="/analysis" onClick={onClose}>
+              Stats & Analysis
+            </SidebarLink>
+            <SidebarLink href="/player-stats" onClick={onClose}>
+              Player Stats
+            </SidebarLink>
+            <SidebarLink href="/team-comparison" onClick={onClose}>
+              Team Comparison
+            </SidebarLink>
+            <SidebarLink href="/betting-insights" onClick={onClose}>
+              Betting Insights
+            </SidebarLink>
+          </div>
+
+          {/* Divider */}
+          <div className="my-6 border-t border-white/20"></div>
+
+          {/* Community & Content */}
+          <div className="space-y-2">
+            <SectionTitle>Community & Content</SectionTitle>
+            <SidebarMediaLink
+              href="/podcasts"
+              icon={<ICONS.microphone className={iconClass('nav', 'text-white', ICON_TRANSITIONS.default)} />}
+              iconBg="bg-gray-700"
+              onClick={onClose}
+            >
+              Podcasts
+            </SidebarMediaLink>
+
+            <SidebarMediaLink
+              href="/videos"
+              icon={<ICONS.video className={iconClass('nav', 'text-white', ICON_TRANSITIONS.default)} />}
+              iconBg="bg-gray-600"
+              onClick={onClose}
+            >
+              Videos
+            </SidebarMediaLink>
+          </div>
+
+          {/* Divider */}
+          <div className="my-6 border-t border-white/20"></div>
+
+          {/* Women's Sports */}
+          <div className="space-y-2">
+            <SectionTitle>Women's Sports (60% Focus)</SectionTitle>
+            <SidebarLink href="/womens" onClick={onClose}>
+              Women's Sports Hub
+            </SidebarLink>
+            <SidebarSubLink href="/womens/leagues" onClick={onClose}>
+              All Women's Leagues
+            </SidebarSubLink>
+            <SidebarSubLink href="/womens/featured" onClick={onClose}>
+              Featured Content
+            </SidebarSubLink>
+            <SidebarSubLink href="/womens/stories" onClick={onClose}>
+              Stories & Profiles
+            </SidebarSubLink>
+          </div>
+
+          {/* Divider */}
+          <div className="my-6 border-t border-white/20"></div>
+
+          {/* Account & Premium */}
+          <div className="space-y-2">
+            <SectionTitle>Account & Premium</SectionTitle>
+            <SidebarLink href="/account" onClick={onClose}>
+              My Account
+            </SidebarLink>
+            <SidebarLink href="/upgrade" onClick={onClose}>
+              Upgrade to Premium
+            </SidebarLink>
+            <SidebarLink href="/creator-portal" onClick={onClose}>
+              Creator Portal
+            </SidebarLink>
+            <SidebarLink href="/team-portal" onClick={onClose}>
+              Team Portal
+            </SidebarLink>
+          </div>
+
+          {/* Divider */}
+          <div className="my-6 border-t border-white/20"></div>
+
+          {/* Additional Features */}
+          <div className="space-y-2">
+            <SidebarSmallLink href="/api" onClick={onClose}>
+              API Access
+            </SidebarSmallLink>
             <SidebarSmallLink href="/about" onClick={onClose}>
-              About
+              About/Help
+            </SidebarSmallLink>
+            <SidebarSmallLink href="/feedback" onClick={onClose}>
+              Feedback
             </SidebarSmallLink>
             <SidebarSmallLink href="/contact" onClick={onClose}>
               Contact
@@ -168,6 +284,36 @@ function SidebarSmallLink({ href, onClick, children }: SidebarSmallLinkProps) {
       href={href}
       onClick={onClick}
       className="block text-base font-normal text-white/80 hover:text-white hover:underline"
+    >
+      {children}
+    </Link>
+  );
+}
+
+interface SectionTitleProps {
+  children: React.ReactNode;
+}
+
+function SectionTitle({ children }: SectionTitleProps) {
+  return (
+    <div className="mb-3 px-1 text-xs font-bold uppercase tracking-wider text-white/50">
+      {children}
+    </div>
+  );
+}
+
+interface SidebarSubLinkProps {
+  href: string;
+  onClick: () => void;
+  children: React.ReactNode;
+}
+
+function SidebarSubLink({ href, onClick, children }: SidebarSubLinkProps) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className="block pl-4 text-lg font-normal text-white/90 hover:text-white hover:underline"
     >
       {children}
     </Link>

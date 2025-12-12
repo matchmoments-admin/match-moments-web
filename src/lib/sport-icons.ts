@@ -32,12 +32,40 @@ import {
   IoSearchOutline,
   IoMenuOutline,
   IoMicOutline,
+  IoFemaleOutline,
+  IoMaleOutline,
+  IoCalendarOutline,
+  IoListOutline,
+  IoStatsChartOutline,
+  IoHomeOutline,
+  IoTrophyOutline,
+  IoLayersOutline,
+  IoPersonOutline,
+  IoSettingsOutline,
+  IoHelpCircleOutline,
+  IoChatbubbleOutline,
+  IoInformationCircleOutline,
 } from 'react-icons/io5'; // Ionicons outline
 
 import {
   BsFire,
   BsTrophy,
   BsArrowRight,
+  BsNewspaper,
+  BsGraphUp,
+  BsPeople,
+  BsLightbulb,
+  BsQuestionCircle,
+  BsStars,
+  BsCpu,
+  BsBarChart,
+  BsCurrencyDollar,
+  BsPerson,
+  BsTools,
+  BsShield,
+  BsCode,
+  BsEnvelope,
+  BsTelephone,
 } from 'react-icons/bs'; // Bootstrap icons
 
 import type { SportType } from '@/types/sports';
@@ -131,6 +159,41 @@ export const ICONS = {
   search: IoSearchOutline,
   menu: IoMenuOutline,
   microphone: IoMicOutline,
+  
+  // Gender icons
+  female: IoFemaleOutline,
+  male: IoMaleOutline,
+  
+  // Navigation icons
+  home: IoHomeOutline,
+  calendar: IoCalendarOutline,
+  list: IoListOutline,
+  stats: IoStatsChartOutline,
+  trophyOutline: IoTrophyOutline,
+  layers: IoLayersOutline,
+  person: IoPersonOutline,
+  settings: IoSettingsOutline,
+  help: IoHelpCircleOutline,
+  chat: IoChatbubbleOutline,
+  info: IoInformationCircleOutline,
+  
+  // Content icons
+  newspaper: BsNewspaper,
+  graphUp: BsGraphUp,
+  people: BsPeople,
+  lightbulb: BsLightbulb,
+  questionCircle: BsQuestionCircle,
+  stars: BsStars,
+  cpu: BsCpu,
+  barChart: BsBarChart,
+  dollar: BsCurrencyDollar,
+  personBadge: BsPerson,
+  trophyIcon: BsTrophy,
+  tools: BsTools,
+  shieldCheck: BsShield,
+  code: BsCode,
+  envelope: BsEnvelope,
+  telephone: BsTelephone,
 } as const;
 
 /**

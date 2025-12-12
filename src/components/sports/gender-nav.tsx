@@ -41,19 +41,14 @@ interface GenderNavCardsProps {
 export function GenderNavCards({ className = '' }: GenderNavCardsProps) {
   return (
     <section className={`grid md:grid-cols-2 gap-8 ${className}`}>
-      {/* Women's Sports - Primary (60% focus) */}
+      {/* Women's Sports - Primary */}
       <Link href="/womens" className="group">
         <div className="relative overflow-hidden rounded-3xl bg-black p-12 text-white transition-transform hover:scale-[1.02]">
           <div className="relative z-10">
             <span className="inline-block rounded bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide">
-              60% of our coverage
+              Click for all
             </span>
-            <h2 className="mt-4 text-5xl font-bold flex items-center gap-4">
-              <svg className="h-12 w-12" fill="currentColor" viewBox="0 0 24 24" strokeWidth={0}>
-                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-                <path d="M12 2a10 10 0 0 0 0 20M12 2a10 10 0 0 1 0 20M2 12h20" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-                <circle cx="12" cy="12" r="3" fill="currentColor"/>
-              </svg>
+            <h2 className="mt-4 text-5xl font-bold text-white">
               Women's Sports
             </h2>
             <p className="mt-4 text-lg opacity-90">
@@ -86,14 +81,9 @@ export function GenderNavCards({ className = '' }: GenderNavCardsProps) {
         <div className="relative overflow-hidden rounded-3xl bg-gray-100 p-12 text-black transition-transform hover:scale-[1.02]">
           <div className="relative z-10">
             <span className="inline-block rounded bg-black/10 px-3 py-1 text-xs font-bold uppercase tracking-wide">
-              Comprehensive coverage
+              Click for all
             </span>
-            <h2 className="mt-4 text-5xl font-bold flex items-center gap-4">
-              <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M12 2a10 10 0 0 0 0 20M12 2a10 10 0 0 1 0 20M2 12h20"/>
-                <circle cx="12" cy="12" r="2" fill="currentColor"/>
-              </svg>
+            <h2 className="mt-4 text-5xl font-bold text-black">
               Men's Sports
             </h2>
             <p className="mt-4 text-lg opacity-75">
