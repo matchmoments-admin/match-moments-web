@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
-import { Clock } from 'lucide-react';
+import { ClockIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { iconClass, ICON_TRANSITIONS } from '@/lib/icon-styles';
 
@@ -48,7 +48,7 @@ export function LiveScore({ fixture, onClick }: LiveScoreProps) {
           </Badge>
           {fixture.currentPeriod && (
             <div className="flex items-center text-sm text-neutral-600">
-              <Clock className={iconClass('inline', 'mr-1', ICON_TRANSITIONS.default)} />
+              <ClockIcon className={iconClass('inline', 'mr-1', ICON_TRANSITIONS.default)} />
               {fixture.currentPeriod}
             </div>
           )}

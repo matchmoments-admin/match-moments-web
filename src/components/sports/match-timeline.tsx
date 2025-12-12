@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { CommentaryEvent } from '@/types/sports';
-import { getEventIconComponent, getEventIconClasses } from '@/lib/sport-icons';
-import { Flame } from 'lucide-react';
+import { getEventIconComponent, getEventIconClasses, ICONS } from '@/lib/sport-icons';
 
 interface MatchTimelineProps {
   events: CommentaryEvent[];
@@ -78,7 +77,7 @@ export function MatchTimeline({
                 <span className={`flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${
                   isCurrent ? 'bg-white/20' : 'bg-red-100 text-red-800'
                 }`}>
-                  <Flame className="h-3 w-3" strokeWidth={2} />
+                  <ICONS.flame className="h-3 w-3" strokeWidth={2} />
                   Trending
                 </span>
               )}

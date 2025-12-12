@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { TrendingMoment } from '@/types/sports';
-import { Flame, Eye, Share2 } from 'lucide-react';
+import { ICONS } from '@/lib/sport-icons';
 
 interface MomentCardProps {
   moment: TrendingMoment;
@@ -38,7 +38,7 @@ export function MomentCard({ moment }: MomentCardProps) {
           {/* Viral score badge */}
           {moment.viralScore && moment.viralScore >= 70 && (
             <div className="absolute top-3 right-3 flex items-center gap-1 rounded-full bg-black/75 px-3 py-1 text-xs font-bold text-white backdrop-blur">
-              <Flame className="h-3 w-3" strokeWidth={2} />
+              <ICONS.flame className="h-3 w-3" strokeWidth={2} />
               {moment.viralScore}
             </div>
           )}
@@ -81,13 +81,13 @@ export function MomentCard({ moment }: MomentCardProps) {
             <div className="mt-3 flex gap-4 border-t border-gray-100 pt-3 text-xs text-gray-500">
               {moment.totalViews && (
                 <div className="flex items-center gap-1">
-                  <Eye className="h-4 w-4" strokeWidth={1.5} />
+                  <ICONS.eye className="h-4 w-4" strokeWidth={1.5} />
                   {(moment.totalViews / 1000000).toFixed(1)}M
                 </div>
               )}
               {moment.totalShares && (
                 <div className="flex items-center gap-1">
-                  <Share2 className="h-4 w-4" strokeWidth={1.5} />
+                  <ICONS.share className="h-4 w-4" strokeWidth={1.5} />
                   {(moment.totalShares / 1000).toFixed(0)}K
                 </div>
               )}

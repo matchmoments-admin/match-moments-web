@@ -1,75 +1,103 @@
 /**
  * Sport icons and metadata utilities
  * Provides consistent chrome/monochrome icons across the site for all sports
- * Uses Lucide React for styleable SVG icons
+ * Uses Heroicons for clean, professional black/white aesthetic
  */
 
-import type { LucideIcon } from 'lucide-react';
+import type { ForwardRefExoticComponent, SVGProps } from 'react';
 import {
-  Circle,
-  Trophy,
-  Zap,
-  Target,
-  RefreshCw,
-  Shield,
-  Play,
-  Pause,
-  Flag,
-  Timer,
-  Video,
-  X,
-  Clock,
-} from 'lucide-react';
+  TrophyIcon,
+  BoltIcon,
+  ArrowPathIcon,
+  ShieldCheckIcon,
+  PlayIcon,
+  PauseIcon,
+  FlagIcon,
+  ClockIcon,
+  VideoCameraIcon,
+  XMarkIcon,
+  ArrowsPointingOutIcon,
+  EyeIcon,
+  ShareIcon,
+  FireIcon,
+} from '@heroicons/react/24/outline';
 
 import type { SportType } from '@/types/sports';
+
+// Type for Heroicons components
+export type HeroIcon = ForwardRefExoticComponent<SVGProps<SVGSVGElement>>;
 
 /**
  * Get icon component for a sport
  */
-export function getSportIconComponent(sport: SportType): LucideIcon {
-  const icons: Record<SportType, LucideIcon> = {
-    soccer: Circle, // Soccer ball shape
-    cricket: Trophy, // Generic sport icon
-    basketball: Circle, // Ball shape
-    tennis: Circle, // Ball shape
-    nfl: Trophy, // American football
-    rugby: Trophy, // Rugby ball
-    padel: Circle, // Ball shape
-    pickleball: Circle, // Ball shape
-    skiing: Zap, // Speed/movement
+export function getSportIconComponent(sport: SportType): HeroIcon {
+  const icons: Record<SportType, HeroIcon> = {
+    soccer: ArrowsPointingOutIcon, // Ball/sport shape
+    cricket: TrophyIcon, // Generic sport icon
+    basketball: ArrowsPointingOutIcon, // Ball shape
+    tennis: ArrowsPointingOutIcon, // Ball shape
+    nfl: TrophyIcon, // American football
+    rugby: TrophyIcon, // Rugby
+    padel: ArrowsPointingOutIcon, // Ball shape
+    pickleball: ArrowsPointingOutIcon, // Ball shape
+    skiing: BoltIcon, // Speed/movement
   };
 
-  return icons[sport] || Trophy;
+  return icons[sport] || TrophyIcon;
 }
 
 /**
  * Get event icon component for commentary events
  */
-export function getEventIconComponent(eventType: string): LucideIcon {
-  const icons: Record<string, LucideIcon> = {
-    'Goal': Target,
-    'Try': Target,
-    'Touchdown': Target,
-    'Basket': Target,
-    'Ace': Zap,
-    'Wicket': Target,
-    'Card': Shield,
-    'Yellow Card': Shield,
-    'Red Card': Shield,
-    'Substitution': RefreshCw,
-    'Save': Shield,
-    'Penalty': Target,
-    'VAR': Video,
-    'Injury': X,
-    'Kick-off': Play,
-    'Half-time': Pause,
-    'Full-time': Flag,
-    'Timeout': Timer,
-    'Challenge': Flag,
+export function getEventIconComponent(eventType: string): HeroIcon {
+  const icons: Record<string, HeroIcon> = {
+    'Goal': ArrowsPointingOutIcon,
+    'Try': ArrowsPointingOutIcon,
+    'Touchdown': ArrowsPointingOutIcon,
+    'Basket': ArrowsPointingOutIcon,
+    'Ace': BoltIcon,
+    'Wicket': ArrowsPointingOutIcon,
+    'Card': ShieldCheckIcon,
+    'Yellow Card': ShieldCheckIcon,
+    'Red Card': ShieldCheckIcon,
+    'Substitution': ArrowPathIcon,
+    'Save': ShieldCheckIcon,
+    'Penalty': ArrowsPointingOutIcon,
+    'VAR': VideoCameraIcon,
+    'Injury': XMarkIcon,
+    'Kick-off': PlayIcon,
+    'Half-time': PauseIcon,
+    'Full-time': FlagIcon,
+    'Timeout': ClockIcon,
+    'Challenge': FlagIcon,
   };
 
-  return icons[eventType] || Clock;
+  return icons[eventType] || ClockIcon;
 }
+
+/**
+ * Centralized icon exports for common UI elements
+ * Use these throughout the app for consistency
+ */
+export const ICONS = {
+  // Sport/Event icons
+  trophy: TrophyIcon,
+  bolt: BoltIcon,
+  shield: ShieldCheckIcon,
+  play: PlayIcon,
+  pause: PauseIcon,
+  flag: FlagIcon,
+  clock: ClockIcon,
+  video: VideoCameraIcon,
+  
+  // UI icons
+  flame: FireIcon,
+  eye: EyeIcon,
+  share: ShareIcon,
+  refresh: ArrowPathIcon,
+  close: XMarkIcon,
+  expand: ArrowsPointingOutIcon,
+} as const;
 
 /**
  * Get sport display name

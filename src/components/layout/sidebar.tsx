@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { X, ChevronRight, Mic, Video } from 'lucide-react';
+import { XMarkIcon, ChevronRightIcon, MicrophoneIcon, VideoCameraIcon } from '@heroicons/react/24/outline';
 import { iconClass, ICON_TRANSITIONS } from '@/lib/icon-styles';
 
 interface SidebarProps {
@@ -58,7 +58,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           className="absolute right-6 top-6 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
           aria-label="Close menu"
         >
-          <X className={iconClass('action', ICON_TRANSITIONS.default)} />
+          <XMarkIcon className={iconClass('action', ICON_TRANSITIONS.default)} />
         </button>
 
         {/* Menu Content */}
@@ -80,7 +80,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           {/* Media Links with Icons */}
           <SidebarMediaLink
             href="/podcasts"
-            icon={<Mic className={iconClass('nav', 'text-white', ICON_TRANSITIONS.default)} />}
+            icon={<MicrophoneIcon className={iconClass('nav', 'text-white', ICON_TRANSITIONS.default)} />}
             iconBg="bg-gray-700"
             onClick={onClose}
           >
@@ -89,7 +89,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
           <SidebarMediaLink
             href="/videos"
-            icon={<Video className={iconClass('nav', 'text-white', ICON_TRANSITIONS.default)} />}
+            icon={<VideoCameraIcon className={iconClass('nav', 'text-white', ICON_TRANSITIONS.default)} />}
             iconBg="bg-gray-600"
             onClick={onClose}
           >
@@ -128,7 +128,7 @@ function SidebarLink({ href, onClick, children }: SidebarLinkProps) {
       className="flex items-center justify-between text-3xl font-bold text-white hover:opacity-80"
     >
       <span>{children}</span>
-      <ChevronRight className={iconClass('arrow', ICON_TRANSITIONS.default)} />
+      <ChevronRightIcon className={iconClass('arrow', ICON_TRANSITIONS.default)} />
     </Link>
   );
 }
