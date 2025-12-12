@@ -1,0 +1,47 @@
+import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
+
+export interface SectionHeaderProps {
+  title: string;
+  viewAllHref?: string;
+  viewAllText?: string;
+  description?: string;
+  size?: 'large' | 'medium' | 'small';
+}
+
+export function SectionHeader({
+  title,
+  viewAllHref,
+  viewAllText = 'View All',
+  description,
+  size = 'large',
+}: SectionHeaderProps) {
+  const sizeClasses = {
+    large: 'text-3xl',
+    medium: 'text-2xl',
+    small: 'text-xl',
+  };
+
+  return (
+    <div className={`${viewAllHref ? 'mb-8' : 'mb-6'}`}>
+      <div className="flex items-center justify-between">
+        <h2 className={`font-bold ${sizeClasses[size]}`}>{title}</h2>
+
+        {viewAllHref && (
+          <Link
+            href={viewAllHref}
+            className="flex items-center gap-2 text-base font-normal hover:underline"
+          >
+            {viewAllText}
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+        )}
+      </div>
+
+      {description && (
+        <p className="mt-2 text-base text-[#696969]">{description}</p>
+      )}
+    </div>
+  );
+}
+

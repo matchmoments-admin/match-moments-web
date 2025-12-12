@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { X, Headphones, Play, ChevronRight } from 'lucide-react';
+import { X, ChevronRight, Mic, Video } from 'lucide-react';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -10,103 +10,166 @@ interface SidebarProps {
 }
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
+  // Lock body scroll when sidebar is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
+
     return () => {
       document.body.style.overflow = '';
     };
   }, [isOpen]);
 
+  // Handle escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
         onClose();
       }
     };
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-    }
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Overlay */}
       <div
-        className="fixed inset-0 bg-black/40 z-40 transition-opacity duration-200 ease-in-out"
+        className="fixed inset-0 z-[100] bg-black/50 transition-opacity duration-300"
         onClick={onClose}
-        aria-hidden="true"
       />
-      
-      {/* Sidebar */}
-      <aside
-        className="fixed top-0 right-0 h-full w-full max-w-[400px] bg-white z-50 shadow-2xl transform transition-transform duration-200 ease-in-out rounded-l-[16px] overflow-y-auto"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Navigation menu"
+
+      {/* Sidebar Panel */}
+      <div
+        className={`fixed right-0 top-0 z-[100] h-full w-[85%] max-w-[400px] rounded-l-2xl bg-black p-6 transition-transform duration-300 ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
       >
-        <div className="flex flex-col h-full">
-          {/* Header with Close Button */}
-          <div className="flex items-center justify-between p-6 border-b border-[#E5E7EB]">
-            <h2 className="text-2xl font-bold text-black">Menu</h2>
-            <button
-              onClick={onClose}
-              className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white hover:bg-blue-600 transition-colors duration-150"
-              aria-label="Close navigation menu"
-            >
-              <X className="h-5 w-5" />
-            </button>
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute right-6 top-6 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
+          aria-label="Close menu"
+        >
+          <X className="h-6 w-6" />
+        </button>
+
+        {/* Menu Content */}
+        <nav className="mt-16 space-y-6">
+          {/* Main Categories */}
+          <SidebarLink href="/sports" onClick={onClose}>
+            Sports
+          </SidebarLink>
+          <SidebarLink href="/pop-culture" onClick={onClose}>
+            Pop Culture
+          </SidebarLink>
+          <SidebarLink href="/topics" onClick={onClose}>
+            All Topics
+          </SidebarLink>
+
+          {/* Divider */}
+          <div className="my-8 border-t border-white/20"></div>
+
+          {/* Media Links with Icons */}
+          <SidebarMediaLink
+            href="/podcasts"
+            icon={<Mic className="h-6 w-6 text-white" />}
+            iconBg="bg-gray-700"
+            onClick={onClose}
+          >
+            Podcasts
+          </SidebarMediaLink>
+
+          <SidebarMediaLink
+            href="/videos"
+            icon={<Video className="h-6 w-6 text-white" />}
+            iconBg="bg-gray-600"
+            onClick={onClose}
+          >
+            Videos
+          </SidebarMediaLink>
+
+          {/* Additional Links */}
+          <div className="mt-12 space-y-4 border-t border-white/20 pt-8">
+            <SidebarSmallLink href="/about" onClick={onClose}>
+              About
+            </SidebarSmallLink>
+            <SidebarSmallLink href="/contact" onClick={onClose}>
+              Contact
+            </SidebarSmallLink>
+            <SidebarSmallLink href="/newsletter" onClick={onClose}>
+              Newsletter
+            </SidebarSmallLink>
           </div>
-
-          {/* Navigation Content */}
-          <nav className="flex-1 p-6" aria-label="Main navigation">
-            {/* Main Categories */}
-            <div className="space-y-4 mb-8">
-              <button className="w-full flex items-center justify-between text-left text-base font-bold text-black hover:opacity-70 transition-opacity duration-150 py-2">
-                <span>Sports</span>
-                <ChevronRight className="h-5 w-5" />
-              </button>
-              <button className="w-full flex items-center justify-between text-left text-base font-bold text-black hover:opacity-70 transition-opacity duration-150 py-2">
-                <span>Pop Culture</span>
-                <ChevronRight className="h-5 w-5" />
-              </button>
-              <button className="w-full flex items-center justify-between text-left text-base font-bold text-black hover:opacity-70 transition-opacity duration-150 py-2">
-                <span>All Topics</span>
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
-
-            {/* Content Types */}
-            <div className="space-y-4 border-t border-[#E5E7EB] pt-6">
-              <Link
-                href="/podcasts"
-                className="flex items-center gap-3 text-base font-normal text-black hover:underline transition-all duration-150 py-2"
-                onClick={onClose}
-              >
-                <Headphones className="h-5 w-5 text-orange-500" />
-                <span>Podcasts</span>
-              </Link>
-              <Link
-                href="/videos"
-                className="flex items-center gap-3 text-base font-normal text-black hover:underline transition-all duration-150 py-2"
-                onClick={onClose}
-              >
-                <Play className="h-5 w-5 text-blue-500" />
-                <span>Videos</span>
-              </Link>
-            </div>
-          </nav>
-        </div>
-      </aside>
+        </nav>
+      </div>
     </>
+  );
+}
+
+interface SidebarLinkProps {
+  href: string;
+  onClick: () => void;
+  children: React.ReactNode;
+}
+
+function SidebarLink({ href, onClick, children }: SidebarLinkProps) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className="flex items-center justify-between text-3xl font-bold text-white hover:opacity-80"
+    >
+      <span>{children}</span>
+      <ChevronRight className="h-6 w-6" />
+    </Link>
+  );
+}
+
+interface SidebarMediaLinkProps {
+  href: string;
+  onClick: () => void;
+  icon: React.ReactNode;
+  iconBg: string;
+  children: React.ReactNode;
+}
+
+function SidebarMediaLink({ href, onClick, icon, iconBg, children }: SidebarMediaLinkProps) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className="flex items-center gap-4 text-xl font-medium text-white hover:opacity-80"
+    >
+      <div className={`flex h-12 w-12 items-center justify-center rounded-full ${iconBg}`}>
+        {icon}
+      </div>
+      <span>{children}</span>
+    </Link>
+  );
+}
+
+interface SidebarSmallLinkProps {
+  href: string;
+  onClick: () => void;
+  children: React.ReactNode;
+}
+
+function SidebarSmallLink({ href, onClick, children }: SidebarSmallLinkProps) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className="block text-base font-normal text-white/80 hover:text-white hover:underline"
+    >
+      {children}
+    </Link>
   );
 }
 

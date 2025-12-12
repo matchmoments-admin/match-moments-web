@@ -1,204 +1,177 @@
-import Link from 'next/link';
-import { ArticleCard } from '@/components/shared/article-card';
-import { LiveScore } from '@/components/games/live-score';
-import { getLiveFixtures, getTodayFixtures } from '@/lib/salesforce/queries/fixtures';
-import { getCached } from '@/lib/cache/redis';
-import { CacheKeys, CacheStrategy } from '@/lib/cache/strategies';
+import { HeroCarousel } from '@/components/shared/hero-carousel';
+import { FeaturedCard } from '@/components/shared/cards/featured-card';
+import { StandardCard } from '@/components/shared/cards/standard-card';
+import { PodcastCard } from '@/components/shared/cards/podcast-card';
+import { SectionHeader } from '@/components/shared/sections/section-header';
+import { NoteworthyList } from '@/components/shared/sections/noteworthy-list';
+import {
+  mockHeroSlides,
+  mockFeaturedArticles,
+  mockNFLArticles,
+  mockNBAArticles,
+  mockPodcasts,
+  mockNoteworthyReads,
+  mockBestOf2025,
+} from '@/lib/mock-data';
 
-async function fetchLiveGames() {
-  try {
-    return await getCached(CacheKeys.FIXTURES_LIVE, () => getLiveFixtures(), CacheStrategy.fixturesLive);
-  } catch {
-    return [];
-  }
-}
-
-async function fetchTodayGames() {
-  try {
-    return await getCached(CacheKeys.FIXTURES_TODAY, () => getTodayFixtures(), CacheStrategy.fixturesToday);
-  } catch {
-    return [];
-  }
-}
-
-export default async function Home() {
-  const [liveGames, todayGames] = await Promise.all([fetchLiveGames(), fetchTodayGames()]);
-
-  // Mock articles for layout
-  const featuredArticles = [
-    {
-      title: 'Live Scores, AI-Powered Trivia & Women\'s Sports Coverage',
-      description: 'Your ultimate destination for live sports scores, match statistics, trivia, and comprehensive sports coverage.',
-      category: 'Sports',
-      categoryHref: '/games',
-      imageUrl: '/placeholder.jpg',
-      imageAlt: 'Sports coverage',
-      href: '/games',
-    },
-  ];
-
-  const articles = [
-    {
-      title: 'Real-Time Match Updates Across All Major Leagues',
-      description: 'Stay up to date with live scores, game statistics, and breaking news from your favorite teams.',
-      category: 'Live Scores',
-      categoryHref: '/games',
-      imageUrl: '/placeholder.jpg',
-      imageAlt: 'Live scores',
-      href: '/games',
-    },
-    {
-      title: 'Comprehensive Statistics and Player Performance Data',
-      description: 'Dive deep into player stats, team standings, and historical performance metrics.',
-      category: 'Statistics',
-      categoryHref: '/sports/soccer/standings',
-      imageUrl: '/placeholder.jpg',
-      imageAlt: 'Statistics',
-      href: '/sports/soccer/standings',
-    },
-  ];
-
+export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white">
-      <main className="max-w-[1920px] mx-auto px-8 pb-24">
-        {/* Featured Hero Section */}
-        <section className="mb-12 pb-8">
-          <div className="grid md:grid-cols-2 gap-8">
-            {featuredArticles.map((article, index) => (
-              <ArticleCard
-                key={index}
-                {...article}
-                variant="featured"
-                author="Match Moments Staff"
-                readTime="5"
-                date="Dec. 12"
-              />
-            ))}
-            {articles.slice(0, 1).map((article, index) => (
-              <ArticleCard
-                key={`standard-${index}`}
-                {...article}
-                variant="standard"
-                author="Match Moments Staff"
-                readTime="3"
-                date="Dec. 12"
-              />
-            ))}
-          </div>
-        </section>
+    <main className="bg-white">
+      {/* Hero Carousel */}
+      <HeroCarousel slides={mockHeroSlides} autoPlay autoPlayInterval={6000} />
 
+      {/* Main Container */}
+      <div className="mx-auto max-w-[1920px] px-4 py-12 md:px-8">
         {/* The Latest Section */}
-        <section className="mb-12 pb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-medium leading-[28.8px] tracking-[-0.621127px]">The Latest</h2>
-            <Link href="/games" className="text-base font-normal text-black hover:underline transition-all duration-150">
-              View All
-            </Link>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {articles.map((article, index) => (
-              <ArticleCard
-                key={index}
-                {...article}
-                variant="standard"
-                author="Match Moments Staff"
-                readTime="5"
-                date="Dec. 12"
-              />
-            ))}
-            {articles.map((article, index) => (
-              <ArticleCard
-                key={`repeat-${index}`}
-                {...article}
-                variant="standard"
-                author="Match Moments Staff"
-                readTime="4"
-                date="Dec. 11"
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* Large Featured Article */}
-        <section className="mb-12 pb-8">
-          <ArticleCard
-            title="Top 10 Sports Moments of 2025"
-            description="Explore Match Moments' 10 most captivating sports moments of 2025, from championship victories to record-breaking performances."
-            category="Highlights"
-            categoryHref="/moments"
-            imageUrl="/placeholder.jpg"
-            imageAlt="Top sports moments"
-            href="/moments"
-            variant="featured"
-            author="Match Moments Staff"
-            readTime="10"
-            date="Dec. 10"
+        <section className="mb-16">
+          <SectionHeader
+            title="The Latest"
+            viewAllHref="/latest"
+            viewAllText="View All"
           />
-        </section>
 
-        {/* Live Games Section */}
-        {liveGames.length > 0 && (
-          <section className="mb-12 pb-8">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="h-3 w-3 bg-red-500 rounded-full animate-pulse-live" />
-              <h2 className="text-2xl font-medium leading-[28.8px] tracking-[-0.621127px]">Live Now</h2>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {liveGames.slice(0, 3).map((game) => {
-                const gameId = game.Id as string;
-                return (
-                  <Link
-                    key={gameId}
-                    href={`/games/${gameId}`}
-                    className="block rounded-[32px] border border-[#E5E7EB] p-6 hover:opacity-90 transition-opacity duration-150"
-                  >
-                    <LiveScore
-                      fixture={{
-                        id: gameId,
-                        homeTeam: {
-                          name: (game.Home_Team__r as { Name?: string })?.Name || 'TBD',
-                          logo: (game.Home_Team__r as { Logo_URL__c?: string })?.Logo_URL__c || '/placeholder-team.png',
-                          score: (game.Home_Score_Final__c as number) || 0,
-                        },
-                        awayTeam: {
-                          name: (game.Away_Team__r as { Name?: string })?.Name || 'TBD',
-                          logo: (game.Away_Team__r as { Logo_URL__c?: string })?.Logo_URL__c || '/placeholder-team.png',
-                          score: (game.Away_Score_Final__c as number) || 0,
-                        },
-                        status: game.Status__c as string,
-                        currentPeriod: (game.Current_Period__r as { Period_Type__c?: string })?.Period_Type__c,
-                        venue: game.Venue__c as string,
-                      }}
-                    />
-                  </Link>
-                );
-              })}
-            </div>
-            <div className="mt-8 text-center">
-              <Link href="/games" className="text-base font-normal text-black hover:underline transition-all duration-150">
-                More Recent Games
-              </Link>
-            </div>
-          </section>
-        )}
-
-        {/* Popular Section */}
-        <section className="mb-12 pb-8">
-          <h3 className="text-[28px] font-bold leading-[33.6px] tracking-[-0.516056px] mb-6">Popular</h3>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {articles.map((article, index) => (
-              <ArticleCard
-                key={`popular-${index}`}
-                {...article}
-                variant="standard"
-                author="Match Moments Staff"
-                readTime="5"
-                date="Dec. 12"
-              />
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {mockFeaturedArticles.map((article) => (
+              <FeaturedCard key={article.id} {...article} />
             ))}
           </div>
         </section>
-      </main>
-    </div>
+
+        {/* Featured Article + Noteworthy Reads */}
+        <section className="mb-16">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            {/* Main Featured Article */}
+            <div className="lg:col-span-2">
+              <FeaturedCard {...mockNFLArticles[0]} />
+            </div>
+
+            {/* Noteworthy Reads Sidebar */}
+            <div>
+              <NoteworthyList items={mockNoteworthyReads.slice(0, 8)} />
+            </div>
+          </div>
+        </section>
+
+        {/* Best of 2025 Section */}
+        <section className="mb-16">
+          <SectionHeader
+            title="The Best of 2025"
+            viewAllHref="/year-in-review"
+            description="Our favorite sports moments from the year"
+          />
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {mockBestOf2025.map((article) => (
+              <StandardCard key={article.id} {...article} />
+            ))}
+          </div>
+        </section>
+
+        {/* NFL Week 15 Section */}
+        <section className="mb-16 rounded-3xl bg-gray-50 p-8">
+          <SectionHeader
+            title="NFL Week 15 Is Here"
+            viewAllHref="/topic/nfl"
+            viewAllText="More NFL"
+          />
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {mockNFLArticles.map((article) => (
+              <StandardCard key={article.id} {...article} />
+            ))}
+          </div>
+        </section>
+
+        {/* NBA Section */}
+        <section className="mb-16">
+          <SectionHeader
+            title="What's Going On With Giannis?"
+            viewAllHref="/topic/nba"
+            viewAllText="More NBA"
+          />
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {mockNBAArticles.map((article) => (
+              <StandardCard key={article.id} {...article} />
+            ))}
+          </div>
+        </section>
+
+        {/* Podcasts Section */}
+        <section className="mb-16 rounded-3xl bg-black p-8 text-white">
+          <div className="mb-8 flex items-center justify-between">
+            <h2 className="text-3xl font-bold text-white">The Freshest NFL Podcasts</h2>
+            <a
+              href="/podcasts"
+              className="text-base font-normal text-white hover:underline"
+            >
+              All Podcasts →
+            </a>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {mockPodcasts.map((podcast) => (
+              <PodcastCard key={podcast.id} {...podcast} />
+            ))}
+          </div>
+        </section>
+
+        {/* Special Project Callout */}
+        <section className="mb-16">
+          <div className="relative overflow-hidden rounded-3xl bg-black p-12 text-white">
+            <div className="relative z-10">
+              <span className="inline-block rounded bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide">
+                Special Project
+              </span>
+              <h2 className="mt-4 text-4xl font-bold">
+                The Best Moments in Sports History
+              </h2>
+              <p className="mt-4 text-lg opacity-90">
+                Explore our complete archive of sports coverage, analysis, and memorable moments
+                from across all major leagues and events.
+              </p>
+              <a
+                href="/archive"
+                className="mt-6 inline-block rounded-full bg-white px-6 py-3 text-base font-medium text-black transition-opacity hover:opacity-90"
+              >
+                Explore Now
+              </a>
+            </div>
+            {/* Decorative background pattern */}
+            <div className="absolute right-0 top-0 h-full w-1/2 opacity-10">
+              <div className="h-full w-full bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px]"></div>
+            </div>
+          </div>
+        </section>
+
+        {/* Newsletter Signup */}
+        <section className="mb-16">
+          <div className="rounded-3xl bg-gray-50 p-8 md:p-12">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="text-3xl font-bold">Match Moments Newsletter</h2>
+              <p className="mt-4 text-lg text-gray-600">
+                Get the latest sports news and analysis delivered to your inbox
+              </p>
+              <form className="mt-8 flex flex-col gap-4 sm:flex-row">
+                <input
+                  type="email"
+                  placeholder="Your email"
+                  className="flex-1 rounded-full border border-gray-300 px-6 py-3 focus:border-black focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="rounded-full bg-black px-8 py-3 font-medium text-white hover:bg-black/90"
+                >
+                  Subscribe
+                </button>
+              </form>
+              <p className="mt-4 text-sm text-gray-500">
+                We respect your privacy. Unsubscribe at any time.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
   );
 }

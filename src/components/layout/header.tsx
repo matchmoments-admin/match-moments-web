@@ -1,0 +1,139 @@
+'use client';
+
+import Link from 'next/link';
+import { useState } from 'react';
+import { Menu, Search, Video, Mic } from 'lucide-react';
+import { useScroll } from '@/hooks/use-scroll';
+import { Sidebar } from './sidebar';
+
+export function Header() {
+  const { isScrolled } = useScroll({ threshold: 10 });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  return (
+    <>
+      <header
+        className={`sticky top-0 z-50 w-full bg-white transition-shadow duration-200 ${
+          isScrolled ? 'shadow-md' : ''
+        }`}
+      >
+        <div className="mx-auto flex h-16 max-w-[1920px] items-center justify-between px-8">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2">
+            <div className="h-8 w-8 flex-shrink-0 rounded-full bg-black"></div>
+            <span className="hidden text-lg font-bold sm:inline">MATCH MOMENTS</span>
+          </Link>
+
+          {/* Center - Search/Discover Button */}
+          <button
+            onClick={() => setIsSearchOpen(!isSearchOpen)}
+            className="hidden rounded-full bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200 md:flex md:items-center md:gap-2"
+          >
+            <Search className="h-4 w-4" />
+            <span className="font-normal">Discover</span>
+            <span className="font-bold">anything</span>
+          </button>
+
+          {/* Right Navigation */}
+          <nav className="flex items-center gap-4 md:gap-6">
+            {/* Mobile Search Icon */}
+            <button
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 md:hidden"
+            >
+              <Search className="h-5 w-5" />
+            </button>
+
+            {/* Videos Link */}
+            <Link
+              href="/videos"
+              className="hidden items-center gap-2 text-base font-normal hover:underline md:flex"
+            >
+              <Video className="h-5 w-5" />
+              Videos
+            </Link>
+
+            {/* Podcasts Link */}
+            <Link
+              href="/podcasts"
+              className="hidden items-center gap-2 text-base font-normal hover:underline md:flex"
+            >
+              <Mic className="h-5 w-5" />
+              Podcasts
+            </Link>
+
+            {/* Hamburger Menu */}
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100"
+              aria-label="Open menu"
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+          </nav>
+        </div>
+
+        {/* Horizontal Navigation Pills (Second Row) */}
+        <div className="border-t border-gray-200 px-8">
+          <div className="no-scrollbar mx-auto flex max-w-[1920px] gap-2 overflow-x-auto py-3">
+            <NavPill href="/latest" active>
+              The Latest
+            </NavPill>
+            <NavPill href="/topic/nba">NBA</NavPill>
+            <NavPill href="/topic/nfl">NFL</NavPill>
+            <NavPill href="/topic/nhl">NHL</NavPill>
+            <NavPill href="/topic/soccer">Soccer</NavPill>
+            <NavPill href="/topic/mlb">MLB</NavPill>
+            <NavPill href="/fantasy">Fantasy</NavPill>
+            <NavPill href="/year-in-review">Year in Review</NavPill>
+            <NavPill href="/videos">Videos</NavPill>
+            <NavPill href="/podcasts">Podcasts</NavPill>
+          </div>
+        </div>
+      </header>
+
+      {/* Sidebar */}
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
+      {/* Search Overlay (placeholder) */}
+      {isSearchOpen && (
+        <div
+          className="fixed inset-0 z-[60] bg-black/50"
+          onClick={() => setIsSearchOpen(false)}
+        >
+          <div className="mx-auto mt-20 max-w-2xl rounded-lg bg-white p-6">
+            <input
+              type="text"
+              placeholder="Search articles..."
+              className="w-full rounded-lg border border-gray-300 px-4 py-3 text-lg focus:border-black focus:outline-none"
+              autoFocus
+            />
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+interface NavPillProps {
+  href: string;
+  active?: boolean;
+  children: React.ReactNode;
+}
+
+function NavPill({ href, active, children }: NavPillProps) {
+  return (
+    <Link
+      href={href}
+      className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-normal transition-colors ${
+        active
+          ? 'bg-black text-white'
+          : 'border border-gray-200 bg-white text-black hover:bg-gray-100'
+      }`}
+    >
+      {children}
+    </Link>
+  );
+}
+
