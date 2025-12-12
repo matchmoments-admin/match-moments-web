@@ -39,15 +39,15 @@ export function FeaturedCard({
         {/* Content */}
         <div className="p-6">
           {/* Category */}
-          <span className="text-sm font-bold text-[#6B7280]">{category}</span>
+          <span className="text-category">{category}</span>
 
           {/* Title */}
-          <h3 className="mt-2 text-[28px] font-bold leading-[33.6px] tracking-[-0.516056px] group-hover:underline">
+          <h3 className="card-title-featured mt-2 group-hover:underline">
             {title}
           </h3>
 
           {/* Metadata */}
-          <div className="mt-2 text-base font-normal text-[#6B7280]">
+          <div className="text-metadata mt-2">
             <span>By {author}</span>
             {date && (
               <>

@@ -16,12 +16,12 @@ import {
 
 export default function HomePage() {
   return (
-    <main className="bg-white">
+    <main className="bg-background">
       {/* Hero Carousel */}
       <HeroCarousel slides={mockHeroSlides} autoPlay autoPlayInterval={6000} />
 
       {/* Main Container */}
-      <div className="mx-auto max-w-[1920px] px-4 py-12 md:px-8">
+      <div className="container-main py-12">
         {/* The Latest Section */}
         <section className="mb-16">
           <SectionHeader
@@ -68,7 +68,7 @@ export default function HomePage() {
         </section>
 
         {/* NFL Week 15 Section */}
-        <section className="mb-16 rounded-3xl bg-gray-50 p-8">
+        <section className="mb-16 rounded-3xl bg-secondary p-8">
           <SectionHeader
             title="NFL Week 15 Is Here"
             viewAllHref="/topic/nfl"
@@ -98,12 +98,12 @@ export default function HomePage() {
         </section>
 
         {/* Podcasts Section */}
-        <section className="mb-16 rounded-3xl bg-black p-8 text-white">
+        <section className="mb-16 rounded-3xl bg-primary p-8 text-primary-foreground">
           <div className="mb-8 flex items-center justify-between">
-            <h2 className="text-3xl font-bold text-white">The Freshest NFL Podcasts</h2>
+            <h2 className="section-heading-large text-primary-foreground">The Freshest NFL Podcasts</h2>
             <a
               href="/podcasts"
-              className="text-base font-normal text-white hover:underline"
+              className="link-standard text-primary-foreground"
             >
               All Podcasts →
             </a>
@@ -118,21 +118,21 @@ export default function HomePage() {
 
         {/* Special Project Callout */}
         <section className="mb-16">
-          <div className="relative overflow-hidden rounded-3xl bg-black p-12 text-white">
+          <div className="relative overflow-hidden rounded-3xl bg-primary p-12 text-primary-foreground">
             <div className="relative z-10">
-              <span className="inline-block rounded bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide">
+              <span className="inline-block rounded bg-primary-foreground/20 px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary-foreground">
                 Special Project
               </span>
-              <h2 className="mt-4 text-4xl font-bold">
+              <h2 className="mt-4 text-4xl font-bold text-primary-foreground">
                 The Best Moments in Sports History
               </h2>
-              <p className="mt-4 text-lg opacity-90">
+              <p className="mt-4 text-lg opacity-90 text-primary-foreground">
                 Explore our complete archive of sports coverage, analysis, and memorable moments
                 from across all major leagues and events.
               </p>
               <a
                 href="/archive"
-                className="mt-6 inline-block rounded-full bg-white px-6 py-3 text-base font-medium text-black transition-opacity hover:opacity-90"
+                className="mt-6 inline-block rounded-full bg-primary-foreground px-6 py-3 text-base font-medium text-primary transition-opacity hover:opacity-90"
               >
                 Explore Now
               </a>
@@ -146,26 +146,26 @@ export default function HomePage() {
 
         {/* Newsletter Signup */}
         <section className="mb-16">
-          <div className="rounded-3xl bg-gray-50 p-8 md:p-12">
+          <div className="rounded-3xl bg-secondary p-8 md:p-12">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold">Match Moments Newsletter</h2>
-              <p className="mt-4 text-lg text-gray-600">
+              <h2 className="section-heading-large">Match Moments Newsletter</h2>
+              <p className="text-metadata mt-4 text-lg">
                 Get the latest sports news and analysis delivered to your inbox
               </p>
               <form className="mt-8 flex flex-col gap-4 sm:flex-row">
                 <input
                   type="email"
                   placeholder="Your email"
-                  className="flex-1 rounded-full border border-gray-300 px-6 py-3 focus:border-black focus:outline-none"
+                  className="flex-1 rounded-full border border-border px-6 py-3 focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
                 />
                 <button
                   type="submit"
-                  className="rounded-full bg-black px-8 py-3 font-medium text-white hover:bg-black/90"
+                  className="btn-primary"
                 >
                   Subscribe
                 </button>
               </form>
-              <p className="mt-4 text-sm text-gray-500">
+              <p className="text-metadata mt-4 text-sm">
                 We respect your privacy. Unsubscribe at any time.
               </p>
             </div>

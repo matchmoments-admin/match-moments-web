@@ -64,7 +64,7 @@ export function PodcastCard({
                 <VideoIcon className="h-4 w-4 text-white" />
               )}
             </div>
-            <span className="text-sm font-bold text-[#6B7280]">
+            <span className="text-category">
               {isPodcast ? 'Podcasts' : 'Videos'}
             </span>
           </div>
@@ -75,10 +75,10 @@ export function PodcastCard({
           </h3>
 
           {/* Show Name */}
-          <div className="mt-2 text-base text-[#696969]">{showName}</div>
+          <div className="text-metadata mt-2">{showName}</div>
 
           {/* Date & Duration */}
-          <div className="mt-1 text-sm text-[#696969]">
+          <div className="mt-1 text-sm text-muted-foreground">
             <span>{date}</span>
             <span> • </span>
             <span>{duration}</span>

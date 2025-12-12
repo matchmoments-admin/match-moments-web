@@ -2,13 +2,13 @@ import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="w-full bg-white border-t border-[#E5E7EB]">
-      <div className="max-w-[1920px] mx-auto px-8 py-12">
+    <footer className="w-full bg-background border-t border-border">
+      <div className="container-main py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {/* Newsletter */}
           <div>
             <h3 className="text-xl font-bold mb-4">The Match Moments Newsletter</h3>
-            <p className="text-base font-normal text-[#696969] mb-4">
+            <p className="text-metadata mb-4">
               Just the hits, straight to your inbox every week
             </p>
             {/* Newsletter form would go here */}
@@ -16,9 +16,9 @@ export function Footer() {
               <input
                 type="email"
                 placeholder="Your email"
-                className="flex-1 px-4 py-2 border border-[#E5E7EB] rounded text-base font-normal focus:outline-none focus:ring-2 focus:ring-black"
+                className="flex-1 px-4 py-2 border border-border rounded text-base font-normal focus:outline-none focus:ring-2 focus:ring-ring"
               />
-              <button className="px-6 py-2 bg-black text-white text-base font-normal hover:opacity-90 transition-opacity">
+              <button className="btn-primary">
                 Submit
               </button>
             </div>
@@ -29,17 +29,17 @@ export function Footer() {
             <h3 className="text-xl font-bold mb-4">Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/contact" className="text-base font-normal text-black hover:underline transition-all duration-150">
+                <Link href="/contact" className="link-standard">
                   Contact
                 </Link>
               </li>
               <li>
-                <Link href="/masthead" className="text-base font-normal text-black hover:underline transition-all duration-150">
+                <Link href="/masthead" className="link-standard">
                   Masthead
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-base font-normal text-black hover:underline transition-all duration-150">
+                <Link href="/about" className="link-standard">
                   About Us
                 </Link>
               </li>
@@ -54,7 +54,7 @@ export function Footer() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-base font-normal text-black hover:underline transition-all duration-150"
+                className="link-standard"
               >
                 Instagram
               </a>
@@ -62,7 +62,7 @@ export function Footer() {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-base font-normal text-black hover:underline transition-all duration-150"
+                className="link-standard"
               >
                 X
               </a>
@@ -71,7 +71,7 @@ export function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="mt-12 pt-8 border-t border-[#E5E7EB] text-center text-sm text-[#696969]">
+        <div className="mt-12 pt-8 border-t border-border text-center text-sm text-muted-foreground">
           © 2025 Match Moments
         </div>
       </div>

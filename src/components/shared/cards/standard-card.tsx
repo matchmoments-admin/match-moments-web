@@ -39,15 +39,15 @@ export function StandardCard({
         {/* Content */}
         <div className="p-6">
           {/* Category */}
-          <span className="text-sm font-bold text-[#6B7280]">{category}</span>
+          <span className="text-category">{category}</span>
 
           {/* Title */}
-          <h2 className="mt-2 text-2xl font-medium leading-[28.8px] tracking-[-0.621127px] group-hover:underline">
+          <h2 className="card-title-standard mt-2 group-hover:underline">
             {title}
           </h2>
 
           {/* Metadata */}
-          <div className="mt-2 text-base font-normal text-[#6B7280]">
+          <div className="text-metadata mt-2">
             <span>By {author}</span>
             {date && (
               <>

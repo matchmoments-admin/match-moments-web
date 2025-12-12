@@ -39,7 +39,7 @@ export function SectionHeader({
       </div>
 
       {description && (
-        <p className="mt-2 text-base text-[#696969]">{description}</p>
+        <p className="text-metadata mt-2">{description}</p>
       )}
     </div>
   );

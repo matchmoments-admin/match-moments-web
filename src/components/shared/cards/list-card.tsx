@@ -50,7 +50,7 @@ export function ListCard({
         <div className="flex flex-1 flex-col justify-center">
           {/* Category */}
           {category && (
-            <span className="text-sm font-bold text-[#6B7280]">{category}</span>
+            <span className="text-category">{category}</span>
           )}
 
           {/* Title */}
@@ -60,7 +60,7 @@ export function ListCard({
 
           {/* Metadata */}
           {(author || date) && (
-            <div className="mt-1 text-sm text-[#6B7280]">
+            <div className="mt-1 text-sm text-muted-foreground">
               {author && <span>By {author}</span>}
               {author && date && <span> • </span>}
               {date && <span>{date}</span>}

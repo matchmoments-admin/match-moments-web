@@ -48,31 +48,31 @@ export function ArticleCard({
         <div className="p-6">
           <Link
             href={categoryHref}
-            className="text-sm font-bold text-[#696969] hover:underline transition-all duration-150"
+            className="text-category hover:underline transition-all duration-150"
             onClick={(e) => e.stopPropagation()}
           >
             {category}
           </Link>
           {isFeatured ? (
-            <h3 className="text-[28px] font-bold leading-[33.6px] tracking-[-0.516056px] mt-2 group-hover:underline transition-all duration-150">
+            <h3 className="card-title-featured mt-2 group-hover:underline transition-all duration-150">
               {title}
             </h3>
           ) : (
-            <h2 className={`font-medium text-black mt-2 group-hover:underline transition-all duration-150 ${
-              isSmall ? 'text-base leading-6' : 'text-2xl leading-[28.8px] tracking-[-0.621127px]'
+            <h2 className={`font-medium text-foreground mt-2 group-hover:underline transition-all duration-150 ${
+              isSmall ? 'text-base leading-6' : 'card-title-standard'
             }`}>
               {title}
             </h2>
           )}
           {(author || readTime || date) && (
-            <div className="text-base font-normal text-[#696969] mt-2">
+            <div className="text-metadata mt-2">
               {author && <span>By {author}</span>}
               {date && <span> • {date}</span>}
               {readTime && <span> • {readTime} min read</span>}
             </div>
           )}
           {description && !isSmall && (
-            <p className="text-base font-normal text-[#696969] mt-2">
+            <p className="text-metadata mt-2">
               {description}
             </p>
           )}
