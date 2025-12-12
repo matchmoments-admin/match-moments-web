@@ -124,7 +124,7 @@ export default async function Home() {
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {liveGames.slice(0, 3).map((game: any) => (
-                <div key={game.Id} className="border border-black/10 p-4">
+                <Link key={game.Id} href={`/games/${game.Id}`} className="block border border-black/10 p-4 hover:opacity-90 transition-opacity">
                   <LiveScore
                     fixture={{
                       id: game.Id,
@@ -142,9 +142,8 @@ export default async function Home() {
                       currentPeriod: game.Current_Period__r?.Period_Type__c,
                       venue: game.Venue__c,
                     }}
-                    onClick={() => (window.location.href = `/games/${game.Id}`)}
                   />
-                </div>
+                </Link>
               ))}
             </div>
             <div className="mt-6 text-center">
