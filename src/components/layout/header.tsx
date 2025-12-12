@@ -74,19 +74,22 @@ export function Header() {
           </nav>
         </div>
 
-        {/* Horizontal Navigation Pills (Second Row) */}
+        {/* Horizontal Navigation Pills (Second Row) - Gender-First */}
         <div className="border-t border-gray-200 px-8">
           <div className="no-scrollbar mx-auto flex max-w-[1920px] gap-2 overflow-x-auto py-3">
-            <NavPill href="/latest" active>
-              The Latest
+            <NavPill href="/womens" active>
+              Women's Sports
             </NavPill>
-            <NavPill href="/topic/nba">NBA</NavPill>
-            <NavPill href="/topic/nfl">NFL</NavPill>
-            <NavPill href="/topic/nhl">NHL</NavPill>
-            <NavPill href="/topic/soccer">Soccer</NavPill>
-            <NavPill href="/topic/mlb">MLB</NavPill>
-            <NavPill href="/fantasy">Fantasy</NavPill>
-            <NavPill href="/year-in-review">Year in Review</NavPill>
+            <NavPill href="/mens">
+              Men's Sports
+            </NavPill>
+            <NavPill href="/sports/soccer">Soccer</NavPill>
+            <NavPill href="/sports/basketball">Basketball</NavPill>
+            <NavPill href="/sports/cricket">Cricket</NavPill>
+            <NavPill href="/sports/tennis">Tennis</NavPill>
+            <NavPill href="/sports/nfl">NFL</NavPill>
+            <NavPill href="/sports/rugby">Rugby</NavPill>
+            <NavPill href="/games">Fixtures</NavPill>
             <NavPill href="/videos">Videos</NavPill>
             <NavPill href="/podcasts">Podcasts</NavPill>
           </div>

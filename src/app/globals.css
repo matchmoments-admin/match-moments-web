@@ -69,6 +69,132 @@
   --text-size-modifier: 1;
 }
 
+/* ===================================================================
+   GENDER-SPECIFIC UI ELEMENTS
+   =================================================================== */
+
+/* Women's Sports Badge */
+.badge-womens {
+  background-color: #F3E8FF; /* Purple 100 */
+  color: #6B21A8; /* Purple 800 */
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* Men's Sports Badge */
+.badge-mens {
+  background-color: #DBEAFE; /* Blue 100 */
+  color: #1E40AF; /* Blue 800 */
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* Women's Section Highlight */
+.section-womens {
+  background: linear-gradient(135deg, #9333EA 0%, #7C3AED 100%);
+  color: white;
+}
+
+.section-womens:hover {
+  background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+}
+
+/* Men's Section Styling */
+.section-mens {
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+  color: white;
+}
+
+.section-mens:hover {
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+}
+
+/* Gender-Specific Hover States */
+.card-womens {
+  border-color: #E9D5FF; /* Purple 200 */
+  transition: all 0.2s ease;
+}
+
+.card-womens:hover {
+  border-color: #9333EA; /* Purple 600 */
+  box-shadow: 0 4px 6px -1px rgba(147, 51, 234, 0.1),
+              0 2px 4px -1px rgba(147, 51, 234, 0.06);
+}
+
+.card-mens {
+  border-color: #BFDBFE; /* Blue 200 */
+  transition: all 0.2s ease;
+}
+
+.card-mens:hover {
+  border-color: #3B82F6; /* Blue 600 */
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1),
+              0 2px 4px -1px rgba(59, 130, 246, 0.06);
+}
+
+/* Gender Filter Pills */
+.filter-womens {
+  background-color: #9333EA;
+  color: white;
+}
+
+.filter-womens:hover {
+  background-color: #7C3AED;
+}
+
+.filter-mens {
+  background-color: #3B82F6;
+  color: white;
+}
+
+.filter-mens:hover {
+  background-color: #2563EB;
+}
+
+/* Gender-Specific Borders */
+.border-womens {
+  border-color: #9333EA;
+}
+
+.border-mens {
+  border-color: #3B82F6;
+}
+
+/* Gender-Specific Text Colors */
+.text-womens {
+  color: #7C3AED;
+}
+
+.text-mens {
+  color: #2563EB;
+}
+
+/* Gender-Specific Backgrounds */
+.bg-womens-light {
+  background-color: #F3E8FF;
+}
+
+.bg-mens-light {
+  background-color: #DBEAFE;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .badge-womens,
+  .badge-mens {
+    font-size: 0.625rem;
+    padding: 0.125rem 0.5rem;
+  }
+}
+
 .dark {
   /* Dark mode - keeping for compatibility */
   --background: #000000;

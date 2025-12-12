@@ -1,123 +1,107 @@
-import { HeroCarousel } from '@/components/shared/hero-carousel';
-import { FeaturedCard } from '@/components/shared/cards/featured-card';
-import { StandardCard } from '@/components/shared/cards/standard-card';
-import { PodcastCard } from '@/components/shared/cards/podcast-card';
+import { GenderNavCards } from '@/components/sports/gender-nav';
+import { SportGrid } from '@/components/sports/sport-grid';
+import { TrendingTabs } from '@/components/sports/trending-tabs';
+import { FixtureCard } from '@/components/sports/fixture-card';
 import { SectionHeader } from '@/components/shared/sections/section-header';
-import { NoteworthyList } from '@/components/shared/sections/noteworthy-list';
 import {
-  mockHeroSlides,
-  mockFeaturedArticles,
-  mockNFLArticles,
-  mockNBAArticles,
-  mockPodcasts,
-  mockNoteworthyReads,
-  mockBestOf2025,
+  mockTrendingWomensMoments,
+  mockTrendingMensMoments,
+  mockAllTrendingMoments,
+  mockWomensFixtures,
+  mockMensFixtures,
+  mockWomensCompetitions,
 } from '@/lib/mock-data';
+import { CompetitionCard } from '@/components/sports/competition-card';
 
 export default function HomePage() {
+  // Combine fixtures for "today" section
+  const allFixtures = [...mockWomensFixtures, ...mockMensFixtures].sort(
+    (a, b) => new Date(b.matchDate).getTime() - new Date(a.matchDate).getTime()
+  );
+
   return (
     <main className="bg-background">
-      {/* Hero Carousel */}
-      <HeroCarousel slides={mockHeroSlides} autoPlay autoPlayInterval={6000} />
+      {/* Hero Section - Gender-First Navigation */}
+      <section className="bg-white py-16">
+        <div className="container-main">
+          <div className="text-center mb-12">
+            <h1 className="text-5xl font-bold mb-4">Match Moments</h1>
+            <p className="text-xl text-gray-600">
+              Your 24/7 sports companion focusing on women's sports
+            </p>
+          </div>
 
-      {/* Main Container */}
-      <div className="container-main py-12">
-        {/* The Latest Section */}
-        <section className="mb-16">
+          {/* Gender Navigation Cards */}
+          <GenderNavCards />
+        </div>
+      </section>
+
+      {/* Sports Grid Section */}
+      <section className="py-16 bg-secondary">
+        <div className="container-main">
           <SectionHeader
-            title="The Latest"
-            viewAllHref="/latest"
+            title="Browse by Sport"
+            description="Explore content from the world's most popular sports"
+          />
+          <SportGrid showGenderLinks />
+        </div>
+      </section>
+
+      {/* Trending Moments Section */}
+      <section className="py-16 bg-white">
+        <div className="container-main">
+          <SectionHeader
+            title="Trending Moments"
+            description="The most viral sports moments right now"
+          />
+          <TrendingTabs
+            womensMoments={mockTrendingWomensMoments}
+            mensMoments={mockTrendingMensMoments}
+            allMoments={mockAllTrendingMoments}
+            defaultTab="womens"
+          />
+        </div>
+      </section>
+
+      {/* Live & Upcoming Fixtures */}
+      <section className="py-16 bg-secondary">
+        <div className="container-main">
+          <SectionHeader
+            title="Today's Fixtures"
+            viewAllHref="/womens"
             viewAllText="View All"
           />
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {mockFeaturedArticles.map((article) => (
-              <FeaturedCard key={article.id} {...article} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {allFixtures.slice(0, 6).map((fixture) => (
+              <FixtureCard key={fixture.id} fixture={fixture} />
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Featured Article + Noteworthy Reads */}
-        <section className="mb-16">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-            {/* Main Featured Article */}
-            <div className="lg:col-span-2">
-              <FeaturedCard {...mockNFLArticles[0]} />
-            </div>
-
-            {/* Noteworthy Reads Sidebar */}
-            <div>
-              <NoteworthyList items={mockNoteworthyReads.slice(0, 8)} />
-            </div>
-          </div>
-        </section>
-
-        {/* Best of 2025 Section */}
-        <section className="mb-16">
+      {/* Featured Women's Competitions */}
+      <section className="py-16 bg-white">
+        <div className="container-main">
           <SectionHeader
-            title="The Best of 2025"
-            viewAllHref="/year-in-review"
-            description="Our favorite sports moments from the year"
+            title="Featured Women's Competitions"
+            viewAllHref="/womens"
+            viewAllText="View All"
           />
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {mockBestOf2025.map((article) => (
-              <StandardCard key={article.id} {...article} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {mockWomensCompetitions.slice(0, 3).map((competition) => (
+              <CompetitionCard
+                key={competition.id}
+                competition={competition}
+                variant="featured"
+              />
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* NFL Week 15 Section */}
-        <section className="mb-16 rounded-3xl bg-secondary p-8">
-          <SectionHeader
-            title="NFL Week 15 Is Here"
-            viewAllHref="/topic/nfl"
-            viewAllText="More NFL"
-          />
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {mockNFLArticles.map((article) => (
-              <StandardCard key={article.id} {...article} />
-            ))}
-          </div>
-        </section>
-
-        {/* NBA Section */}
-        <section className="mb-16">
-          <SectionHeader
-            title="What's Going On With Giannis?"
-            viewAllHref="/topic/nba"
-            viewAllText="More NBA"
-          />
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {mockNBAArticles.map((article) => (
-              <StandardCard key={article.id} {...article} />
-            ))}
-          </div>
-        </section>
-
-        {/* Podcasts Section */}
-        <section className="mb-16 rounded-3xl bg-primary p-8 text-primary-foreground">
-          <div className="mb-8 flex items-center justify-between">
-            <h2 className="section-heading-large text-primary-foreground">The Freshest NFL Podcasts</h2>
-            <a
-              href="/podcasts"
-              className="link-standard text-primary-foreground"
-            >
-              All Podcasts →
-            </a>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {mockPodcasts.map((podcast) => (
-              <PodcastCard key={podcast.id} {...podcast} />
-            ))}
-          </div>
-        </section>
-
-        {/* Special Project Callout */}
-        <section className="mb-16">
+      {/* Special Project Callout */}
+      <section className="py-16 bg-secondary">
+        <div className="container-main">
           <div className="relative overflow-hidden rounded-3xl bg-primary p-12 text-primary-foreground">
             <div className="relative z-10">
               <span className="inline-block rounded bg-primary-foreground/20 px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary-foreground">
@@ -131,7 +115,7 @@ export default function HomePage() {
                 from across all major leagues and events.
               </p>
               <a
-                href="/archive"
+                href="/womens"
                 className="mt-6 inline-block rounded-full bg-primary-foreground px-6 py-3 text-base font-medium text-primary transition-opacity hover:opacity-90"
               >
                 Explore Now
@@ -142,10 +126,12 @@ export default function HomePage() {
               <div className="h-full w-full bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px]"></div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Newsletter Signup */}
-        <section className="mb-16">
+      {/* Newsletter Signup */}
+      <section className="py-16 bg-white">
+        <div className="container-main">
           <div className="rounded-3xl bg-secondary p-8 md:p-12">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="section-heading-large">Match Moments Newsletter</h2>
@@ -170,8 +156,8 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </main>
   );
 }

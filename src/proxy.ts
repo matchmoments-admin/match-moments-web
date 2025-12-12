@@ -8,6 +8,22 @@ export async function proxy(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const path = req.nextUrl.pathname;
 
+  // Legacy URL redirects - handle before auth checks
+  // Redirect old /games/[id] to new structure
+  if (path.startsWith('/games/') && path.split('/').length === 3) {
+    const id = path.split('/')[2];
+    // Default to women's soccer for demo - in production, fetch from DB
+    const newUrl = new URL(`/womens/soccer/fixtures/${id}`, req.url);
+    return NextResponse.redirect(newUrl, 301);
+  }
+
+  // Redirect old /moments/[id] to new structure
+  if (path.startsWith('/moments/') && path.split('/').length === 3) {
+    // In production, query database to get fixture context
+    const newUrl = new URL('/womens', req.url);
+    return NextResponse.redirect(newUrl, 301);
+  }
+
   // Public routes - allow access
   if (!path.startsWith('/dashboard')) {
     return NextResponse.next();
@@ -41,6 +57,11 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/api/dashboard/:path*'],
+  matcher: [
+    '/dashboard/:path*',
+    '/api/dashboard/:path*',
+    '/games/:path*',
+    '/moments/:path*',
+  ],
 };
 

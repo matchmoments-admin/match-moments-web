@@ -72,12 +72,14 @@ export function getUnsplashImage(photoId: string, width: number = 1200, height: 
 }
 
 /**
- * Get a random image from a category
+ * Get a consistent image from a category (using index based on category to avoid randomness)
+ * This prevents images from changing on every render
  */
-function getRandomImageFromCategory(category: keyof typeof UNSPLASH_SPORTS_IMAGES): string {
+function getImageFromCategory(category: keyof typeof UNSPLASH_SPORTS_IMAGES, index: number = 0): string {
   const images = UNSPLASH_SPORTS_IMAGES[category];
-  const randomIndex = Math.floor(Math.random() * images.length);
-  return images[randomIndex];
+  // Use modulo to ensure index is always valid
+  const safeIndex = index % images.length;
+  return images[safeIndex];
 }
 
 /**
@@ -98,7 +100,8 @@ export function getSportsImage(
   };
 
   const imageCategory = categoryMap[category] || 'athletics';
-  const photoId = getRandomImageFromCategory(imageCategory);
+  // Use first image from category for consistency
+  const photoId = getImageFromCategory(imageCategory, 0);
   
   return getUnsplashImage(photoId, dimensions.width, dimensions.height);
 }
@@ -115,8 +118,10 @@ export function getHeroImage(category?: string): string {
     '7EbGqGP_c8w', // Stadium shot
   ];
   
-  const randomId = heroPhotoIds[Math.floor(Math.random() * heroPhotoIds.length)];
-  return getUnsplashImage(randomId, 1920, 1080);
+  // Use category-based index for consistency, default to first
+  const categoryIndex = category ? category.charCodeAt(0) % heroPhotoIds.length : 0;
+  const photoId = heroPhotoIds[categoryIndex];
+  return getUnsplashImage(photoId, 1920, 1080);
 }
 
 /**
@@ -132,8 +137,10 @@ export function getCardImage(category?: string): string {
     'WNk-f-TnZDw', // Soccer
   ];
   
-  const randomId = cardPhotoIds[Math.floor(Math.random() * cardPhotoIds.length)];
-  return getUnsplashImage(randomId, 800, 600);
+  // Use category-based index for consistency
+  const categoryIndex = category ? category.charCodeAt(0) % cardPhotoIds.length : 0;
+  const photoId = cardPhotoIds[categoryIndex];
+  return getUnsplashImage(photoId, 800, 600);
 }
 
 /**
@@ -146,14 +153,16 @@ export function getThumbnailImage(category?: string): string {
     'CQfNt66ttZM', // Gym
   ];
   
-  const randomId = thumbnailPhotoIds[Math.floor(Math.random() * thumbnailPhotoIds.length)];
-  return getUnsplashImage(randomId, 400, 300);
+  // Use category-based index for consistency
+  const categoryIndex = category ? category.charCodeAt(0) % thumbnailPhotoIds.length : 0;
+  const photoId = thumbnailPhotoIds[categoryIndex];
+  return getUnsplashImage(photoId, 400, 300);
 }
 
 /**
  * Get podcast/video artwork (square)
  */
-export function getPodcastArtwork(): string {
+export function getPodcastArtwork(index: number = 0): string {
   // Use fitness/sports imagery for podcast covers
   const podcastPhotoIds = [
     'FP7cfYPPUKM', // Yoga group - community vibe
@@ -161,8 +170,10 @@ export function getPodcastArtwork(): string {
     'wnX4F1D3c-0', // Dumbbells
   ];
   
-  const randomId = podcastPhotoIds[Math.floor(Math.random() * podcastPhotoIds.length)];
-  return getUnsplashImage(randomId, 600, 600);
+  // Use index for consistency
+  const safeIndex = index % podcastPhotoIds.length;
+  const photoId = podcastPhotoIds[safeIndex];
+  return getUnsplashImage(photoId, 600, 600);
 }
 
 /**
