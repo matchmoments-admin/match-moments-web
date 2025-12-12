@@ -46,7 +46,7 @@ export function GenderNavCards({ className = '' }: GenderNavCardsProps) {
         <div className="relative overflow-hidden rounded-3xl bg-black p-12 text-white transition-transform hover:scale-[1.02]">
           <div className="relative z-10">
             <span className="inline-block rounded bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide">
-              Click for all
+              Click for more
             </span>
             <h2 className="mt-4 text-5xl font-bold text-white">
               Women's Sports
@@ -81,7 +81,7 @@ export function GenderNavCards({ className = '' }: GenderNavCardsProps) {
         <div className="relative overflow-hidden rounded-3xl bg-gray-100 p-12 text-black transition-transform hover:scale-[1.02]">
           <div className="relative z-10">
             <span className="inline-block rounded bg-black/10 px-3 py-1 text-xs font-bold uppercase tracking-wide">
-              Click for all
+              Click for more
             </span>
             <h2 className="mt-4 text-5xl font-bold text-black">
               Men's Sports
