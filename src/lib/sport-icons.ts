@@ -6,11 +6,8 @@
 
 import type { LucideIcon } from 'lucide-react';
 import {
-  CircleDot,
-  Football,
+  Circle,
   Trophy,
-  Users,
-  CalendarClock,
   Zap,
   Target,
   RefreshCw,
@@ -19,11 +16,9 @@ import {
   Pause,
   Flag,
   Timer,
-  AlarmClock,
   Video,
-  Cross,
+  X,
   Clock,
-  LucideProps,
 } from 'lucide-react';
 
 import type { SportType } from '@/types/sports';
@@ -33,14 +28,14 @@ import type { SportType } from '@/types/sports';
  */
 export function getSportIconComponent(sport: SportType): LucideIcon {
   const icons: Record<SportType, LucideIcon> = {
-    soccer: CircleDot, // Soccer ball shape
+    soccer: Circle, // Soccer ball shape
     cricket: Trophy, // Generic sport icon
-    basketball: CircleDot, // Ball shape
-    tennis: CircleDot, // Ball shape
-    nfl: Football, // American football
-    rugby: Football, // Rugby ball
-    padel: CircleDot, // Ball shape
-    pickleball: CircleDot, // Ball shape
+    basketball: Circle, // Ball shape
+    tennis: Circle, // Ball shape
+    nfl: Trophy, // American football
+    rugby: Trophy, // Rugby ball
+    padel: Circle, // Ball shape
+    pickleball: Circle, // Ball shape
     skiing: Zap, // Speed/movement
   };
 
@@ -65,7 +60,7 @@ export function getEventIconComponent(eventType: string): LucideIcon {
     'Save': Shield,
     'Penalty': Target,
     'VAR': Video,
-    'Injury': Cross,
+    'Injury': X,
     'Kick-off': Play,
     'Half-time': Pause,
     'Full-time': Flag,
