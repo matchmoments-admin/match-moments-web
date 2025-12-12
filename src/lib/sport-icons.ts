@@ -1,56 +1,79 @@
 /**
  * Sport icons and metadata utilities
- * Provides consistent icons across the site for all sports
+ * Provides consistent chrome/monochrome icons across the site for all sports
+ * Uses Lucide React for styleable SVG icons
  */
+
+import type { LucideIcon } from 'lucide-react';
+import {
+  CircleDot,
+  Football,
+  Trophy,
+  Users,
+  CalendarClock,
+  Zap,
+  Target,
+  RefreshCw,
+  Shield,
+  Play,
+  Pause,
+  Flag,
+  Timer,
+  AlarmClock,
+  Video,
+  Cross,
+  Clock,
+  LucideProps,
+} from 'lucide-react';
 
 import type { SportType } from '@/types/sports';
 
 /**
- * Get icon for a sport
+ * Get icon component for a sport
  */
-export function getSportIcon(sport: SportType): string {
-  const icons: Record<SportType, string> = {
-    soccer: '⚽',
-    cricket: '🏏',
-    basketball: '🏀',
-    tennis: '🎾',
-    nfl: '🏈',
-    rugby: '🏉',
-    padel: '🎾',
-    pickleball: '🏓',
-    skiing: '⛷️',
+export function getSportIconComponent(sport: SportType): LucideIcon {
+  const icons: Record<SportType, LucideIcon> = {
+    soccer: CircleDot, // Soccer ball shape
+    cricket: Trophy, // Generic sport icon
+    basketball: CircleDot, // Ball shape
+    tennis: CircleDot, // Ball shape
+    nfl: Football, // American football
+    rugby: Football, // Rugby ball
+    padel: CircleDot, // Ball shape
+    pickleball: CircleDot, // Ball shape
+    skiing: Zap, // Speed/movement
   };
 
-  return icons[sport] || '🏅';
+  return icons[sport] || Trophy;
 }
 
 /**
- * Get event icon for commentary events
+ * Get event icon component for commentary events
  */
-export function getEventIcon(eventType: string): string {
-  const icons: Record<string, string> = {
-    'Goal': '⚽',
-    'Try': '🏉',
-    'Touchdown': '🏈',
-    'Basket': '🏀',
-    'Ace': '🎾',
-    'Wicket': '🏏',
-    'Card': '🟨',
-    'Yellow Card': '🟨',
-    'Red Card': '🟥',
-    'Substitution': '🔄',
-    'Save': '🧤',
-    'Penalty': '🎯',
-    'VAR': '📹',
-    'Injury': '🩹',
-    'Kick-off': '▶️',
-    'Half-time': '⏸️',
-    'Full-time': '🏁',
-    'Timeout': '⏱️',
-    'Challenge': '🚩',
+export function getEventIconComponent(eventType: string): LucideIcon {
+  const icons: Record<string, LucideIcon> = {
+    'Goal': Target,
+    'Try': Target,
+    'Touchdown': Target,
+    'Basket': Target,
+    'Ace': Zap,
+    'Wicket': Target,
+    'Card': Shield,
+    'Yellow Card': Shield,
+    'Red Card': Shield,
+    'Substitution': RefreshCw,
+    'Save': Shield,
+    'Penalty': Target,
+    'VAR': Video,
+    'Injury': Cross,
+    'Kick-off': Play,
+    'Half-time': Pause,
+    'Full-time': Flag,
+    'Timeout': Timer,
+    'Challenge': Flag,
   };
 
-  return icons[eventType] || '•';
+  return icons[eventType] || Clock;
 }
 
 /**
@@ -70,13 +93,6 @@ export function getSportDisplayName(sport: SportType): string {
   };
 
   return names[sport] || sport;
-}
-
-/**
- * Get sport with icon
- */
-export function getSportWithIcon(sport: SportType): string {
-  return `${getSportIcon(sport)} ${getSportDisplayName(sport)}`;
 }
 
 /**
@@ -103,5 +119,35 @@ export function getGenderDisplayName(gender: 'womens' | 'mens' | 'both'): string
   };
 
   return names[gender] || 'All';
+}
+
+/**
+ * Get event icon color classes based on event type
+ * Returns monochrome classes that inherit from parent or use muted colors
+ */
+export function getEventIconClasses(eventType: string): string {
+  const classes: Record<string, string> = {
+    'Goal': 'text-current', // Inherits color from parent
+    'Try': 'text-current',
+    'Touchdown': 'text-current',
+    'Basket': 'text-current',
+    'Ace': 'text-current',
+    'Wicket': 'text-current',
+    'Card': 'text-yellow-600',
+    'Yellow Card': 'text-yellow-600',
+    'Red Card': 'text-red-600',
+    'Substitution': 'text-current',
+    'Save': 'text-current',
+    'Penalty': 'text-current',
+    'VAR': 'text-current',
+    'Injury': 'text-current',
+    'Kick-off': 'text-current',
+    'Half-time': 'text-current',
+    'Full-time': 'text-current',
+    'Timeout': 'text-current',
+    'Challenge': 'text-current',
+  };
+
+  return classes[eventType] || 'text-current';
 }
 

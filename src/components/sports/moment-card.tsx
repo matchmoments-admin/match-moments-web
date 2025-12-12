@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { TrendingMoment } from '@/types/sports';
+import { Flame, Eye, Share2 } from 'lucide-react';
 
 interface MomentCardProps {
   moment: TrendingMoment;
@@ -36,8 +37,9 @@ export function MomentCard({ moment }: MomentCardProps) {
           )}
           {/* Viral score badge */}
           {moment.viralScore && moment.viralScore >= 70 && (
-            <div className="absolute top-3 right-3 rounded-full bg-black/75 px-3 py-1 text-xs font-bold text-white backdrop-blur">
-              🔥 {moment.viralScore}
+            <div className="absolute top-3 right-3 flex items-center gap-1 rounded-full bg-black/75 px-3 py-1 text-xs font-bold text-white backdrop-blur">
+              <Flame className="h-3 w-3" strokeWidth={2} />
+              {moment.viralScore}
             </div>
           )}
         </div>
@@ -79,18 +81,13 @@ export function MomentCard({ moment }: MomentCardProps) {
             <div className="mt-3 flex gap-4 border-t border-gray-100 pt-3 text-xs text-gray-500">
               {moment.totalViews && (
                 <div className="flex items-center gap-1">
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
+                  <Eye className="h-4 w-4" strokeWidth={1.5} />
                   {(moment.totalViews / 1000000).toFixed(1)}M
                 </div>
               )}
               {moment.totalShares && (
                 <div className="flex items-center gap-1">
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                  </svg>
+                  <Share2 className="h-4 w-4" strokeWidth={1.5} />
                   {(moment.totalShares / 1000).toFixed(0)}K
                 </div>
               )}

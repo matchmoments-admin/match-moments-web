@@ -16,7 +16,7 @@ const mockEvents: CommentaryEvent[] = [
     eventType: 'Goal',
     eventMinute: 23,
     description: 'Stunning strike from outside the box',
-    socialShareTitle: 'Sam Kerr Screamer! 🚀',
+    socialShareTitle: 'Sam Kerr Screamer!',
     primaryPlayer: { id: 'sam-kerr', name: 'Sam Kerr' },
     viralScore: 95,
     period: {

@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { CommentaryEvent } from '@/types/sports';
+import { getEventIconComponent, getEventIconClasses } from '@/lib/sport-icons';
+import { Flame } from 'lucide-react';
 
 interface MatchTimelineProps {
   events: CommentaryEvent[];
@@ -16,28 +18,14 @@ export function MatchTimeline({
   gender,
   sport,
 }: MatchTimelineProps) {
-  const getEventIcon = (eventType: string): string => {
-    const icons: Record<string, string> = {
-      'Goal': '⚽',
-      'Card': '🟨',
-      'Red Card': '🟥',
-      'Substitution': '🔄',
-      'Save': '🧤',
-      'Penalty': '🎯',
-      'VAR': '📹',
-      'Injury': '🩹',
-      'Kick-off': '▶️',
-      'Half-time': '⏸️',
-      'Full-time': '🏁',
-    };
-    return icons[eventType] || '•';
-  };
 
   return (
     <div className="space-y-2">
       {events.map((event) => {
         const momentUrl = `/${gender}/${sport}/fixtures/${fixtureId}/moments/${event.id}`;
         const isCurrent = event.id === currentMomentId;
+        const EventIcon = getEventIconComponent(event.eventType);
+        const iconColorClass = getEventIconClasses(event.eventType);
 
         return (
           <Link
@@ -60,8 +48,11 @@ export function MatchTimeline({
             </div>
 
             {/* Icon */}
-            <div className="text-3xl flex-shrink-0">
-              {getEventIcon(event.eventType)}
+            <div className="flex-shrink-0">
+              <EventIcon 
+                className={`h-8 w-8 ${isCurrent ? 'text-white' : iconColorClass}`} 
+                strokeWidth={1.5}
+              />
             </div>
 
             {/* Content */}
@@ -84,10 +75,11 @@ export function MatchTimeline({
                 </span>
               )}
               {event.viralScore && event.viralScore >= 70 && (
-                <span className={`rounded-full px-3 py-1 text-xs font-bold ${
+                <span className={`flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${
                   isCurrent ? 'bg-white/20' : 'bg-red-100 text-red-800'
                 }`}>
-                  🔥 Trending
+                  <Flame className="h-3 w-3" strokeWidth={2} />
+                  Trending
                 </span>
               )}
             </div>

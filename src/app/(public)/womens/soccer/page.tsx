@@ -38,7 +38,14 @@ export default function WomensSoccerPage() {
         <section className="mb-12">
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-green-600 to-green-800 p-12 text-white">
             <div className="relative z-10">
-              <h1 className="text-5xl font-bold mb-4">⚽ Women's Soccer</h1>
+              <h1 className="text-5xl font-bold mb-4 flex items-center gap-4">
+                <svg className="h-14 w-14" fill="currentColor" viewBox="0 0 24 24" strokeWidth={0}>
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                  <path d="M12 2a10 10 0 0 0 0 20M12 2a10 10 0 0 1 0 20M2 12h20" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                  <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                </svg>
+                Women's Soccer
+              </h1>
               <p className="text-xl opacity-90 mb-6">
                 The world's most popular sport - women's edition
               </p>

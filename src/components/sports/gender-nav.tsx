@@ -48,7 +48,14 @@ export function GenderNavCards({ className = '' }: GenderNavCardsProps) {
             <span className="inline-block rounded bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wide">
               60% of our coverage
             </span>
-            <h2 className="mt-4 text-5xl font-bold">⚽ Women's Sports</h2>
+            <h2 className="mt-4 text-5xl font-bold flex items-center gap-4">
+              <svg className="h-12 w-12" fill="currentColor" viewBox="0 0 24 24" strokeWidth={0}>
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                <path d="M12 2a10 10 0 0 0 0 20M12 2a10 10 0 0 1 0 20M2 12h20" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                <circle cx="12" cy="12" r="3" fill="currentColor"/>
+              </svg>
+              Women's Sports
+            </h2>
             <p className="mt-4 text-lg opacity-90">
               Soccer, Basketball, Cricket, Tennis & more
             </p>
@@ -81,7 +88,14 @@ export function GenderNavCards({ className = '' }: GenderNavCardsProps) {
             <span className="inline-block rounded bg-black/10 px-3 py-1 text-xs font-bold uppercase tracking-wide">
               Comprehensive coverage
             </span>
-            <h2 className="mt-4 text-5xl font-bold">🏀 Men's Sports</h2>
+            <h2 className="mt-4 text-5xl font-bold flex items-center gap-4">
+              <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2a10 10 0 0 0 0 20M12 2a10 10 0 0 1 0 20M2 12h20"/>
+                <circle cx="12" cy="12" r="2" fill="currentColor"/>
+              </svg>
+              Men's Sports
+            </h2>
             <p className="mt-4 text-lg opacity-75">
               Soccer, Basketball, Cricket, NFL & more
             </p>
