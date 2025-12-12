@@ -11,7 +11,7 @@ interface ArticleCardProps {
   imageUrl: string;
   imageAlt: string;
   href: string;
-  variant?: 'featured' | 'standard' | 'small';
+  variant?: 'featured' | 'standard' | 'small' | 'list';
   author?: string;
   readTime?: string;
   date?: string;
@@ -32,6 +32,44 @@ export function ArticleCard({
 }: ArticleCardProps) {
   const isFeatured = variant === 'featured';
   const isSmall = variant === 'small';
+  const isList = variant === 'list';
+
+  if (isList) {
+    return (
+      <article className="group cursor-pointer rounded-[16px] overflow-hidden">
+        <Link href={href} className="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors duration-150">
+          <div className="relative w-20 h-20 flex-shrink-0 rounded-[16px] overflow-hidden">
+            <Image
+              src={imageUrl}
+              alt={imageAlt}
+              fill
+              className="object-cover"
+              sizes="80px"
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <Link
+              href={categoryHref}
+              className="text-sm font-bold text-[#696969] hover:underline transition-all duration-150"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {category}
+            </Link>
+            <h3 className="text-base font-medium text-black mt-1 group-hover:underline transition-all duration-150 line-clamp-2">
+              {title}
+            </h3>
+            {(author || readTime || date) && (
+              <div className="text-sm font-normal text-[#696969] mt-1">
+                {author && <span>{author}</span>}
+                {date && <span> • {date}</span>}
+                {readTime && <span> • {readTime}</span>}
+              </div>
+            )}
+          </div>
+        </Link>
+      </article>
+    );
+  }
 
   return (
     <article className="group cursor-pointer rounded-[32px] overflow-hidden">
