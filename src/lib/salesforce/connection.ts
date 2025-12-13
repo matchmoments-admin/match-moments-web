@@ -36,13 +36,15 @@ export async function getSalesforceConnection(): Promise<Connection> {
     // Determine login URL based on instance URL
     let loginUrl = 'https://login.salesforce.com';
     
-    // If instance URL contains sandbox/develop/test domains, use test.salesforce.com
+    // Only use test.salesforce.com for actual sandbox orgs (not Developer Edition)
+    // Developer Edition domains end with .develop.my.salesforce.com and use login.salesforce.com
+    // Sandbox domains end with .sandbox.my.salesforce.com and use test.salesforce.com
     if (process.env.SALESFORCE_INSTANCE_URL) {
       const instanceUrl = process.env.SALESFORCE_INSTANCE_URL.toLowerCase();
-      if (instanceUrl.includes('sandbox') || 
-          instanceUrl.includes('develop') || 
-          instanceUrl.includes('test') ||
-          instanceUrl.includes('scratch')) {
+      // Only switch to test.salesforce.com for actual sandboxes and scratch orgs
+      if (instanceUrl.includes('.sandbox.') || 
+          instanceUrl.includes('--') || // Scratch orgs have -- in URL
+          instanceUrl.match(/\.cs\d+\.my\.salesforce/)) { // Test/sandbox instances (cs1, cs2, etc.)
         loginUrl = 'https://test.salesforce.com';
       }
     }

@@ -34,13 +34,21 @@ if (!username || !password) {
 console.log('\n🔗 Step 2: Login URL Detection');
 console.log('-'.repeat(50));
 
-const isDevOrSandbox = instanceUrl?.toLowerCase().includes('sandbox') ||
-                       instanceUrl?.toLowerCase().includes('develop') ||
-                       instanceUrl?.toLowerCase().includes('test') ||
-                       instanceUrl?.toLowerCase().includes('scratch');
+// Developer Edition (.develop.my.salesforce.com) uses login.salesforce.com
+// Sandboxes (.sandbox.my.salesforce.com) use test.salesforce.com
+const isActualSandbox = instanceUrl?.toLowerCase().includes('.sandbox.') ||
+                        instanceUrl?.toLowerCase().includes('--') || // Scratch orgs
+                        instanceUrl?.toLowerCase().match(/\.cs\d+\.my\.salesforce/); // Test instances
 
-const loginUrl = isDevOrSandbox ? 'https://test.salesforce.com' : 'https://login.salesforce.com';
-console.log('Instance type:', isDevOrSandbox ? 'Developer/Sandbox' : 'Production');
+const isDeveloperEdition = instanceUrl?.toLowerCase().includes('.develop.');
+
+const loginUrl = isActualSandbox ? 'https://test.salesforce.com' : 'https://login.salesforce.com';
+
+let orgType = 'Production';
+if (isDeveloperEdition) orgType = 'Developer Edition';
+if (isActualSandbox) orgType = 'Sandbox/Test';
+
+console.log('Instance type:', orgType);
 console.log('Login URL:', loginUrl);
 
 // Step 3: Test connection configurations
