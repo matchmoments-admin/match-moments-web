@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSalesforceConnection } from '@/lib/salesforce/connection';
+import { getSalesforceConnection } from '@/lib/salesforce/connection-oauth';
 
 /**
  * Test Salesforce connection status

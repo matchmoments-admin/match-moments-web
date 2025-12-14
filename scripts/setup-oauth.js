@@ -43,12 +43,12 @@ console.log('✓ Client Secret:', '*'.repeat(clientSecret.length));
 console.log('✓ Instance URL:', instanceUrl || 'Not set');
 
 // Determine login URL
-const isDevOrSandbox = instanceUrl?.toLowerCase().includes('sandbox') ||
-                       instanceUrl?.toLowerCase().includes('develop') ||
-                       instanceUrl?.toLowerCase().includes('test') ||
-                       instanceUrl?.toLowerCase().includes('scratch');
+// Developer Edition (*.develop.my.salesforce.com) uses login.salesforce.com
+// Sandbox orgs (*.sandbox.my.salesforce.com) use test.salesforce.com
+// IMPORTANT: Developer Edition is NOT a sandbox despite having a custom domain
+const isSandbox = instanceUrl?.toLowerCase().includes('.sandbox.my.salesforce.com');
 
-const loginUrl = isDevOrSandbox ? 'https://test.salesforce.com' : 'https://login.salesforce.com';
+const loginUrl = isSandbox ? 'https://test.salesforce.com' : 'https://login.salesforce.com';
 
 console.log('\n🔗 Step 2: OAuth Configuration');
 console.log('-'.repeat(50));

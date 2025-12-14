@@ -1,4 +1,4 @@
-import { getSalesforceConnection } from '../connection';
+import { getSalesforceConnection } from '../connection-oauth';
 
 export async function getSalesPipeline() {
   const conn = await getSalesforceConnection();

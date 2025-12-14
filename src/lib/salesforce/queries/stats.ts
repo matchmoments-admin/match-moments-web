@@ -1,4 +1,4 @@
-import { getSalesforceConnection } from '../connection';
+import { getSalesforceConnection } from '../connection-oauth';
 
 export async function getStandings(sport: string) {
   const conn = await getSalesforceConnection();

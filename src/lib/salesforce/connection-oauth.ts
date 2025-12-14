@@ -1,9 +1,34 @@
 import { Connection, OAuth2 } from 'jsforce';
+import { cookies } from 'next/headers';
+
+/**
+ * Get Salesforce connection using cookie-based session (for user-authenticated routes)
+ * This is used after a user has logged in via the OAuth flow
+ */
+export async function getSalesforceConnectionFromSession(): Promise<Connection> {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("salesforce_access_token")?.value;
+  const instanceUrl = cookieStore.get("salesforce_instance_url")?.value;
+
+  if (!accessToken || !instanceUrl) {
+    throw new Error(
+      'No Salesforce session found. Please log in at /api/oauth2/auth'
+    );
+  }
+
+  const conn = new Connection({
+    accessToken: accessToken,
+    instanceUrl: instanceUrl,
+  });
+
+  return conn;
+}
 
 let connectionPool: Connection | null = null;
 
 /**
- * Get or create a Salesforce connection using OAuth 2.0
+ * Get or create a Salesforce connection using OAuth 2.0 with refresh token
+ * This is used for server-side operations where user authentication is not required
  * 
  * Required environment variables:
  * - SALESFORCE_CLIENT_ID: Your Connected App's Consumer Key
@@ -45,12 +70,11 @@ export async function getSalesforceConnection(): Promise<Connection> {
     // Only use test.salesforce.com for actual sandbox orgs (not Developer Edition)
     // Developer Edition domains end with .develop.my.salesforce.com and use login.salesforce.com
     // Sandbox domains end with .sandbox.my.salesforce.com and use test.salesforce.com
+    // IMPORTANT: Developer Edition is NOT a sandbox despite having a custom domain
     if (process.env.SALESFORCE_INSTANCE_URL) {
       const instanceUrl = process.env.SALESFORCE_INSTANCE_URL.toLowerCase();
-      // Only switch to test.salesforce.com for actual sandboxes and scratch orgs
-      if (instanceUrl.includes('.sandbox.') || 
-          instanceUrl.includes('--') || // Scratch orgs have -- in URL
-          instanceUrl.match(/\.cs\d+\.my\.salesforce/)) { // Test/sandbox instances (cs1, cs2, etc.)
+      // Only switch to test.salesforce.com for actual sandboxes (has .sandbox. in URL)
+      if (instanceUrl.includes('.sandbox.my.salesforce.com')) {
         loginUrl = 'https://test.salesforce.com';
       }
     }
@@ -59,7 +83,7 @@ export async function getSalesforceConnection(): Promise<Connection> {
     const oauth2 = new OAuth2({
       clientId: process.env.SALESFORCE_CLIENT_ID,
       clientSecret: process.env.SALESFORCE_CLIENT_SECRET,
-      redirectUri: process.env.SALESFORCE_REDIRECT_URI || 'http://localhost:3000/api/auth/salesforce/callback',
+      redirectUri: process.env.SALESFORCE_REDIRECT_URI || 'http://localhost:3001/api/oauth2/callback',
       loginUrl: loginUrl,
     });
 

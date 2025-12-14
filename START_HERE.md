@@ -1,12 +1,47 @@
-# 🚀 START HERE - Salesforce Connection Fix
+# 🚀 START HERE - Salesforce OAuth Fix (UPDATED)
 
-## 🔴 Current Problem
+## 🔴 Problem Identified & Fixed
+
+Your OAuth setup was using the **wrong login URL**:
+- ❌ Was using: `test.salesforce.com` (Sandbox)
+- ✅ Now using: `login.salesforce.com` (Developer Edition)
+
+**I've already fixed the code!** Now you just need to get a new refresh token.
+
+---
+
+## ⚡ Quick Fix (5 minutes)
+
+**→ Go to: [`QUICK_FIX_STEPS.md`](QUICK_FIX_STEPS.md)** ← Start here!
+
+Or run this right now:
+
+```bash
+npm run sf:oauth-setup
+```
+
+Then follow the prompts!
+
+---
+
+## 📚 Detailed Guides
+
+- **Quick Start**: [`QUICK_FIX_STEPS.md`](QUICK_FIX_STEPS.md) - 5-minute fix
+- **Full Explanation**: [`WHAT_IS_WRONG_AND_HOW_TO_FIX.md`](WHAT_IS_WRONG_AND_HOW_TO_FIX.md) - What went wrong & options
+- **Step-by-Step**: [`SALESFORCE_OAUTH_FIX.md`](SALESFORCE_OAUTH_FIX.md) - Detailed instructions
+
+---
+
+## 🔴 Previous Problem (SOLVED)
 
 ```
 ❌ INVALID_LOGIN: Invalid username, password, security token; or user locked out.
 ```
 
 **Root Cause:** SOAP API is disabled in your Salesforce org.
+**Solution:** Switched to OAuth 2.0 (which you've already done!)
+**New Issue:** Wrong login URL for OAuth
+**Status:** ✅ FIXED in code, needs new token
 
 ---
 
