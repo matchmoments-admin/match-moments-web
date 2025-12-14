@@ -54,7 +54,6 @@ export async function GET() {
         connection: {
           instanceUrl: conn.instanceUrl,
           userId: conn.userInfo?.id,
-          userName: conn.userInfo?.name,
         },
         contact: {
           id: contact.Id,
@@ -71,7 +70,6 @@ export async function GET() {
         connection: {
           instanceUrl: conn.instanceUrl,
           userId: conn.userInfo?.id,
-          userName: conn.userInfo?.name,
         },
         totalContacts: 0,
       });
