@@ -60,14 +60,12 @@ npm install
 Create a `.env.local` file in the root directory:
 
 \`\`\`env
-# Salesforce Configuration
+# Salesforce OAuth Configuration
 SALESFORCE_LOGIN_URL=https://login.salesforce.com
 SALESFORCE_CLIENT_ID=your_connected_app_client_id
 SALESFORCE_CLIENT_SECRET=your_connected_app_secret
-SALESFORCE_REDIRECT_URI=http://localhost:3000/api/auth/salesforce/callback
+SALESFORCE_REDIRECT_URI=http://localhost:3000/api/oauth2/callback
 SALESFORCE_INSTANCE_URL=https://your-instance.salesforce.com
-SALESFORCE_ACCESS_TOKEN=your_access_token
-SALESFORCE_REFRESH_TOKEN=your_refresh_token
 
 # NextAuth Configuration
 NEXTAUTH_SECRET=generate_with_openssl_rand_base64_32
@@ -79,21 +77,43 @@ REDIS_URL=redis://localhost:6379
 # Anthropic API
 ANTHROPIC_API_KEY=sk-ant-***
 
-# Google OAuth
+# Google OAuth (Optional)
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
+\`\`\`
+
+**Generate NEXTAUTH_SECRET:**
+\`\`\`bash
+openssl rand -base64 32
 \`\`\`
 
 ### 4. Set Up Salesforce
 
 #### Create Connected App
-1. Navigate to: Setup → App Manager → New Connected App
-2. Enable OAuth Settings
-3. Callback URL: `http://localhost:3000/api/auth/salesforce/callback`
-4. Selected OAuth Scopes: `api`, `refresh_token`, `offline_access`
-5. Save and copy Consumer Key (CLIENT_ID) and Consumer Secret (CLIENT_SECRET)
+1. Navigate to: **Setup → App Manager → New Connected App**
+2. Fill in basic information (name, email, etc.)
+3. **Enable OAuth Settings:**
+   - Callback URLs:
+     - `http://localhost:3000/api/oauth2/callback` (local)
+     - `https://your-production-domain.com/api/oauth2/callback` (production)
+   - **Selected OAuth Scopes:**
+     - `Access and manage your data (api)`
+     - `Provide access to your data via the Web (web)`
+     - `Perform requests on your behalf at any time (refresh_token, offline_access)`
+     - `Access your basic information (id)`
+4. **OAuth Policies:**
+   - IP Relaxation: "Relax IP restrictions" (for development)
+   - Refresh Token Policy: "Refresh token is valid until revoked"
+5. Save and copy **Consumer Key** (CLIENT_ID) and **Consumer Secret** (CLIENT_SECRET)
 
-#### Add Dashboard Role Field
+#### OAuth Authentication Flow
+The app uses **OAuth2 Web Server Flow** with jsforce:
+- Navigate to `/dashboard` → Automatically redirects to Salesforce login
+- After authentication → Returns to dashboard with session stored in cookies
+- Access tokens stored in secure HTTP-only cookies
+- No manual login button needed - seamless OAuth flow
+
+#### Add Dashboard Role Field (Optional)
 1. Navigate to: Setup → Object Manager → User → Fields & Relationships
 2. Create new Picklist field: `Dashboard_Role__c`
 3. Values: `super_admin`, `ceo`, `sales`, `marketing`, `operations`, `customer_success`
@@ -296,10 +316,25 @@ Response: { stages: Stage[] }
 
 ## 🐛 Troubleshooting
 
-### Salesforce Connection Issues
-- Verify Connected App credentials
-- Check OAuth tokens are valid
-- Ensure user email matches between Google and Salesforce
+### Salesforce OAuth Connection Issues
+- **Error: "No authorization code found"**
+  - Verify callback URL in Connected App matches exactly: `http://localhost:3000/api/oauth2/callback`
+  - Check that both local and production URLs are added
+- **Error: "invalid_grant: authentication failure"**
+  - Verify IP restrictions are relaxed in Connected App settings
+  - Ensure using `login.salesforce.com` (not `test.salesforce.com` for Developer Edition)
+  - Check OAuth scopes include: api, web, refresh_token, id
+- **Session expires quickly**
+  - Access tokens expire after 2 hours by default
+  - App will automatically redirect to login when session expires
+  - Consider implementing refresh token flow for longer sessions
+
+### Testing OAuth Flow
+1. Open http://localhost:3000/dashboard
+2. Should auto-redirect to Salesforce login
+3. Log in with Salesforce credentials
+4. Should redirect back to dashboard
+5. Dashboard displays Salesforce accounts
 
 ### Redis Connection Issues
 - Verify Redis is running: `redis-cli ping`

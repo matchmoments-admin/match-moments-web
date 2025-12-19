@@ -30,15 +30,6 @@ export default function HomePage() {
             <p className="text-xl text-gray-600">
               Your 24/7 sports companion focusing on women's sports
             </p>
-            
-            {/* Salesforce Login Button */}
-            <div className="mt-8">
-              <Link href="/api/oauth2/auth">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors shadow-lg">
-                  Log in with Salesforce
-                </button>
-              </Link>
-            </div>
           </div>
 
           {/* Gender Navigation Cards */}

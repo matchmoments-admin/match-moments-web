@@ -1,26 +1,16 @@
 import { cookies } from "next/headers";
 import jsforce from "jsforce";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function Dashboard() {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("salesforce_access_token")?.value;
   const instanceUrl = cookieStore.get("salesforce_instance_url")?.value;
 
+  // Auto-redirect to Salesforce OAuth login if no session exists
   if (!accessToken || !instanceUrl) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold mb-4">Please log in to Salesforce</h1>
-          <p className="text-gray-600 mb-8">You need to authenticate with Salesforce to view this page.</p>
-          <Link href="/api/oauth2/auth">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors">
-              Log in with Salesforce
-            </button>
-          </Link>
-        </div>
-      </div>
-    );
+    redirect('/api/oauth2/auth');
   }
 
   const conn = new jsforce.Connection({
