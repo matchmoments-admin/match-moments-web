@@ -3,15 +3,26 @@ import jsforce from "jsforce";
 import { cookies } from "next/headers";
 
 /**
- * OAuth 2.0 Callback Route
+ * OAuth 2.0 Callback Route with PKCE Support
  * Handles the redirect from Salesforce, exchanges code for access token
  */
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get("code");
+  const cookieStore = await cookies();
 
   if (!code) {
     return NextResponse.json({ error: "No authorization code found" }, { status: 400 });
+  }
+
+  // Retrieve PKCE code verifier from cookie
+  const codeVerifier = cookieStore.get("pkce_code_verifier")?.value;
+  
+  if (!codeVerifier) {
+    return NextResponse.json({ 
+      error: "PKCE verification failed", 
+      message: "Code verifier not found. Please try logging in again." 
+    }, { status: 400 });
   }
 
   // Determine login URL based on instance URL
@@ -35,8 +46,11 @@ export async function GET(request: NextRequest) {
   const conn = new jsforce.Connection({ oauth2: oauth2 });
 
   try {
-    await conn.authorize(code);
-    const cookieStore = await cookies();
+    // Exchange authorization code for access token with PKCE code verifier
+    await conn.authorize(code, { code_verifier: codeVerifier } as any);
+    
+    // Clear PKCE code verifier cookie
+    cookieStore.delete("pkce_code_verifier");
     
     // Store Access Token
     cookieStore.set("salesforce_access_token", conn.accessToken!, {
@@ -70,6 +84,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   } catch (error: any) {
     console.error('[OAuth] Salesforce Auth Error:', error);
+    
+    // Clear PKCE cookie on error
+    cookieStore.delete("pkce_code_verifier");
+    
     return NextResponse.json({ 
       error: "Salesforce Auth Error",
       message: error.message 
