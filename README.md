@@ -26,9 +26,8 @@ A comprehensive sports media platform built with Next.js 16, featuring match mom
 - **Styling**: Tailwind CSS v4
 - **UI Components**: shadcn/ui + custom sports components
 - **Icons**: react-icons (Material Design, Ionicons, Bootstrap Icons)
-- **Authentication**: NextAuth.js with Google OAuth
-- **CRM Integration**: Salesforce (jsforce)
-- **Caching**: Redis (ioredis)
+- **CRM Integration**: Salesforce (Native REST API with JWT Bearer)
+- **Caching**: Redis (ioredis) - optional
 - **AI**: Anthropic Claude API
 - **Deployment**: Vercel
 
@@ -36,8 +35,8 @@ A comprehensive sports media platform built with Next.js 16, featuring match mom
 
 - Node.js 18+ 
 - Salesforce org with custom objects (see [match-moments-salesforce](https://github.com/matchmoments-admin/match-moments-salesforce))
-- Redis instance (local or Upstash)
-- Google OAuth credentials
+- Salesforce Connected App with JWT Bearer configured
+- Redis instance (local or Upstash) - optional for caching
 - Anthropic API key
 
 ## 🔧 Installation
@@ -159,8 +158,10 @@ match-moments-web/
 │   │   └── shared/             # Shared components
 │   ├── lib/
 │   │   ├── salesforce/         # SF connection & queries
-│   │   ├── auth/               # RBAC & permissions
-│   │   ├── cache/              # Redis caching
+│   │   │   ├── client.ts       # Native REST API client
+│   │   │   ├── types.ts        # TypeScript types
+│   │   │   └── queries/        # Query functions
+│   │   ├── cache/              # Redis caching (optional)
 │   │   └── utils/              # Utilities
 │   ├── types/                  # TypeScript types
 │   └── middleware.ts           # Auth middleware

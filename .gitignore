@@ -42,3 +42,13 @@ next-env.d.ts
 
 # prototype folder (reference only, not part of build)
 /prototype
+
+# JWT certificates and private keys (NEVER commit these!)
+/certs/
+*.key
+*.crt
+*.csr
+*.pem
+
+# JWT setup documentation (contains sensitive examples)
+JWT-SETUP.md
