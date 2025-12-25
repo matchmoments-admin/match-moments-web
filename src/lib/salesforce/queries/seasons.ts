@@ -26,7 +26,7 @@ export async function getSeasons(sport?: string) {
 
       return seasons;
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 
@@ -54,7 +54,7 @@ export async function getSeasonById(seasonId: string) {
 
       return seasons[0];
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 
@@ -97,7 +97,7 @@ export async function getCurrentSeason(sport: string) {
 
       return seasons[0];
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 
@@ -125,7 +125,7 @@ export async function getSeasonByName(seasonName: string) {
 
       return seasons[0];
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 

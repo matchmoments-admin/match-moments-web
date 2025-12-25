@@ -59,7 +59,7 @@ export async function getArticles(filters: ArticleFilters = {}) {
 
       return articles;
     },
-    { ttl: 900, staleWhileRevalidate: true } // 15 min cache
+    900 // 15 min cache
   );
 }
 
@@ -92,7 +92,7 @@ export async function getArticleById(articleId: string) {
 
       return articles[0];
     },
-    { ttl: 900, staleWhileRevalidate: true }
+    900
   );
 }
 

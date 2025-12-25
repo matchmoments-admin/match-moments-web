@@ -16,9 +16,10 @@ async function fetchFixture(id: string) {
 export default async function GameDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const fixture = await fetchFixture(params.id);
+  const { id } = await params;
+  const fixture = await fetchFixture(id);
 
   if (!fixture) {
     notFound();

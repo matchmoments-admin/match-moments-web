@@ -63,7 +63,7 @@ export async function getMoments(filters: MomentFilters = {}) {
 
       return moments;
     },
-    { ttl: 300, staleWhileRevalidate: true } // 5 min cache
+    300 // 5 min cache
   );
 }
 
@@ -100,7 +100,7 @@ export async function getMomentById(momentId: string) {
 
       return moments[0];
     },
-    { ttl: 300, staleWhileRevalidate: true }
+    300
   );
 }
 
@@ -188,7 +188,7 @@ export async function getMostViewedMoments(limit: number = 20, sport?: string) {
 
       return moments;
     },
-    { ttl: 300, staleWhileRevalidate: true }
+    300
   );
 }
 

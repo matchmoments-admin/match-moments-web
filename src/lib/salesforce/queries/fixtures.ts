@@ -1,5 +1,5 @@
 import { getSalesforceClient } from '../client';
-import type { Fixture, FixtureDetail, FixturePeriod, CommentaryEvent } from '../types';
+import type { Fixture, FixturePeriod, CommentaryEvent } from '../types';
 import { getCached } from '../../cache/redis';
 import { CacheKeys, CacheStrategy } from '../../cache/strategies';
 
@@ -98,7 +98,7 @@ export async function getUpcomingFixtures(days: number = 7) {
 /**
  * Get detailed fixture data with periods and commentary
  */
-export async function getFixtureData(fixtureId: string): Promise<FixtureDetail | null> {
+export async function getFixtureData(fixtureId: string): Promise<any | null> {
   return getCached(
     CacheKeys.FIXTURE_DETAIL(fixtureId),
     async () => {

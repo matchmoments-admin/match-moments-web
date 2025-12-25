@@ -37,9 +37,10 @@ async function getCompetitionData(competitionId: string) {
 export default async function WomensCompetitionDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const data = await getCompetitionData(params.id);
+  const { id } = await params;
+  const data = await getCompetitionData(id);
   
   if (!data || !data.competition) {
     notFound();
@@ -56,7 +57,7 @@ export default async function WomensCompetitionDetailPage({
             { label: "Women's Sports", href: '/womens' },
             { label: 'Soccer', href: '/womens/soccer' },
             { label: 'Competitions', href: '/womens/soccer/competitions' },
-            { label: competition.Competition_Name__c || competition.Name || '', href: `/womens/soccer/competitions/${params.id}`, current: true },
+            { label: competition.Competition_Name__c || competition.Name || '', href: `/womens/soccer/competitions/${id}`, current: true },
           ]}
         />
 

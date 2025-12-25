@@ -289,7 +289,7 @@ export async function getRecentMatches(days: number = 7) {
 
       return matches;
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 

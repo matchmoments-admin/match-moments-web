@@ -9,8 +9,9 @@ import { StructuredData, generateSportsEventSchema, generateBreadcrumbSchema } f
 import { generateMatchMetadata } from '@/lib/seo/metadata';
 import { notFound } from 'next/navigation';
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
-  const matchData = await getMatchData(params.id);
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const matchData = await getMatchData(id);
   if (!matchData) return {};
   return generateMatchMetadata(matchData);
 }
@@ -37,9 +38,10 @@ async function getMatchData(matchId: string) {
 export default async function WomensFixtureDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const matchData = await getMatchData(params.id);
+  const { id } = await params;
+  const matchData = await getMatchData(id);
   
   if (!matchData) {
     notFound();
@@ -62,7 +64,7 @@ export default async function WomensFixtureDetailPage({
     { name: "Women's Sports", url: '/womens' },
     { name: 'Soccer', url: '/womens/soccer' },
     { name: 'Fixtures', url: '/womens/soccer/fixtures' },
-    { name: `${homeTeam?.Name} vs ${awayTeam?.Name}`, url: `/womens/soccer/fixtures/${params.id}` },
+    { name: `${homeTeam?.Name} vs ${awayTeam?.Name}`, url: `/womens/soccer/fixtures/${id}` },
   ]);
 
   return (
@@ -81,7 +83,7 @@ export default async function WomensFixtureDetailPage({
             { label: "Women's Sports", href: '/womens' },
             { label: 'Soccer', href: '/womens/soccer' },
             { label: 'Fixtures', href: '/womens/soccer/fixtures' },
-            { label: `${homeTeam?.Name} vs ${awayTeam?.Name}`, href: `/womens/soccer/fixtures/${params.id}`, current: true },
+            { label: `${homeTeam?.Name} vs ${awayTeam?.Name}`, href: `/womens/soccer/fixtures/${id}`, current: true },
           ]}
         />
         

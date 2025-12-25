@@ -50,7 +50,7 @@ export async function getCompetitions(filters: CompetitionFilters = {}) {
 
       return competitions;
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 
@@ -80,7 +80,7 @@ export async function getCompetitionById(competitionId: string) {
 
       return competitions[0];
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 
@@ -139,7 +139,7 @@ export async function getCompetitionByESPNId(espnLeagueId: string) {
 
       return competitions[0];
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 

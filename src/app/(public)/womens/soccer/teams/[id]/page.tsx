@@ -40,9 +40,10 @@ async function getTeamData(teamId: string) {
 export default async function WomensTeamDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const data = await getTeamData(params.id);
+  const { id } = await params;
+  const data = await getTeamData(id);
   
   if (!data || !data.team) {
     notFound();
@@ -59,7 +60,7 @@ export default async function WomensTeamDetailPage({
             { label: "Women's Sports", href: '/womens' },
             { label: 'Soccer', href: '/womens/soccer' },
             { label: 'Teams', href: '/womens/soccer/teams' },
-            { label: team.Name || '', href: `/womens/soccer/teams/${params.id}`, current: true },
+            { label: team.Name || '', href: `/womens/soccer/teams/${id}`, current: true },
           ]}
         />
 

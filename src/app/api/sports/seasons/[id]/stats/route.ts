@@ -9,10 +9,10 @@ import type {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const seasonId = params.id;
+    const { id: seasonId } = await params;
 
     const stats = await getCached(
       `season:stats:${seasonId}`,
@@ -100,7 +100,7 @@ export async function GET(
           totalGoals,
         };
       },
-      { ttl: 300, staleWhileRevalidate: true }
+      300
     );
 
     return NextResponse.json({

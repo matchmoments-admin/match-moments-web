@@ -55,9 +55,10 @@ async function getRelatedArticles(article: any) {
 export default async function ArticleDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const article = await getArticle(params.id);
+  const { id } = await params;
+  const article = await getArticle(id);
   
   if (!article) {
     notFound();

@@ -47,20 +47,21 @@ const mockEvents: CommentaryEvent[] = [
   },
 ];
 
-export default function WomensMomentDetailPage({
+export default async function WomensMomentDetailPage({
   params,
 }: {
-  params: { id: string; momentId: string };
+  params: Promise<{ id: string; momentId: string }>;
 }) {
-  const fixture = mockWomensFixtures.find((f) => f.id === params.id);
-  const moment = mockEvents.find((e) => e.id === params.momentId);
+  const { id, momentId } = await params;
+  const fixture = mockWomensFixtures.find((f) => f.id === id);
+  const moment = mockEvents.find((e) => e.id === momentId);
   
   if (!fixture || !moment) {
     notFound();
   }
 
   const relatedMoments = mockTrendingWomensMoments.filter(
-    (m) => m.fixtureId === params.id && m.id !== params.momentId
+    (m) => m.fixtureId === id && m.id !== momentId
   );
 
   return (
@@ -72,8 +73,8 @@ export default function WomensMomentDetailPage({
             { label: "Women's Sports", href: '/womens' },
             { label: 'Soccer', href: '/womens/soccer' },
             { label: 'Fixtures', href: '/womens/soccer/fixtures' },
-            { label: `${fixture.homeTeam.name} vs ${fixture.awayTeam.name}`, href: `/womens/soccer/fixtures/${params.id}` },
-            { label: moment.socialShareTitle || moment.eventType, href: `/womens/soccer/fixtures/${params.id}/moments/${params.momentId}`, current: true },
+            { label: `${fixture.homeTeam.name} vs ${fixture.awayTeam.name}`, href: `/womens/soccer/fixtures/${id}` },
+            { label: moment.socialShareTitle || moment.eventType, href: `/womens/soccer/fixtures/${id}/moments/${momentId}`, current: true },
           ]}
         />
 
@@ -208,13 +209,13 @@ export default function WomensMomentDetailPage({
           <h3 className="text-2xl font-bold mb-6">Full Match Timeline</h3>
           <MatchTimeline
             events={mockEvents}
-            fixtureId={params.id}
-            currentMomentId={params.momentId}
+            fixtureId={id}
+            currentMomentId={momentId}
             gender="womens"
             sport="soccer"
           />
           <Link
-            href={`/womens/soccer/fixtures/${params.id}`}
+            href={`/womens/soccer/fixtures/${id}`}
             className="mt-4 inline-flex items-center gap-2 rounded-full border border-gray-200 px-6 py-3 hover:border-black transition-colors"
           >
             View Full Match Details

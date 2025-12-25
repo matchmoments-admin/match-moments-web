@@ -2,6 +2,8 @@ import { BreadcrumbNav } from '@/components/sports/breadcrumb-nav';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
+
+export const dynamic = 'force-dynamic';
 import { Card } from '@/components/ui/card';
 
 interface Season {
@@ -32,7 +34,7 @@ export default async function WomensSeasonsPage() {
   const breadcrumbItems = [
     { label: "Women's Sports", href: '/womens' },
     { label: 'Soccer', href: '/womens/soccer' },
-    { label: 'Seasons' },
+    { label: 'Seasons', href: '#' },
   ];
 
   // Separate current and past seasons

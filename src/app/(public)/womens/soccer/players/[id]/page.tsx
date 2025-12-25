@@ -51,9 +51,10 @@ async function getPlayerData(playerId: string) {
 export default async function WomensPlayerDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const data = await getPlayerData(params.id);
+  const { id } = await params;
+  const data = await getPlayerData(id);
   
   if (!data || !data.player) {
     notFound();
@@ -83,7 +84,7 @@ export default async function WomensPlayerDetailPage({
             { label: "Women's Sports", href: '/womens' },
             { label: 'Soccer', href: '/womens/soccer' },
             { label: 'Players', href: '/womens/soccer/players' },
-            { label: player.Name || '', href: `/womens/soccer/players/${params.id}`, current: true },
+            { label: player.Name || '', href: `/womens/soccer/players/${id}`, current: true },
           ]}
         />
 

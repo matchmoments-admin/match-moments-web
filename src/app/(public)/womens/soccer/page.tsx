@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { format } from 'date-fns';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "Women's Soccer | Match Moments",
   description: "Complete coverage of women's soccer competitions worldwide",
@@ -80,7 +82,7 @@ export default async function WomensSoccerPage() {
               </p>
               <div className="flex gap-8">
                 <div>
-                  <div className="text-3xl font-bold">{soccerCompetitions.length}</div>
+                  <div className="text-3xl font-bold">{competitions.length}</div>
                   <div className="text-sm opacity-75">Competitions</div>
                 </div>
                 <div>

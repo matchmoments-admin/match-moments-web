@@ -42,7 +42,7 @@ export async function getPlayers(filters: PlayerFilters = {}) {
 
       return players;
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 
@@ -73,7 +73,7 @@ export async function getPlayerById(playerId: string) {
 
       return players[0];
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 
@@ -134,7 +134,7 @@ export async function getPlayerAwards(playerId: string) {
 
       return awards;
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 
@@ -159,7 +159,7 @@ export async function getPlayerCareer(playerId: string) {
 
       return career;
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 
@@ -243,7 +243,7 @@ export async function getPlayerByESPNId(espnPlayerId: string) {
 
       return players[0];
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 
@@ -268,7 +268,7 @@ export async function getPlayersByTeam(teamId: string) {
 
       return memberships;
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 

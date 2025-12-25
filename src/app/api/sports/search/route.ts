@@ -154,7 +154,7 @@ export async function GET(request: NextRequest) {
           },
         };
       },
-      { ttl: 300, staleWhileRevalidate: true }
+      300
     );
 
     return NextResponse.json({

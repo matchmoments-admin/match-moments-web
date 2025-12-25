@@ -48,7 +48,7 @@ export async function getTeams(filters: TeamFilters = {}) {
 
       return teams;
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 
@@ -80,7 +80,7 @@ export async function getTeamById(teamId: string) {
 
       return teams[0];
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 
@@ -139,7 +139,7 @@ export async function getTeamSquad(teamId: string) {
 
       return squad;
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 
@@ -169,7 +169,7 @@ export async function getTeamByESPNId(espnTeamId: string) {
 
       return teams[0];
     },
-    { ttl: 3600, staleWhileRevalidate: true }
+    3600
   );
 }
 

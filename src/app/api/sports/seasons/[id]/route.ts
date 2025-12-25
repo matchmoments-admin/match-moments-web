@@ -3,10 +3,11 @@ import { getSeasonById } from '@/lib/salesforce/queries/seasons';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const season = await getSeasonById(params.id);
+    const { id } = await params;
+    const season = await getSeasonById(id);
 
     if (!season) {
       return NextResponse.json(

@@ -48,7 +48,7 @@ export default async function GamesPage() {
           <section className="mb-12">
             <ArticleCard
               title={`${liveGames[0].Home_Team__r?.Name || 'Team'} vs ${liveGames[0].Away_Team__r?.Name || 'Team'}`}
-              description={`Live: ${liveGames[0].Home_Score_Final__c || 0} - ${liveGames[0].Away_Score_Final__c || 0}`}
+              description={`Live: ${liveGames[0].Home_Score__c || 0} - ${liveGames[0].Away_Score__c || 0}`}
               category="Live Now"
               categoryHref="/games"
               imageUrl="/placeholder.jpg"

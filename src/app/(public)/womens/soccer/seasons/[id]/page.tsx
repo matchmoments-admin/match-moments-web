@@ -83,9 +83,10 @@ async function getSeasonData(id: string) {
 export default async function WomensSeasonDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const data = await getSeasonData(params.id);
+  const { id } = await params;
+  const data = await getSeasonData(id);
 
   if (!data || !data.season) {
     notFound();
@@ -97,7 +98,7 @@ export default async function WomensSeasonDetailPage({
     { label: "Women's Sports", href: '/womens' },
     { label: 'Soccer', href: '/womens/soccer' },
     { label: 'Seasons', href: '/womens/soccer/seasons' },
-    { label: season.Name },
+    { label: season.Name, href: '#' },
   ];
 
   return (
