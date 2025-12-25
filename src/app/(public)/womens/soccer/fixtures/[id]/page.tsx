@@ -2,7 +2,18 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { BreadcrumbNav } from '@/components/sports/breadcrumb-nav';
+import { LiveMatchRefresher } from '@/components/sports/live-match-refresher';
+import { LiveIndicator } from '@/components/sports/live-indicator';
+import { AutoRefreshIndicator } from '@/components/sports/auto-refresh-indicator';
+import { StructuredData, generateSportsEventSchema, generateBreadcrumbSchema } from '@/lib/seo/structured-data';
+import { generateMatchMetadata } from '@/lib/seo/metadata';
 import { notFound } from 'next/navigation';
+
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const matchData = await getMatchData(params.id);
+  if (!matchData) return {};
+  return generateMatchMetadata(matchData);
+}
 
 async function getMatchData(matchId: string) {
   try {
@@ -39,9 +50,30 @@ export default async function WomensFixtureDetailPage({
   const homeTeam = matchData.Home_Team__r;
   const awayTeam = matchData.Away_Team__r;
   const competition = matchData.Competition__r;
+  
+  // Determine if match is live for auto-refresh
+  const isLive = matchData.Match_Status__c?.toLowerCase() === 'live' || 
+                 matchData.Match_Status__c?.toLowerCase() === 'in progress';
+
+  // Generate structured data for SEO
+  const sportsEventSchema = generateSportsEventSchema(matchData);
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: "Women's Sports", url: '/womens' },
+    { name: 'Soccer', url: '/womens/soccer' },
+    { name: 'Fixtures', url: '/womens/soccer/fixtures' },
+    { name: `${homeTeam?.Name} vs ${awayTeam?.Name}`, url: `/womens/soccer/fixtures/${params.id}` },
+  ]);
 
   return (
     <main className="bg-background">
+      {/* Structured Data for SEO */}
+      <StructuredData data={sportsEventSchema} />
+      <StructuredData data={breadcrumbSchema} />
+      
+      {/* Auto-refresh component for live matches */}
+      <LiveMatchRefresher interval={30000} isLive={isLive} />
+      
       <div className="container-main py-8">
         <BreadcrumbNav
           items={[
@@ -52,6 +84,13 @@ export default async function WomensFixtureDetailPage({
             { label: `${homeTeam?.Name} vs ${awayTeam?.Name}`, href: `/womens/soccer/fixtures/${params.id}`, current: true },
           ]}
         />
+        
+        {/* Auto-refresh indicator */}
+        {isLive && (
+          <div className="mb-4 flex justify-end">
+            <AutoRefreshIndicator interval={30000} isActive={isLive} />
+          </div>
+        )}
 
         {/* Competition Context */}
         {competition && (
@@ -94,8 +133,14 @@ export default async function WomensFixtureDetailPage({
               <div className="text-6xl font-bold mb-2">
                 {matchData.Home_Score__c || 0} - {matchData.Away_Score__c || 0}
               </div>
-              <div className="text-sm text-gray-600">
-                {matchData.Match_Status__c === 'Finished' ? 'Full Time' : matchData.Match_Status__c}
+              <div className="flex items-center justify-center gap-2 mt-2">
+                <LiveIndicator 
+                  status={matchData.Match_Status__c || 'Scheduled'} 
+                  showPulse={isLive}
+                />
+              </div>
+              <div className="text-sm text-gray-600 mt-1">
+                {matchData.Match_Date__c && format(new Date(matchData.Match_Date__c), 'MMM d, yyyy • h:mm a')}
               </div>
             </div>
             

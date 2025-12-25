@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ICONS } from '@/lib/sport-icons';
 import { useScroll } from '@/hooks/use-scroll';
 import { Sidebar } from './sidebar';
+import { GlobalSearch } from './global-search';
 import { iconClass, ICON_TRANSITIONS } from '@/lib/icon-styles';
 
 export function Header() {
@@ -26,25 +27,17 @@ export function Header() {
             <span className="hidden text-lg font-bold sm:inline">MATCH MOMENTS</span>
           </Link>
 
-          {/* Center - Search/Discover Button */}
-          <button
-            onClick={() => setIsSearchOpen(!isSearchOpen)}
-            className="hidden rounded-full bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200 md:flex md:items-center md:gap-2"
-          >
-            <ICONS.search className={iconClass('inline', ICON_TRANSITIONS.default)} />
-            <span className="font-normal">Discover</span>
-            <span className="font-bold">anything</span>
-          </button>
+          {/* Center - Global Search */}
+          <div className="hidden md:block">
+            <GlobalSearch />
+          </div>
 
           {/* Right Navigation */}
           <nav className="flex items-center gap-4 md:gap-6">
-            {/* Mobile Search Icon */}
-            <button
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 md:hidden"
-            >
-              <ICONS.search className={iconClass('nav', ICON_TRANSITIONS.default)} />
-            </button>
+            {/* Mobile Search */}
+            <div className="md:hidden">
+              <GlobalSearch />
+            </div>
 
             {/* Videos Link */}
             <Link
