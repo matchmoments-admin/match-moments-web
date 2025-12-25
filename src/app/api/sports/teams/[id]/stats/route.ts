@@ -1,0 +1,34 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getTeamSeasonStats } from '@/lib/salesforce/queries/teams';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params;
+    const searchParams = request.nextUrl.searchParams;
+    const seasonId = searchParams.get('season') || undefined;
+
+    const stats = await getTeamSeasonStats(id, seasonId);
+
+    return NextResponse.json({
+      success: true,
+      data: stats,
+      count: stats.length,
+    });
+  } catch (error: any) {
+    console.error('[API] Error fetching team stats:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || 'Failed to fetch team stats',
+      },
+      { status: 500 }
+    );
+  }
+}
+

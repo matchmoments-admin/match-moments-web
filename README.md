@@ -7,8 +7,12 @@ A comprehensive sports media platform built with Next.js 16, featuring match mom
 ### Public Features
 - **Match Moments**: Trending highlights and key moments from live matches
 - **Live Scores**: Real-time match updates with period breakdowns
-- **Competitions**: Browse leagues and tournaments (WSL, WNBA, Tennis Grand Slams, etc.)
-- **Teams & Players**: Detailed profiles with statistics and recent moments
+- **Competitions**: Browse leagues and tournaments with live standings and top scorers
+- **Teams & Players**: Detailed profiles with statistics, awards, and career history
+- **Articles System**: Sports news linked to teams, players, matches, and competitions
+- **Player Awards**: Transfermarkt-style honors display with trophies and achievements
+- **Career History**: Complete player transfer history and team memberships
+- **Moments Gallery**: Viral highlights sorted by engagement and viral score
 - **Gender-First Navigation**: Women's sports prominently featured
 - **Modern Design**: Clean, minimalist black & white aesthetic
 
@@ -59,26 +63,32 @@ npm install
 Create a `.env.local` file in the root directory:
 
 \`\`\`env
-# Salesforce OAuth Configuration
-SALESFORCE_LOGIN_URL=https://login.salesforce.com
+# Salesforce JWT Authentication (Public Website - Server-to-Server)
+SALESFORCE_JWT_CLIENT_ID=your_connected_app_consumer_key
+SALESFORCE_JWT_USERNAME=your_integration_user@domain.com
+SALESFORCE_JWT_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----
+...your private key...
+-----END PRIVATE KEY-----"
+SALESFORCE_INSTANCE_URL=https://your-instance.salesforce.com
+
+# Salesforce OAuth (Dashboard - User Authentication)
 SALESFORCE_CLIENT_ID=your_connected_app_client_id
 SALESFORCE_CLIENT_SECRET=your_connected_app_secret
 SALESFORCE_REDIRECT_URI=http://localhost:3000/api/oauth2/callback
-SALESFORCE_INSTANCE_URL=https://your-instance.salesforce.com
 
 # NextAuth Configuration
 NEXTAUTH_SECRET=generate_with_openssl_rand_base64_32
 NEXTAUTH_URL=http://localhost:3000
 
-# Redis Cache
-REDIS_URL=redis://localhost:6379
+# Redis Cache (Highly Recommended for Production)
+UPSTASH_REDIS_REST_URL=https://your-database.upstash.io
+UPSTASH_REDIS_REST_TOKEN=your_token_here
 
-# Anthropic API
+# Public API Base URL
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
+
+# Anthropic API (Optional)
 ANTHROPIC_API_KEY=sk-ant-***
-
-# Google OAuth (Optional)
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
 \`\`\`
 
 **Generate NEXTAUTH_SECRET:**
@@ -88,29 +98,69 @@ openssl rand -base64 32
 
 ### 4. Set Up Salesforce
 
-#### Create Connected App
+This platform uses **two authentication methods**:
+1. **JWT Bearer Flow** - For public website (server-to-server, no user login)
+2. **OAuth2 Web Server Flow** - For admin dashboard (user-specific authentication)
+
+#### A. JWT Bearer Setup (Public Website)
+
+**Step 1: Generate RSA Certificate**
+\`\`\`bash
+# Generate private key and certificate
+openssl req -newkey rsa:2048 -nodes -keyout certs/salesforce-jwt-private.key -x509 -days 3650 -out certs/salesforce-jwt.crt
+
+# Generate CSR (optional, for reference)
+openssl req -new -key certs/salesforce-jwt-private.key -out certs/salesforce-jwt.csr
+\`\`\`
+
+**Step 2: Create/Update Connected App**
+1. Navigate to: **Setup → App Manager → Find Your Connected App → Edit**
+2. **Enable Digital Signatures:**
+   - Check "Use digital signatures"
+   - Upload `certs/salesforce-jwt.crt`
+3. **OAuth Policies:**
+   - Permitted Users: "Admin approved users are pre-authorized"
+   - Click "Manage" → "Manage Profiles" → Add "System Administrator"
+4. **OAuth Scopes:** api, web, refresh_token, id
+5. Copy the **Consumer Key** for `SALESFORCE_JWT_CLIENT_ID`
+
+**Step 3: Add Environment Variables**
+\`\`\`env
+SALESFORCE_JWT_CLIENT_ID=your_consumer_key
+SALESFORCE_JWT_USERNAME=your_integration_user@domain.com
+SALESFORCE_JWT_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----
+...paste full private key from salesforce-jwt-private.key...
+-----END PRIVATE KEY-----"
+\`\`\`
+
+**Step 4: Test JWT Connection**
+\`\`\`bash
+npm run dev
+curl http://localhost:3000/api/health/salesforce
+
+# Should return: { status: "healthy", authentication: { connected: true } }
+\`\`\`
+
+See [JWT-SETUP.md](JWT-SETUP.md) for detailed instructions.
+
+#### B. OAuth Setup (Admin Dashboard)
+
+**Step 1: Create OAuth Connected App** (if not already done)
 1. Navigate to: **Setup → App Manager → New Connected App**
-2. Fill in basic information (name, email, etc.)
-3. **Enable OAuth Settings:**
+2. **Enable OAuth Settings:**
    - Callback URLs:
      - `http://localhost:3000/api/oauth2/callback` (local)
-     - `https://your-production-domain.com/api/oauth2/callback` (production)
-   - **Selected OAuth Scopes:**
-     - `Access and manage your data (api)`
-     - `Provide access to your data via the Web (web)`
-     - `Perform requests on your behalf at any time (refresh_token, offline_access)`
-     - `Access your basic information (id)`
-4. **OAuth Policies:**
-   - IP Relaxation: "Relax IP restrictions" (for development)
+     - `https://your-domain.com/api/oauth2/callback` (production)
+   - **OAuth Scopes:** api, web, refresh_token, id
+3. **OAuth Policies:**
+   - IP Relaxation: "Relax IP restrictions"
    - Refresh Token Policy: "Refresh token is valid until revoked"
-5. Save and copy **Consumer Key** (CLIENT_ID) and **Consumer Secret** (CLIENT_SECRET)
+4. Copy **Consumer Key** and **Consumer Secret**
 
-#### OAuth Authentication Flow
-The app uses **OAuth2 Web Server Flow** with jsforce:
-- Navigate to `/dashboard` → Automatically redirects to Salesforce login
-- After authentication → Returns to dashboard with session stored in cookies
-- Access tokens stored in secure HTTP-only cookies
-- No manual login button needed - seamless OAuth flow
+**Step 2: Test OAuth Flow**
+- Navigate to `/dashboard` → Auto-redirects to Salesforce login
+- Login with Salesforce credentials → Returns to dashboard
+- Session stored in secure HTTP-only cookies
 
 #### Add Dashboard Role Field (Optional)
 1. Navigate to: Setup → Object Manager → User → Fields & Relationships
@@ -374,18 +424,61 @@ npm run type-check
 
 ## 📚 API Documentation
 
-### Public API Routes
+### Public Sports API Routes
 
-#### Get Today's Fixtures
+All routes return JSON with `{ success: boolean, data: any, count?: number }` format.
+
+#### Matches
 \`\`\`
-GET /api/fixtures/today
-Response: { fixtures: Fixture[] }
+GET /api/sports/matches
+  ?sport=Soccer&gender=Women's%20Team&status=Live&limit=20
+GET /api/sports/matches/[id]
+GET /api/sports/matches/live
+GET /api/sports/matches/upcoming?days=7
 \`\`\`
 
-#### Get Live Fixtures
+#### Teams
 \`\`\`
-GET /api/fixtures/live
-Response: { fixtures: Fixture[] }
+GET /api/sports/teams
+  ?sport=Soccer&gender=Women's%20Team&league=eng.1
+GET /api/sports/teams/[id]
+GET /api/sports/teams/[id]/stats?season=seasonId
+GET /api/sports/teams/[id]/squad
+\`\`\`
+
+#### Players
+\`\`\`
+GET /api/sports/players
+  ?sport=Soccer&gender=Women's%20Team&team=teamId
+GET /api/sports/players/[id]
+GET /api/sports/players/[id]/stats?season=seasonId
+GET /api/sports/players/[id]/awards
+GET /api/sports/players/[id]/career
+\`\`\`
+
+#### Competitions
+\`\`\`
+GET /api/sports/competitions
+  ?sport=Soccer&gender=Women's%20Team&tier=Level%201
+GET /api/sports/competitions/[id]
+GET /api/sports/competitions/[id]/standings?season=seasonId
+GET /api/sports/competitions/[id]/top-scorers?limit=20
+\`\`\`
+
+#### Articles
+\`\`\`
+GET /api/sports/articles
+  ?team=teamId&competition=compId&player=playerId&type=News
+GET /api/sports/articles/[id]
+GET /api/sports/articles/latest?limit=10
+\`\`\`
+
+#### Moments
+\`\`\`
+GET /api/sports/moments
+  ?sport=Soccer&gender=Women's%20Team&minViralScore=50
+GET /api/sports/moments/[id]
+GET /api/sports/moments/trending?limit=20
 \`\`\`
 
 ### Protected API Routes (Require Authentication)

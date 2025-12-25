@@ -1,29 +1,51 @@
-'use client';
-
-import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { BreadcrumbNav } from '@/components/sports/breadcrumb-nav';
-import { FixtureCard } from '@/components/sports/fixture-card';
-import { mockWomensCompetitions, mockWomensFixtures } from '@/lib/mock-data';
 import { notFound } from 'next/navigation';
+import { format } from 'date-fns';
 
-export default function WomensCompetitionDetailPage({
+async function getCompetitionData(competitionId: string) {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
+    
+    const [competitionRes, standingsRes, matchesRes, topScorersRes] = await Promise.all([
+      fetch(`${baseUrl}/api/sports/competitions/${competitionId}`, { cache: 'no-store' }),
+      fetch(`${baseUrl}/api/sports/competitions/${competitionId}/standings`, { cache: 'no-store' }),
+      fetch(`${baseUrl}/api/sports/matches?competition=${competitionId}&limit=20`, { cache: 'no-store' }),
+      fetch(`${baseUrl}/api/sports/competitions/${competitionId}/top-scorers?limit=10`, { cache: 'no-store' }),
+    ]);
+
+    const [competition, standings, matches, topScorers] = await Promise.all([
+      competitionRes.json(),
+      standingsRes.json(),
+      matchesRes.json(),
+      topScorersRes.json(),
+    ]);
+
+    return {
+      competition: competition.success ? competition.data : null,
+      standings: standings.success ? standings.data : [],
+      matches: matches.success ? matches.data : [],
+      topScorers: topScorers.success ? topScorers.data : [],
+    };
+  } catch (error) {
+    console.error('Error fetching competition data:', error);
+    return null;
+  }
+}
+
+export default async function WomensCompetitionDetailPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const [activeTab, setActiveTab] = useState<'fixtures' | 'standings' | 'teams' | 'stats'>('fixtures');
+  const data = await getCompetitionData(params.id);
   
-  const competition = mockWomensCompetitions.find((c) => c.id === params.id);
-  
-  if (!competition) {
+  if (!data || !data.competition) {
     notFound();
   }
 
-  const competitionFixtures = mockWomensFixtures.filter(
-    (f) => f.competition.id === params.id
-  );
+  const { competition, standings, matches, topScorers } = data;
 
   return (
     <main className="bg-background">
@@ -34,31 +56,32 @@ export default function WomensCompetitionDetailPage({
             { label: "Women's Sports", href: '/womens' },
             { label: 'Soccer', href: '/womens/soccer' },
             { label: 'Competitions', href: '/womens/soccer/competitions' },
-            { label: competition.name, href: `/womens/soccer/competitions/${params.id}`, current: true },
+            { label: competition.Competition_Name__c || competition.Name || '', href: `/womens/soccer/competitions/${params.id}`, current: true },
           ]}
         />
 
         {/* Competition Header */}
         <section className="mb-8 rounded-3xl bg-white border border-gray-200 p-8">
           <div className="flex items-center gap-6">
-            {competition.logoUrl && (
+            {competition.Logo_URL__c && (
               <div className="relative h-24 w-24">
                 <Image
-                  src={competition.logoUrl}
-                  alt={competition.name}
+                  src={competition.Logo_URL__c}
+                  alt={competition.Competition_Name__c || competition.Name || ''}
                   fill
                   className="object-contain"
                 />
               </div>
             )}
             <div className="flex-1">
-              <h1 className="text-4xl font-bold mb-2">{competition.name}</h1>
+              <h1 className="text-4xl font-bold mb-2">{competition.Competition_Name__c || competition.Name}</h1>
               <p className="text-lg text-gray-600">
-                {competition.country} • {competition.season}
+                {competition.Country__c && `${competition.Country__c} • `}
+                {competition.Season__r?.Name}
               </p>
-              {competition.numberOfTeams && (
+              {competition.Tier__c && (
                 <p className="text-sm text-gray-500 mt-2">
-                  {competition.numberOfTeams} Teams
+                  {competition.Tier__c}
                 </p>
               )}
             </div>
@@ -68,89 +91,143 @@ export default function WomensCompetitionDetailPage({
           </div>
         </section>
 
-        {/* Tabs */}
-        <div className="mb-8">
-          <div className="flex gap-2 border-b border-gray-200">
-            <button
-              onClick={() => setActiveTab('fixtures')}
-              className={`px-6 py-3 text-base font-medium transition-all relative ${
-                activeTab === 'fixtures' ? 'text-black' : 'text-gray-500 hover:text-black'
-              }`}
-            >
-              Fixtures
-              {activeTab === 'fixtures' && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black"></div>
-              )}
-            </button>
-            <button
-              onClick={() => setActiveTab('standings')}
-              className={`px-6 py-3 text-base font-medium transition-all relative ${
-                activeTab === 'standings' ? 'text-black' : 'text-gray-500 hover:text-black'
-              }`}
-            >
-              Standings
-              {activeTab === 'standings' && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black"></div>
-              )}
-            </button>
-            <button
-              onClick={() => setActiveTab('teams')}
-              className={`px-6 py-3 text-base font-medium transition-all relative ${
-                activeTab === 'teams' ? 'text-black' : 'text-gray-500 hover:text-black'
-              }`}
-            >
-              Teams
-              {activeTab === 'teams' && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black"></div>
-              )}
-            </button>
-            <button
-              onClick={() => setActiveTab('stats')}
-              className={`px-6 py-3 text-base font-medium transition-all relative ${
-                activeTab === 'stats' ? 'text-black' : 'text-gray-500 hover:text-black'
-              }`}
-            >
-              Stats
-              {activeTab === 'stats' && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black"></div>
-              )}
-            </button>
-          </div>
-        </div>
+        {/* League Standings */}
+        {standings.length > 0 && (
+          <section className="mb-8">
+            <h3 className="text-2xl font-bold mb-6">Standings</h3>
+            <div className="rounded-3xl bg-white border border-gray-200 p-6 overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-3 px-2 w-12">#</th>
+                    <th className="text-left py-3 px-4">Team</th>
+                    <th className="text-center py-3 px-2 w-16">P</th>
+                    <th className="text-center py-3 px-2 w-16">W</th>
+                    <th className="text-center py-3 px-2 w-16">D</th>
+                    <th className="text-center py-3 px-2 w-16">L</th>
+                    <th className="text-center py-3 px-2 w-20">GD</th>
+                    <th className="text-center py-3 px-2 w-20 font-bold">Pts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {standings.map((standing: any, index: number) => (
+                    <tr key={standing.Id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="py-3 px-2 font-medium">{standing.League_Position__c || index + 1}</td>
+                      <td className="py-3 px-4">
+                        <Link href={`/womens/soccer/teams/${standing.Team__r?.Id}`} className="flex items-center gap-3 hover:underline">
+                          {standing.Team__r?.Logo_Url__c && (
+                            <Image
+                              src={standing.Team__r.Logo_Url__c}
+                              alt={standing.Team__r.Name || ''}
+                              width={24}
+                              height={24}
+                            />
+                          )}
+                          <span className="font-medium">{standing.Team__r?.Name}</span>
+                        </Link>
+                      </td>
+                      <td className="text-center py-3 px-2">{standing.Matches_Played__c || 0}</td>
+                      <td className="text-center py-3 px-2">{standing.Wins__c || 0}</td>
+                      <td className="text-center py-3 px-2">{standing.Draws__c || 0}</td>
+                      <td className="text-center py-3 px-2">{standing.Losses__c || 0}</td>
+                      <td className="text-center py-3 px-2">{standing.Goal_Difference__c || 0}</td>
+                      <td className="text-center py-3 px-2 font-bold">{standing.Points__c || 0}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
 
-        {/* Tab Content */}
-        {activeTab === 'fixtures' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {competitionFixtures.map((fixture) => (
-              <FixtureCard key={fixture.id} fixture={fixture} />
-            ))}
-            {competitionFixtures.length === 0 && (
-              <div className="col-span-full text-center py-12 text-gray-500">
-                No fixtures available
+        {/* Top Scorers */}
+        {topScorers.length > 0 && (
+          <section className="mb-8">
+            <h3 className="text-2xl font-bold mb-6">Top Scorers</h3>
+            <div className="rounded-3xl bg-white border border-gray-200 p-6">
+              <div className="space-y-3">
+                {topScorers.map((scorer: any, index: number) => (
+                  <Link
+                    key={scorer.Id}
+                    href={`/womens/soccer/players/${scorer.Player__r?.Id}`}
+                    className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className="text-xl font-bold text-gray-400 w-8">{index + 1}</span>
+                      {scorer.Player__r?.Profile_Image_URL__c && (
+                        <Image
+                          src={scorer.Player__r.Profile_Image_URL__c}
+                          alt={scorer.Player__r.Name || ''}
+                          width={40}
+                          height={40}
+                          className="rounded-full"
+                        />
+                      )}
+                      <div>
+                        <div className="font-bold">{scorer.Player__r?.Name}</div>
+                        <div className="text-sm text-gray-600">{scorer.Team__r?.Name}</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold">{scorer.Goals__c || 0}</div>
+                      <div className="text-xs text-gray-600">goals</div>
+                    </div>
+                  </Link>
+                ))}
               </div>
-            )}
-          </div>
+            </div>
+          </section>
         )}
 
-        {activeTab === 'standings' && (
-          <div className="rounded-3xl bg-white border border-gray-200 p-8">
-            <p className="text-center text-gray-500">Standings coming soon</p>
-          </div>
-        )}
-
-        {activeTab === 'teams' && (
-          <div className="rounded-3xl bg-white border border-gray-200 p-8">
-            <p className="text-center text-gray-500">Teams list coming soon</p>
-          </div>
-        )}
-
-        {activeTab === 'stats' && (
-          <div className="rounded-3xl bg-white border border-gray-200 p-8">
-            <p className="text-center text-gray-500">Statistics coming soon</p>
-          </div>
+        {/* Fixtures */}
+        {matches.length > 0 && (
+          <section className="mb-8">
+            <h3 className="text-2xl font-bold mb-6">Fixtures & Results</h3>
+            <div className="space-y-4">
+              {matches.map((match: any) => (
+                <Link
+                  key={match.Id}
+                  href={`/womens/soccer/fixtures/${match.Id}`}
+                  className="block rounded-3xl bg-white border border-gray-200 p-6 hover:border-black transition-colors"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3 flex-1">
+                      {match.Home_Team__r?.Logo_Url__c && (
+                        <Image
+                          src={match.Home_Team__r.Logo_Url__c}
+                          alt={match.Home_Team__r.Name || ''}
+                          width={32}
+                          height={32}
+                        />
+                      )}
+                      <span className="font-medium">{match.Home_Team__r?.Abbreviation__c || match.Home_Team__r?.Name}</span>
+                    </div>
+                    <span className="text-xl font-bold mx-4">{match.Home_Score__c ?? '-'}</span>
+                  </div>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3 flex-1">
+                      {match.Away_Team__r?.Logo_Url__c && (
+                        <Image
+                          src={match.Away_Team__r.Logo_Url__c}
+                          alt={match.Away_Team__r.Name || ''}
+                          width={32}
+                          height={32}
+                        />
+                      )}
+                      <span className="font-medium">{match.Away_Team__r?.Abbreviation__c || match.Away_Team__r?.Name}</span>
+                    </div>
+                    <span className="text-xl font-bold mx-4">{match.Away_Score__c ?? '-'}</span>
+                  </div>
+                  <div className="text-sm text-gray-600 border-t border-gray-100 pt-4">
+                    {match.Match_Date__c && format(new Date(match.Match_Date__c), 'MMM d, yyyy • h:mm a')}
+                    {match.Match_Status__c && ` • ${match.Match_Status__c}`}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
         )}
       </div>
     </main>
   );
 }
-
