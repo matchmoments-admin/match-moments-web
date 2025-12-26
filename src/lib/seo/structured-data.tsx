@@ -21,11 +21,11 @@ export function generateSportsEventSchema(match: {
   Home_Team__r: { Name: string; Logo_Url__c?: string };
   Away_Team__r: { Name: string; Logo_Url__c?: string };
   Competition__r?: { Name: string };
-  Match_Date__c: string;
+  Match_Date_Time__c: string;
   Venue__c?: string;
-  Home_Score__c?: number;
-  Away_Score__c?: number;
-  Match_Status__c?: string;
+  Home_Score_Final__c?: number;
+  Away_Score_Final__c?: number;
+  Status__c?: string;
 }) {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://matchmoments.co';
   
@@ -34,8 +34,8 @@ export function generateSportsEventSchema(match: {
     '@type': 'SportsEvent',
     name: `${match.Home_Team__r.Name} vs ${match.Away_Team__r.Name}`,
     description: `${match.Competition__r?.Name || 'Match'}: ${match.Home_Team__r.Name} vs ${match.Away_Team__r.Name}`,
-    startDate: match.Match_Date__c,
-    eventStatus: match.Match_Status__c === 'Finished' 
+    startDate: match.Match_Date_Time__c,
+    eventStatus: match.Status__c === 'Finished' 
       ? 'https://schema.org/EventScheduled' 
       : 'https://schema.org/EventScheduled',
     homeTeam: {
@@ -48,9 +48,9 @@ export function generateSportsEventSchema(match: {
       name: match.Away_Team__r.Name,
       logo: match.Away_Team__r.Logo_Url__c,
     },
-    ...(match.Home_Score__c !== undefined && {
-      homeTeamScore: match.Home_Score__c,
-      awayTeamScore: match.Away_Score__c,
+    ...(match.Home_Score_Final__c !== undefined && {
+      homeTeamScore: match.Home_Score_Final__c,
+      awayTeamScore: match.Away_Score_Final__c,
     }),
     ...(match.Venue__c && {
       location: {

@@ -78,14 +78,14 @@ export async function GET(
         // Get match statistics
         const matches = await client.query<Match>(`
           SELECT 
-            Id, Home_Score__c, Away_Score__c, Status__c
+            Id, Home_Score_Final__c, Away_Score_Final__c, Status__c
           FROM Match__c
           WHERE Competition__c IN (${competitionIdsString})
         `);
 
         const totalMatches = matches.length;
         const totalGoals = matches.reduce((sum: number, match: Match) => {
-          return sum + (match.Home_Score__c || 0) + (match.Away_Score__c || 0);
+          return sum + (match.Home_Score_Final__c || 0) + (match.Away_Score_Final__c || 0);
         }, 0);
 
         return {

@@ -70,13 +70,13 @@ export function generateMatchMetadata(match: {
   Home_Team__r: { Name: string };
   Away_Team__r: { Name: string };
   Competition__r?: { Name: string };
-  Match_Date__c: string;
-  Home_Score__c?: number;
-  Away_Score__c?: number;
+  Match_Date_Time__c: string;
+  Home_Score_Final__c?: number;
+  Away_Score_Final__c?: number;
 }) {
   const title = `${match.Home_Team__r.Name} vs ${match.Away_Team__r.Name}`;
-  const score = match.Home_Score__c !== undefined && match.Away_Score__c !== undefined
-    ? ` ${match.Home_Score__c}-${match.Away_Score__c}`
+  const score = match.Home_Score_Final__c !== undefined && match.Away_Score_Final__c !== undefined
+    ? ` ${match.Home_Score_Final__c}-${match.Away_Score_Final__c}`
     : '';
   const competition = match.Competition__r?.Name ? ` - ${match.Competition__r.Name}` : '';
   
