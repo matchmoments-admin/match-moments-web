@@ -30,13 +30,13 @@ export async function getMatches(filters: MatchFilters = {}) {
         conditions.push(`(Home_Team__c = '${filters.team}' OR Away_Team__c = '${filters.team}')`);
       }
       if (filters.status) {
-        conditions.push(`Match_Status__c = '${filters.status}'`);
+        conditions.push(`Status__c = '${filters.status}'`);
       }
       if (filters.startDate) {
-        conditions.push(`Match_Date__c >= ${filters.startDate}`);
+        conditions.push(`Match_Date_Time__c >= ${filters.startDate}`);
       }
       if (filters.endDate) {
-        conditions.push(`Match_Date__c <= ${filters.endDate}`);
+        conditions.push(`Match_Date_Time__c <= ${filters.endDate}`);
       }
       
       const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
@@ -44,15 +44,15 @@ export async function getMatches(filters: MatchFilters = {}) {
 
       const matches = await client.query<Match>(`
         SELECT 
-          Id, Name, Match_Date__c, Match_Status__c, Venue__c,
-          Home_Score__c, Away_Score__c, Attendance__c, Match_Week__c,
+          Id, Name, Match_Date_Time__c, Status__c, Venue__c,
+          Home_Score_Final__c, Away_Score_Final__c, Attendance__c,
           Home_Team__r.Id, Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
           Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
-          Competition__r.Id, Competition__r.Name, Competition__r.Logo_URL__c, Competition__r.Sport__c,
+          Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, Competition__r.Sport__c,
           Season__r.Id, Season__r.Name
         FROM Match__c
         ${whereClause}
-        ORDER BY Match_Date__c DESC
+        ORDER BY Match_Date_Time__c DESC
         LIMIT ${limit}
       `);
 
@@ -74,14 +74,14 @@ export async function getMatchById(matchId: string) {
       // Fetch match details
       const matches = await client.query<Match>(`
         SELECT 
-          Id, Name, Match_Date__c, Match_Status__c, Venue__c, Attendance__c,
-          Home_Score__c, Away_Score__c, Match_Week__c, Neutral_Venue__c,
-          Referee__c, Weather_Conditions__c,
+          Id, Name, Match_Date_Time__c, Status__c, Venue__c, Attendance__c,
+          Home_Score_Final__c, Away_Score_Final__c, Home_Sub_Score__c, Away_Sub_Score__c, 
+          Neutral_Venue__c, Referee__c, Weather_Conditions__c, ESPN_Event_ID__c,
           Home_Team__r.Id, Home_Team__r.Name, Home_Team__r.Logo_Url__c, 
           Home_Team__r.Primary_Color__c, Home_Team__r.Abbreviation__c,
           Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, 
           Away_Team__r.Primary_Color__c, Away_Team__r.Abbreviation__c,
-          Competition__r.Id, Competition__r.Name, Competition__r.Sport__c, 
+          Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Sport__c, 
           Competition__r.Logo_URL__c, Competition__r.Gender_Class__c,
           Season__r.Id, Season__r.Name
         FROM Match__c
@@ -213,14 +213,14 @@ export async function getLiveMatches() {
 
       const matches = await client.query<Match>(`
         SELECT 
-          Id, Name, Match_Date__c, Match_Status__c, Venue__c,
-          Home_Score__c, Away_Score__c,
+          Id, Name, Match_Date_Time__c, Status__c, Venue__c,
+          Home_Score_Final__c, Away_Score_Final__c,
           Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
           Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
-          Competition__r.Name, Competition__r.Logo_URL__c, Competition__r.Sport__c
+          Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, Competition__r.Sport__c
         FROM Match__c
-        WHERE Match_Status__c LIKE 'Live%'
-        ORDER BY Match_Date__c DESC
+        WHERE Status__c LIKE 'Live%'
+        ORDER BY Match_Date_Time__c DESC
         LIMIT 20
       `);
 
@@ -243,15 +243,15 @@ export async function getUpcomingMatches(days: number = 7) {
 
       const matches = await client.query<Match>(`
         SELECT 
-          Id, Name, Match_Date__c, Match_Status__c, Venue__c,
+          Id, Name, Match_Date_Time__c, Status__c, Venue__c,
           Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
           Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
-          Competition__r.Name, Competition__r.Logo_URL__c, Competition__r.Sport__c
+          Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, Competition__r.Sport__c
         FROM Match__c
-        WHERE Match_Date__c >= ${today}T00:00:00Z
-          AND Match_Date__c < ${futureDate}T23:59:59Z
-          AND Match_Status__c = 'Scheduled'
-        ORDER BY Match_Date__c ASC
+        WHERE Match_Date_Time__c >= ${today}T00:00:00Z
+          AND Match_Date_Time__c < ${futureDate}T23:59:59Z
+          AND Status__c = 'Scheduled'
+        ORDER BY Match_Date_Time__c ASC
         LIMIT 50
       `);
 
@@ -274,16 +274,16 @@ export async function getRecentMatches(days: number = 7) {
 
       const matches = await client.query<Match>(`
         SELECT 
-          Id, Name, Match_Date__c, Match_Status__c, Venue__c,
-          Home_Score__c, Away_Score__c,
+          Id, Name, Match_Date_Time__c, Status__c, Venue__c,
+          Home_Score_Final__c, Away_Score_Final__c,
           Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
           Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
-          Competition__r.Name, Competition__r.Logo_URL__c, Competition__r.Sport__c
+          Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, Competition__r.Sport__c
         FROM Match__c
-        WHERE Match_Date__c >= ${pastDate}T00:00:00Z
-          AND Match_Date__c < ${today}T23:59:59Z
-          AND Match_Status__c = 'Finished'
-        ORDER BY Match_Date__c DESC
+        WHERE Match_Date_Time__c >= ${pastDate}T00:00:00Z
+          AND Match_Date_Time__c < ${today}T23:59:59Z
+          AND Status__c = 'Finished'
+        ORDER BY Match_Date_Time__c DESC
         LIMIT 50
       `);
 
@@ -306,15 +306,15 @@ export async function getTodayMatches() {
 
       const matches = await client.query<Match>(`
         SELECT 
-          Id, Name, Match_Date__c, Match_Status__c, Venue__c,
-          Home_Score__c, Away_Score__c,
+          Id, Name, Match_Date_Time__c, Status__c, Venue__c,
+          Home_Score_Final__c, Away_Score_Final__c,
           Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
           Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
-          Competition__r.Name, Competition__r.Logo_URL__c, Competition__r.Sport__c
+          Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, Competition__r.Sport__c
         FROM Match__c
-        WHERE Match_Date__c >= ${today}T00:00:00Z
-          AND Match_Date__c < ${tomorrow}T00:00:00Z
-        ORDER BY Match_Date__c ASC
+        WHERE Match_Date_Time__c >= ${today}T00:00:00Z
+          AND Match_Date_Time__c < ${tomorrow}T00:00:00Z
+        ORDER BY Match_Date_Time__c ASC
       `);
 
       return matches;
@@ -344,13 +344,13 @@ export async function getMatchesByCompetition(competitionId: string, limit: numb
 
       const matches = await client.query<Match>(`
         SELECT 
-          Id, Name, Match_Date__c, Match_Status__c, Venue__c,
-          Home_Score__c, Away_Score__c, Match_Week__c,
+          Id, Name, Match_Date_Time__c, Status__c, Venue__c,
+          Home_Score_Final__c, Away_Score_Final__c,
           Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
           Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c
         FROM Match__c
         WHERE Competition__c = '${competitionId}'
-        ORDER BY Match_Date__c DESC
+        ORDER BY Match_Date_Time__c DESC
         LIMIT ${limit}
       `);
 

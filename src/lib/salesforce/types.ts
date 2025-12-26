@@ -181,8 +181,8 @@ export interface Contact extends SalesforceRecord {
   Profile_Image_URL__c?: string;
   Date_of_Birth__c?: string;
   Nationality__c?: string;
-  Height_cm__c?: number;
-  Weight_kg__c?: number;
+  Height__c?: number; // Changed from Height_cm__c
+  Weight__c?: number; // Changed from Weight_kg__c
   
   // Rollup fields
   Total_Awards__c?: number;
@@ -258,14 +258,14 @@ export interface Season extends SalesforceRecord {
  */
 export interface Competition extends SalesforceRecord {
   Season__c?: string; // Lookup to Season__c
-  ESPN_League_ID__c?: string; // External ID
-  Competition_Name__c?: string;
+  ESPN_League_ID__c?: string; // External ID - Use for display
   Sport__c?: string;
   Gender_Class__c?: string;
   Tier__c?: string; // Level 1, Level 2, Level 3, Cup, Tournament
   Country__c?: string;
   Competition_Type__c?: string;
   Logo_URL__c?: string;
+  Status__c?: string;
   
   // Relationships
   Season__r?: Season;
@@ -280,16 +280,20 @@ export interface Match extends SalesforceRecord {
   Competition__c?: string; // Lookup to Competition__c
   Season__c?: string; // Lookup to Season__c
   ESPN_Event_ID__c?: string; // External ID
-  Match_Date__c?: string;
-  Match_Status__c?: string;
-  Home_Score__c?: number;
-  Away_Score__c?: number;
+  Match_Date_Time__c?: string; // Changed from Match_Date__c
+  Status__c?: string; // Changed from Match_Status__c
+  Home_Score_Final__c?: number; // Changed from Home_Score__c
+  Away_Score_Final__c?: number; // Changed from Away_Score__c
+  Home_Sub_Score__c?: number;
+  Away_Sub_Score__c?: number;
   Neutral_Venue__c?: boolean;
   Venue__c?: string;
   Attendance__c?: number;
-  Match_Week__c?: number;
   Referee__c?: string;
   Weather_Conditions__c?: string;
+  Display_Score__c?: string;
+  Broadcast_URL__c?: string;
+  Current_Period__c?: string; // Lookup to Match_Period__c
   
   // Relationships
   Home_Team__r?: Account;
@@ -493,25 +497,23 @@ export interface Award extends SalesforceRecord {
  * Article__c - News, blogs, analysis, content
  */
 export interface Article extends SalesforceRecord {
-  Team__c?: string; // Lookup to Account
-  Competition__c?: string; // Lookup to Competition__c
-  Match__c?: string; // Lookup to Match__c
-  Player__c?: string; // Lookup to Contact
-  Article_Type__c?: string; // News, Blog, Preview, Recap, Analysis
+  Related_Team__c?: string; // Changed from Team__c
+  Related_Match__c?: string; // Changed from Match__c
+  Related_Player__c?: string; // Changed from Player__c
   Heading__c?: string;
   Body__c?: string; // Long Text
   Is_Published__c?: boolean;
+  Article_Date__c?: string; // Changed from Published_Date__c
   Article_URL__c?: string;
   Source__c?: string;
-  Thumbnail_URL__c?: string;
-  Published_Date__c?: string;
-  Author__c?: string;
+  Sport_Type__c?: string;
+  Header_Image_URL__c?: string; // Changed from Thumbnail_URL__c
+  Reading_Time__c?: number;
   
   // Relationships
-  Team__r?: Account;
-  Competition__r?: Competition;
-  Match__r?: Match;
-  Player__r?: Contact;
+  Related_Team__r?: Account; // Changed from Team__r
+  Related_Match__r?: Match; // Changed from Match__r
+  Related_Player__r?: Contact; // Changed from Player__r
 }
 
 /**

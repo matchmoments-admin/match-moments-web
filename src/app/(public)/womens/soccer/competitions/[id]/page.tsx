@@ -57,7 +57,7 @@ export default async function WomensCompetitionDetailPage({
             { label: "Women's Sports", href: '/womens' },
             { label: 'Soccer', href: '/womens/soccer' },
             { label: 'Competitions', href: '/womens/soccer/competitions' },
-            { label: competition.Competition_Name__c || competition.Name || '', href: `/womens/soccer/competitions/${id}`, current: true },
+            { label: competition.Name || '', href: `/womens/soccer/competitions/${id}`, current: true },
           ]}
         />
 
@@ -68,14 +68,14 @@ export default async function WomensCompetitionDetailPage({
               <div className="relative h-24 w-24">
                 <Image
                   src={competition.Logo_URL__c}
-                  alt={competition.Competition_Name__c || competition.Name || ''}
+                  alt={competition.Name || ''}
                   fill
                   className="object-contain"
                 />
               </div>
             )}
             <div className="flex-1">
-              <h1 className="text-4xl font-bold mb-2">{competition.Competition_Name__c || competition.Name}</h1>
+              <h1 className="text-4xl font-bold mb-2">{competition.Name}</h1>
               <p className="text-lg text-gray-600">
                 {competition.Country__c && `${competition.Country__c} • `}
                 {competition.Season__r?.Name}
@@ -203,7 +203,7 @@ export default async function WomensCompetitionDetailPage({
                       )}
                       <span className="font-medium">{match.Home_Team__r?.Abbreviation__c || match.Home_Team__r?.Name}</span>
                     </div>
-                    <span className="text-xl font-bold mx-4">{match.Home_Score__c ?? '-'}</span>
+                    <span className="text-xl font-bold mx-4">{match.Home_Score_Final__c ?? '-'}</span>
                   </div>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3 flex-1">
@@ -217,11 +217,11 @@ export default async function WomensCompetitionDetailPage({
                       )}
                       <span className="font-medium">{match.Away_Team__r?.Abbreviation__c || match.Away_Team__r?.Name}</span>
                     </div>
-                    <span className="text-xl font-bold mx-4">{match.Away_Score__c ?? '-'}</span>
+                    <span className="text-xl font-bold mx-4">{match.Away_Score_Final__c ?? '-'}</span>
                   </div>
                   <div className="text-sm text-gray-600 border-t border-gray-100 pt-4">
-                    {match.Match_Date__c && format(new Date(match.Match_Date__c), 'MMM d, yyyy • h:mm a')}
-                    {match.Match_Status__c && ` • ${match.Match_Status__c}`}
+                    {match.Match_Date_Time__c && format(new Date(match.Match_Date_Time__c), 'MMM d, yyyy • h:mm a')}
+                    {match.Status__c && ` • ${match.Status__c}`}
                   </div>
                 </Link>
               ))}

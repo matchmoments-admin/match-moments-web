@@ -11,9 +11,9 @@ interface Match {
   Id: string;
   Home_Team__r: { Id: string; Name: string; Logo_Url__c?: string };
   Away_Team__r: { Id: string; Name: string; Logo_Url__c?: string };
-  Home_Score__c: number;
-  Away_Score__c: number;
-  Match_Status__c: string;
+  Home_Score_Final__c: number;
+  Away_Score_Final__c: number;
+  Status__c: string;
   Competition__r?: { Name: string };
   Sport__c?: string;
   Gender_Class__c?: string;
@@ -160,7 +160,7 @@ export function LiveScoresWidget({
                     {match.Competition__r?.Name}
                   </div>
                   <LiveIndicator 
-                    status={match.Match_Status__c} 
+                    status={match.Status__c} 
                     showPulse={true}
                   />
                 </div>
@@ -185,7 +185,7 @@ export function LiveScoresWidget({
                   {/* Score */}
                   <div className="text-center">
                     <div className="text-2xl font-bold">
-                      {match.Home_Score__c || 0} - {match.Away_Score__c || 0}
+                      {match.Home_Score_Final__c || 0} - {match.Away_Score_Final__c || 0}
                     </div>
                   </div>
 

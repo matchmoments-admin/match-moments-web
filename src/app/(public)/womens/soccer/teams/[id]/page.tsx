@@ -214,7 +214,7 @@ export default async function WomensTeamDetailPage({
                       )}
                       <span className="font-medium">{match.Home_Team__r?.Name}</span>
                     </div>
-                    <span className="text-xl font-bold mx-4">{match.Home_Score__c ?? '-'}</span>
+                    <span className="text-xl font-bold mx-4">{match.Home_Score_Final__c ?? '-'}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3 flex-1">
@@ -228,12 +228,12 @@ export default async function WomensTeamDetailPage({
                       )}
                       <span className="font-medium">{match.Away_Team__r?.Name}</span>
                     </div>
-                    <span className="text-xl font-bold mx-4">{match.Away_Score__c ?? '-'}</span>
+                    <span className="text-xl font-bold mx-4">{match.Away_Score_Final__c ?? '-'}</span>
                   </div>
                   <div className="text-sm text-gray-600 border-t border-gray-100 pt-4 mt-4">
                     <div>{match.Competition__r?.Name}</div>
-                    {match.Match_Date__c && (
-                      <div>{format(new Date(match.Match_Date__c), 'MMM d, yyyy')}</div>
+                    {match.Match_Date_Time__c && (
+                      <div>{format(new Date(match.Match_Date_Time__c), 'MMM d, yyyy')}</div>
                     )}
                   </div>
                 </Link>

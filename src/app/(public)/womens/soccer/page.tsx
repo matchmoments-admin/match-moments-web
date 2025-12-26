@@ -122,7 +122,7 @@ export default async function WomensSoccerPage() {
                       className="mb-4"
                     />
                   )}
-                  <h3 className="text-xl font-bold mb-2">{competition.Competition_Name__c || competition.Name}</h3>
+                  <h3 className="text-xl font-bold mb-2">{competition.Name}</h3>
                   {competition.Country__c && (
                     <p className="text-sm text-gray-600">{competition.Country__c}</p>
                   )}
@@ -159,7 +159,7 @@ export default async function WomensSoccerPage() {
                       )}
                       <span className="font-medium">{match.Home_Team__r?.Abbreviation__c || match.Home_Team__r?.Name}</span>
                     </div>
-                    <span className="text-xl font-bold">{match.Home_Score__c || 0}</span>
+                    <span className="text-xl font-bold">{match.Home_Score_Final__c || 0}</span>
                   </div>
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
@@ -173,12 +173,12 @@ export default async function WomensSoccerPage() {
                       )}
                       <span className="font-medium">{match.Away_Team__r?.Abbreviation__c || match.Away_Team__r?.Name}</span>
                     </div>
-                    <span className="text-xl font-bold">{match.Away_Score__c || 0}</span>
+                    <span className="text-xl font-bold">{match.Away_Score_Final__c || 0}</span>
                   </div>
                   <div className="text-sm text-gray-600 border-t border-gray-100 pt-4">
                     <div>{match.Competition__r?.Name}</div>
-                    {match.Match_Date__c && (
-                      <div>{format(new Date(match.Match_Date__c), 'MMM d, yyyy')}</div>
+                    {match.Match_Date_Time__c && (
+                      <div>{format(new Date(match.Match_Date_Time__c), 'MMM d, yyyy')}</div>
                     )}
                   </div>
                 </Link>

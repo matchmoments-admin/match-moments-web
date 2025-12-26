@@ -54,8 +54,8 @@ export default async function WomensFixtureDetailPage({
   const competition = matchData.Competition__r;
   
   // Determine if match is live for auto-refresh
-  const isLive = matchData.Match_Status__c?.toLowerCase() === 'live' || 
-                 matchData.Match_Status__c?.toLowerCase() === 'in progress';
+  const isLive = matchData.Status__c?.toLowerCase() === 'live' || 
+                 matchData.Status__c?.toLowerCase() === 'in progress';
 
   // Generate structured data for SEO
   const sportsEventSchema = generateSportsEventSchema(matchData);
@@ -133,16 +133,16 @@ export default async function WomensFixtureDetailPage({
             
             <div className="px-8 text-center">
               <div className="text-6xl font-bold mb-2">
-                {matchData.Home_Score__c || 0} - {matchData.Away_Score__c || 0}
+                {matchData.Home_Score_Final__c || 0} - {matchData.Away_Score_Final__c || 0}
               </div>
               <div className="flex items-center justify-center gap-2 mt-2">
                 <LiveIndicator 
-                  status={matchData.Match_Status__c || 'Scheduled'} 
+                  status={matchData.Status__c || 'Scheduled'} 
                   showPulse={isLive}
                 />
               </div>
               <div className="text-sm text-gray-600 mt-1">
-                {matchData.Match_Date__c && format(new Date(matchData.Match_Date__c), 'MMM d, yyyy • h:mm a')}
+                {matchData.Match_Date_Time__c && format(new Date(matchData.Match_Date_Time__c), 'MMM d, yyyy • h:mm a')}
               </div>
             </div>
             
@@ -163,7 +163,7 @@ export default async function WomensFixtureDetailPage({
           </div>
 
           <div className="text-center text-sm text-gray-600 border-t border-gray-200 pt-4">
-            {matchData.Match_Date__c && format(new Date(matchData.Match_Date__c), 'MMMM d, yyyy • h:mm a')}
+            {matchData.Match_Date_Time__c && format(new Date(matchData.Match_Date_Time__c), 'MMMM d, yyyy • h:mm a')}
             {matchData.Venue__c && ` • ${matchData.Venue__c}`}
             {matchData.Attendance__c && ` • Attendance: ${matchData.Attendance__c.toLocaleString()}`}
           </div>
@@ -196,7 +196,7 @@ export default async function WomensFixtureDetailPage({
                         </td>
                       ))}
                       <td className="text-center py-3 px-4 font-bold">
-                        {matchData.Home_Score__c || 0}
+                        {matchData.Home_Score_Final__c || 0}
                       </td>
                     </tr>
                     <tr>
@@ -207,7 +207,7 @@ export default async function WomensFixtureDetailPage({
                         </td>
                       ))}
                       <td className="text-center py-3 px-4 font-bold">
-                        {matchData.Away_Score__c || 0}
+                        {matchData.Away_Score_Final__c || 0}
                       </td>
                     </tr>
                   </tbody>

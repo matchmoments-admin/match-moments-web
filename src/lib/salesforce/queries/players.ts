@@ -32,7 +32,7 @@ export async function getPlayers(filters: PlayerFilters = {}) {
           Id, Name, FirstName, LastName, ESPN_Player_ID__c,
           Position__c, Jersey_Number__c, Player_Role__c,
           Profile_Image_URL__c, Date_of_Birth__c, Nationality__c,
-          Height_cm__c, Weight_kg__c,
+          Height__c, Weight__c,
           Total_Awards__c, Total_Individual_Awards__c, Total_Team_Trophies__c
         FROM Contact
         ${whereClause}
@@ -60,7 +60,7 @@ export async function getPlayerById(playerId: string) {
           Id, Name, FirstName, LastName, ESPN_Player_ID__c,
           Position__c, Jersey_Number__c, Player_Role__c,
           Profile_Image_URL__c, Date_of_Birth__c, Nationality__c,
-          Height_cm__c, Weight_kg__c, Email, Phone,
+          Height__c, Weight__c, Email, Phone,
           Total_Awards__c, Total_Individual_Awards__c, Total_Team_Trophies__c
         FROM Contact
         WHERE Id = '${playerId}'
@@ -231,7 +231,7 @@ export async function getPlayerByESPNId(espnPlayerId: string) {
           Id, Name, FirstName, LastName, ESPN_Player_ID__c,
           Position__c, Jersey_Number__c, Player_Role__c,
           Profile_Image_URL__c, Date_of_Birth__c, Nationality__c,
-          Height_cm__c, Weight_kg__c
+          Height__c, Weight__c
         FROM Contact
         WHERE ESPN_Player_ID__c = '${espnPlayerId}'
         LIMIT 1

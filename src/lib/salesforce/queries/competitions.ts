@@ -38,10 +38,10 @@ export async function getCompetitions(filters: CompetitionFilters = {}) {
 
       const competitions = await client.query<Competition>(`
         SELECT 
-          Id, Name, Competition_Name__c, ESPN_League_ID__c,
+          Id, Name, ESPN_League_ID__c,
           Sport__c, Gender_Class__c, Tier__c, Country__c,
-          Competition_Type__c, Logo_URL__c,
-          Season__r.Id, Season__r.Name, Season__r.Start_Date__c, Season__r.End_Date__c
+          Competition_Type__c, Logo_URL__c, Status__c,
+          Season__c, Season__r.Id, Season__r.Name, Season__r.Start_Date__c, Season__r.End_Date__c
         FROM Competition__c
         ${whereClause}
         ORDER BY Tier__c ASC NULLS LAST, Name ASC
@@ -65,10 +65,10 @@ export async function getCompetitionById(competitionId: string) {
 
       const competitions = await client.query<Competition>(`
         SELECT 
-          Id, Name, Competition_Name__c, ESPN_League_ID__c,
+          Id, Name, ESPN_League_ID__c,
           Sport__c, Gender_Class__c, Tier__c, Country__c,
-          Competition_Type__c, Logo_URL__c,
-          Season__r.Id, Season__r.Name, Season__r.Start_Date__c, Season__r.End_Date__c
+          Competition_Type__c, Logo_URL__c, Status__c,
+          Season__c, Season__r.Id, Season__r.Name, Season__r.Start_Date__c, Season__r.End_Date__c
         FROM Competition__c
         WHERE Id = '${competitionId}'
         LIMIT 1
@@ -124,10 +124,10 @@ export async function getCompetitionByESPNId(espnLeagueId: string) {
 
       const competitions = await client.query<Competition>(`
         SELECT 
-          Id, Name, Competition_Name__c, ESPN_League_ID__c,
+          Id, Name, ESPN_League_ID__c,
           Sport__c, Gender_Class__c, Tier__c, Country__c,
-          Competition_Type__c, Logo_URL__c,
-          Season__r.Id, Season__r.Name
+          Competition_Type__c, Logo_URL__c, Status__c,
+          Season__c, Season__r.Id, Season__r.Name
         FROM Competition__c
         WHERE ESPN_League_ID__c = '${espnLeagueId}'
         LIMIT 1

@@ -24,16 +24,13 @@ export async function getArticles(filters: ArticleFilters = {}) {
       }
       
       if (filters.team) {
-        conditions.push(`Team__c = '${filters.team}'`);
-      }
-      if (filters.competition) {
-        conditions.push(`Competition__c = '${filters.competition}'`);
+        conditions.push(`Related_Team__c = '${filters.team}'`);
       }
       if (filters.match) {
-        conditions.push(`Match__c = '${filters.match}'`);
+        conditions.push(`Related_Match__c = '${filters.match}'`);
       }
       if (filters.player) {
-        conditions.push(`Player__c = '${filters.player}'`);
+        conditions.push(`Related_Player__c = '${filters.player}'`);
       }
       if (filters.articleType) {
         conditions.push(`Article_Type__c = '${filters.articleType}'`);
@@ -44,16 +41,16 @@ export async function getArticles(filters: ArticleFilters = {}) {
 
       const articles = await client.query<Article>(`
         SELECT 
-          Id, Name, Heading__c, Body__c, Article_Type__c,
-          Is_Published__c, Published_Date__c, Author__c,
-          Article_URL__c, Source__c, Thumbnail_URL__c,
-          Team__r.Id, Team__r.Name, Team__r.Logo_Url__c,
-          Competition__r.Id, Competition__r.Name,
-          Match__r.Id, Match__r.Name,
-          Player__r.Id, Player__r.Name, Player__r.Profile_Image_URL__c
+          Id, Name, Heading__c, Body__c,
+          Article_Date__c, Is_Published__c,
+          Article_URL__c, Source__c, Sport_Type__c,
+          Header_Image_URL__c, Reading_Time__c,
+          Related_Match__c, Related_Match__r.Id, Related_Match__r.Name, Related_Match__r.Match_Date_Time__c,
+          Related_Team__c, Related_Team__r.Id, Related_Team__r.Name, Related_Team__r.Logo_Url__c,
+          Related_Player__c, Related_Player__r.Id, Related_Player__r.Name, Related_Player__r.Profile_Image_URL__c
         FROM Article__c
         ${whereClause}
-        ORDER BY Published_Date__c DESC NULLS LAST, CreatedDate DESC
+        ORDER BY Article_Date__c DESC NULLS LAST, CreatedDate DESC
         LIMIT ${limit}
       `);
 
@@ -74,13 +71,13 @@ export async function getArticleById(articleId: string) {
 
       const articles = await client.query<Article>(`
         SELECT 
-          Id, Name, Heading__c, Body__c, Article_Type__c,
-          Is_Published__c, Published_Date__c, Author__c,
-          Article_URL__c, Source__c, Thumbnail_URL__c,
-          Team__r.Id, Team__r.Name, Team__r.Logo_Url__c,
-          Competition__r.Id, Competition__r.Name,
-          Match__r.Id, Match__r.Name, Match__r.Match_Date__c,
-          Player__r.Id, Player__r.Name, Player__r.Profile_Image_URL__c
+          Id, Name, Heading__c, Body__c,
+          Article_Date__c, Is_Published__c,
+          Article_URL__c, Source__c, Sport_Type__c,
+          Header_Image_URL__c, Reading_Time__c,
+          Related_Match__c, Related_Match__r.Id, Related_Match__r.Name, Related_Match__r.Match_Date_Time__c,
+          Related_Team__c, Related_Team__r.Id, Related_Team__r.Name, Related_Team__r.Logo_Url__c,
+          Related_Player__c, Related_Player__r.Id, Related_Player__r.Name, Related_Player__r.Profile_Image_URL__c
         FROM Article__c
         WHERE Id = '${articleId}'
         LIMIT 1
