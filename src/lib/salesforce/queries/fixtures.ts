@@ -1,5 +1,6 @@
 import { getSalesforceClient } from '../client';
-import type { Fixture, FixturePeriod, CommentaryEvent } from '../types';
+import type { SF_Match__c, SF_Match_Period__c } from '@/types/salesforce/raw';
+import type { CommentaryEvent } from '../types';
 import { getCached } from '../../cache/redis';
 import { CacheKeys, CacheStrategy } from '../../cache/strategies';
 
@@ -14,19 +15,19 @@ export async function getTodayFixtures() {
       const today = new Date().toISOString().split('T')[0];
       const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
-      const fixtures = await client.query<Fixture>(`
+      const fixtures = await client.query<SF_Match__c>(`
         SELECT 
-          Id, Name, Fixture_DateTime__c, Status__c, Venue__c,
+          Id, Name, Match_Date_Time__c, Status__c, Venue__c,
           Home_Score_Final__c, Away_Score_Final__c,
-          Home_Team__r.Name, Home_Team__r.Logo_URL__c,
-          Away_Team__r.Name, Away_Team__r.Logo_URL__c,
+          Home_Team__r.Name, Home_Team__r.Logo_Url__c,
+          Away_Team__r.Name, Away_Team__r.Logo_Url__c,
           Competition__r.Name,
           Current_Period__r.Period_Type__c,
           Current_Period__r.Period_Number__c
-        FROM Fixture__c
-        WHERE Fixture_DateTime__c >= ${today}T00:00:00Z
-          AND Fixture_DateTime__c < ${tomorrow}T00:00:00Z
-        ORDER BY Fixture_DateTime__c ASC
+        FROM Match__c
+        WHERE Match_Date_Time__c >= ${today}T00:00:00Z
+          AND Match_Date_Time__c < ${tomorrow}T00:00:00Z
+        ORDER BY Match_Date_Time__c ASC
       `);
 
       return fixtures;
@@ -44,18 +45,18 @@ export async function getLiveFixtures() {
     async () => {
       const client = getSalesforceClient();
 
-      const fixtures = await client.query<Fixture>(`
+      const fixtures = await client.query<SF_Match__c>(`
         SELECT 
-          Id, Name, Fixture_DateTime__c, Status__c, Venue__c,
+          Id, Name, Match_Date_Time__c, Status__c, Venue__c,
           Home_Score_Final__c, Away_Score_Final__c,
-          Home_Team__r.Name, Home_Team__r.Logo_URL__c,
-          Away_Team__r.Name, Away_Team__r.Logo_URL__c,
+          Home_Team__r.Name, Home_Team__r.Logo_Url__c,
+          Away_Team__r.Name, Away_Team__r.Logo_Url__c,
           Competition__r.Name,
           Current_Period__r.Period_Type__c,
           Current_Period__r.Period_Number__c
-        FROM Fixture__c
+        FROM Match__c
         WHERE Status__c LIKE 'Live%'
-        ORDER BY Fixture_DateTime__c DESC
+        ORDER BY Match_Date_Time__c DESC
       `);
 
       return fixtures;
@@ -75,18 +76,18 @@ export async function getUpcomingFixtures(days: number = 7) {
       const today = new Date().toISOString().split('T')[0];
       const futureDate = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
-      const fixtures = await client.query<Fixture>(`
+      const fixtures = await client.query<SF_Match__c>(`
         SELECT 
-          Id, Name, Fixture_DateTime__c, Status__c, Venue__c,
+          Id, Name, Match_Date_Time__c, Status__c, Venue__c,
           Home_Score_Final__c, Away_Score_Final__c,
-          Home_Team__r.Name, Home_Team__r.Logo_URL__c,
-          Away_Team__r.Name, Away_Team__r.Logo_URL__c,
+          Home_Team__r.Name, Home_Team__r.Logo_Url__c,
+          Away_Team__r.Name, Away_Team__r.Logo_Url__c,
           Competition__r.Name
-        FROM Fixture__c
-        WHERE Fixture_DateTime__c >= ${today}T00:00:00Z
-          AND Fixture_DateTime__c < ${futureDate}T23:59:59Z
+        FROM Match__c
+        WHERE Match_Date_Time__c >= ${today}T00:00:00Z
+          AND Match_Date_Time__c < ${futureDate}T23:59:59Z
           AND Status__c = 'Scheduled'
-        ORDER BY Fixture_DateTime__c ASC
+        ORDER BY Match_Date_Time__c ASC
       `);
 
       return fixtures;
@@ -105,16 +106,16 @@ export async function getFixtureData(fixtureId: string): Promise<any | null> {
       const client = getSalesforceClient();
 
       // Fetch fixture details
-      const fixtures = await client.query<Fixture>(`
+      const fixtures = await client.query<SF_Match__c>(`
         SELECT 
-          Id, Name, Fixture_DateTime__c, Status__c, Venue__c, Attendance__c,
+          Id, Name, Match_Date_Time__c, Status__c, Venue__c, Attendance__c,
           Home_Score_Final__c, Away_Score_Final__c,
-          Home_Team__r.Name, Home_Team__r.Logo_URL__c, Home_Team__r.Primary_Color__c,
-          Away_Team__r.Name, Away_Team__r.Logo_URL__c, Away_Team__r.Primary_Color__c,
+          Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Primary_Color__c,
+          Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Primary_Color__c,
           Competition__r.Name, Competition__r.Sport__c,
           Current_Period__r.Period_Type__c,
           Current_Period__r.Period_Number__c
-        FROM Fixture__c
+        FROM Match__c
         WHERE Id = '${fixtureId}'
         LIMIT 1
       `);
@@ -126,17 +127,20 @@ export async function getFixtureData(fixtureId: string): Promise<any | null> {
       const fixture = fixtures[0];
 
       // Fetch periods
-      const periods = await client.query<FixturePeriod>(`
+      const periods = await client.query<SF_Match_Period__c>(`
         SELECT 
           Period_Number__c, Period_Type__c,
           Home_Score_Period__c, Away_Score_Period__c,
           Home_Score_Cumulative__c, Away_Score_Cumulative__c
-        FROM Fixture_Period__c
-        WHERE Fixture__c = '${fixtureId}'
+        FROM Match_Period__c
+        WHERE Match__c = '${fixtureId}'
         ORDER BY Period_Number__c ASC
       `);
 
       // Fetch commentary events
+      // TODO: Migrate Commentary_Event__c.Fixture__c → Commentary_Event__c.Match__c
+      // Current: Uses legacy Fixture__c lookup field until org migration complete
+      // Required: Add Match__c lookup field, backfill data, deprecate Fixture__c
       const commentary = await client.query<CommentaryEvent>(`
         SELECT 
           Id, Event_Minute__c, Event_Type__c, Description__c,
@@ -165,15 +169,15 @@ export async function getFixturesByCompetition(competitionId: string, limit: num
     async () => {
       const client = getSalesforceClient();
 
-      const fixtures = await client.query<Fixture>(`
+      const fixtures = await client.query<SF_Match__c>(`
         SELECT 
-          Id, Name, Fixture_DateTime__c, Status__c, Venue__c,
+          Id, Name, Match_Date_Time__c, Status__c, Venue__c,
           Home_Score_Final__c, Away_Score_Final__c,
-          Home_Team__r.Name, Home_Team__r.Logo_URL__c,
-          Away_Team__r.Name, Away_Team__r.Logo_URL__c
-        FROM Fixture__c
+          Home_Team__r.Name, Home_Team__r.Logo_Url__c,
+          Away_Team__r.Name, Away_Team__r.Logo_Url__c
+        FROM Match__c
         WHERE Competition__c = '${competitionId}'
-        ORDER BY Fixture_DateTime__c DESC
+        ORDER BY Match_Date_Time__c DESC
         LIMIT ${limit}
       `);
 
