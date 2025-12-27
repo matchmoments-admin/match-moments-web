@@ -140,8 +140,7 @@ export async function GET() {
         const competitions = await client.query(`
           SELECT 
             Id, Name, 
-            Sport__c, 
-            Gender_Class__c
+            Sport__c
           FROM Competition__c
           LIMIT 10
         `);
@@ -156,7 +155,6 @@ export async function GET() {
           const missingFields = competitions.map((comp: any) => {
             const missing: string[] = [];
             if (!comp.Sport__c) missing.push('Sport__c');
-            if (!comp.Gender_Class__c) missing.push('Gender_Class__c');
             return {
               id: comp.Id,
               name: comp.Name,
@@ -189,10 +187,10 @@ export async function GET() {
           SELECT 
             Id, Name,
             Home_Team__r.Name,
+            Home_Team__r.Gender_Class__c,
             Away_Team__r.Name,
             Competition__r.Name,
             Competition__r.Sport__c,
-            Competition__r.Gender_Class__c,
             Match_Date_Time__c,
             Status__c
           FROM Match__c
@@ -216,7 +214,7 @@ export async function GET() {
               awayTeam: m.Away_Team__r?.Name,
               competition: m.Competition__r?.Name,
               sport: m.Competition__r?.Sport__c,
-              gender: m.Competition__r?.Gender_Class__c,
+              gender: m.Home_Team__r?.Gender_Class__c,
               date: m.Match_Date_Time__c,
               status: m.Status__c,
             })),

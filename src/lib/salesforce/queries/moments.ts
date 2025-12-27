@@ -35,7 +35,8 @@ export async function getMoments(filters: MomentFilters = {}): Promise<Moment[]>
         conditions.push(`Match__r.Competition__r.Sport__c = '${filters.sport}'`);
       }
       if (filters.gender) {
-        conditions.push(`Match__r.Competition__r.Gender_Class__c = '${filters.gender}'`);
+        // Gender is on teams, not competition
+        conditions.push(`Match__r.Home_Team__r.Gender_Class__c = '${filters.gender}'`);
       }
       if (filters.minViralScore) {
         conditions.push(`Viral_Score__c >= ${filters.minViralScore}`);
@@ -55,9 +56,8 @@ export async function getMoments(filters: MomentFilters = {}): Promise<Moment[]>
           Secondary_Player__r.Id, Secondary_Player__r.Name, Secondary_Player__r.FirstName, Secondary_Player__r.LastName,
           Team__r.Id, Team__r.Name, Team__r.Logo_Url__c,
           Match__r.Id, Match__r.Name, Match__r.Match_Date_Time__c,
-          Match__r.Home_Team__r.Name, Match__r.Away_Team__r.Name,
-          Match__r.Competition__r.Name, Match__r.Competition__r.Sport__c, 
-          Match__r.Competition__r.Gender_Class__c,
+          Match__r.Home_Team__r.Name, Match__r.Home_Team__r.Gender_Class__c, Match__r.Away_Team__r.Name,
+          Match__r.Competition__r.Name, Match__r.Competition__r.Sport__c,
           Match_Period__r.Period_Type__c, Match_Period__r.Period_Number__c
         FROM Match_Moment__c
         ${whereClause}
@@ -91,9 +91,8 @@ export async function getMomentById(momentId: string): Promise<Moment | null> {
           Secondary_Player__r.Id, Secondary_Player__r.Name,
           Team__r.Id, Team__r.Name, Team__r.Logo_Url__c,
           Match__r.Id, Match__r.Name, Match__r.Match_Date_Time__c,
-          Match__r.Home_Team__r.Name, Match__r.Away_Team__r.Name,
+          Match__r.Home_Team__r.Name, Match__r.Home_Team__r.Gender_Class__c, Match__r.Away_Team__r.Name,
           Match__r.Competition__r.Name, Match__r.Competition__r.Sport__c,
-          Match__r.Competition__r.Gender_Class__c,
           Match_Period__r.Period_Type__c, Match_Period__r.Period_Number__c
         FROM Match_Moment__c
         WHERE Id = '${momentId}'
@@ -185,9 +184,8 @@ export async function getMostViewedMoments(limit: number = 20, sport?: string) {
           Primary_Player__r.Profile_Image_URL__c,
           Team__r.Id, Team__r.Name, Team__r.Logo_Url__c,
           Match__r.Id, Match__r.Name, Match__r.Match_Date_Time__c,
-          Match__r.Home_Team__r.Name, Match__r.Away_Team__r.Name,
-          Match__r.Competition__r.Name, Match__r.Competition__r.Sport__c,
-          Match__r.Competition__r.Gender_Class__c
+          Match__r.Home_Team__r.Name, Match__r.Home_Team__r.Gender_Class__c, Match__r.Away_Team__r.Name,
+          Match__r.Competition__r.Name, Match__r.Competition__r.Sport__c
         FROM Match_Moment__c
         WHERE Is_Shareable__c = true AND View_Count__c > 0 ${sportFilter}
         ORDER BY View_Count__c DESC

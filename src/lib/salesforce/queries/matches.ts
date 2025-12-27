@@ -24,7 +24,8 @@ export async function getMatches(filters: MatchFilters = {}): Promise<Match[]> {
         conditions.push(`Competition__r.Sport__c = '${filters.sport}'`);
       }
       if (filters.gender) {
-        conditions.push(`Competition__r.Gender_Class__c = '${filters.gender}'`);
+        // Gender is on teams, not competition
+        conditions.push(`Home_Team__r.Gender_Class__c = '${filters.gender}'`);
       }
       if (filters.competition) {
         conditions.push(`Competition__c = '${filters.competition}'`);
@@ -55,7 +56,7 @@ export async function getMatches(filters: MatchFilters = {}): Promise<Match[]> {
           Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
           Away_Team__r.Gender_Class__c, Away_Team__r.Sport__c,
           Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, 
-          Competition__r.Sport__c, Competition__r.Gender_Class__c, Competition__r.Tier__c, Competition__r.Country__c,
+          Competition__r.Sport__c, Competition__r.Tier__c, Competition__r.Country__c,
           Season__r.Id, Season__r.Name, Season__r.Start_Date__c, Season__r.End_Date__c
         FROM Match__c
         ${whereClause}
@@ -89,7 +90,7 @@ export async function getMatchById(matchId: string): Promise<Match | null> {
           Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, 
           Away_Team__r.Abbreviation__c, Away_Team__r.Gender_Class__c, Away_Team__r.Sport__c,
           Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Sport__c, 
-          Competition__r.Logo_URL__c, Competition__r.Gender_Class__c, Competition__r.Tier__c, Competition__r.Country__c,
+          Competition__r.Logo_URL__c, Competition__r.Tier__c, Competition__r.Country__c,
           Season__r.Id, Season__r.Name, Season__r.Start_Date__c, Season__r.End_Date__c
         FROM Match__c
         WHERE Id = '${matchId}'
@@ -228,7 +229,7 @@ export async function getLiveMatches(): Promise<Match[]> {
           Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
           Away_Team__r.Gender_Class__c, Away_Team__r.Sport__c,
           Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, 
-          Competition__r.Sport__c, Competition__r.Gender_Class__c, Competition__r.Tier__c,
+          Competition__r.Sport__c, Competition__r.Tier__c,
           Season__r.Id, Season__r.Name
         FROM Match__c
         WHERE Status__c LIKE 'Live%'
@@ -262,7 +263,7 @@ export async function getUpcomingMatches(days: number = 7): Promise<Match[]> {
           Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
           Away_Team__r.Gender_Class__c, Away_Team__r.Sport__c,
           Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, 
-          Competition__r.Sport__c, Competition__r.Gender_Class__c, Competition__r.Tier__c,
+          Competition__r.Sport__c, Competition__r.Tier__c,
           Season__r.Id, Season__r.Name
         FROM Match__c
         WHERE Match_Date_Time__c >= ${today}T00:00:00Z
@@ -298,7 +299,7 @@ export async function getRecentMatches(days: number = 7) {
           Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
           Away_Team__r.Gender_Class__c, Away_Team__r.Sport__c,
           Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, 
-          Competition__r.Sport__c, Competition__r.Gender_Class__c, Competition__r.Tier__c,
+          Competition__r.Sport__c, Competition__r.Tier__c,
           Season__r.Id, Season__r.Name
         FROM Match__c
         WHERE Match_Date_Time__c >= ${pastDate}T00:00:00Z
@@ -334,7 +335,7 @@ export async function getTodayMatches(): Promise<Match[]> {
           Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
           Away_Team__r.Gender_Class__c, Away_Team__r.Sport__c,
           Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, 
-          Competition__r.Sport__c, Competition__r.Gender_Class__c, Competition__r.Tier__c,
+          Competition__r.Sport__c, Competition__r.Tier__c,
           Season__r.Id, Season__r.Name
         FROM Match__c
         WHERE Match_Date_Time__c >= ${today}T00:00:00Z
@@ -376,7 +377,7 @@ export async function getMatchesByCompetition(competitionId: string, limit: numb
           Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
           Away_Team__r.Gender_Class__c, Away_Team__r.Sport__c,
           Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, 
-          Competition__r.Sport__c, Competition__r.Gender_Class__c, Competition__r.Tier__c,
+          Competition__r.Sport__c, Competition__r.Tier__c,
           Season__r.Id, Season__r.Name
         FROM Match__c
         WHERE Competition__c = '${competitionId}'

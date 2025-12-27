@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     const queryStart = Date.now();
     const testQuery = await client.query<any>(`
       SELECT COUNT(Id) recordCount
-      FROM Fixture__c
+      FROM Match__c
     `);
     const queryTime = Date.now() - queryStart;
     
