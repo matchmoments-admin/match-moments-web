@@ -7,13 +7,16 @@ A comprehensive sports media platform built with Next.js 16, featuring match mom
 ### Public Features
 - **Match Moments**: Trending highlights and key moments from live matches
 - **Live Scores**: Real-time match updates with period breakdowns
+- **Fixtures Browser**: Comprehensive fixture list with date range filtering and sport selection
 - **Competitions**: Browse leagues and tournaments with live standings and top scorers
 - **Teams & Players**: Detailed profiles with statistics, awards, and career history
 - **Articles System**: Sports news linked to teams, players, matches, and competitions
 - **Player Awards**: Transfermarkt-style honors display with trophies and achievements
 - **Career History**: Complete player transfer history and team memberships
 - **Moments Gallery**: Viral highlights sorted by engagement and viral score
-- **Gender-First Navigation**: Women's sports prominently featured
+- **Seasons**: Season-specific pages with stats and competition information
+- **Global Search**: Search across teams, players, competitions, and matches
+- **Gender-First Navigation**: Women's sports prominently featured (separate mens/womens hubs)
 - **Modern Design**: Clean, minimalist black & white aesthetic
 
 ### Design System
@@ -284,29 +287,68 @@ Open [http://localhost:3000](http://localhost:3000)
 match-moments-web/
 ├── src/
 │   ├── app/
-│   │   ├── (public)/           # Public pages (games, news, etc.)
-│   │   ├── (dashboard)/        # Protected dashboard
-│   │   ├── api/                # API routes
-│   │   ├── layout.tsx          # Root layout
-│   │   └── page.tsx            # Homepage
+│   │   ├── (public)/                    # Public pages
+│   │   │   ├── fixtures/                # All fixtures browser with date range
+│   │   │   ├── games/                   # Match pages
+│   │   │   ├── moments/                 # Moments gallery
+│   │   │   ├── articles/                # News articles
+│   │   │   ├── womens/                  # Women's sports hub
+│   │   │   │   └── soccer/              # Sport-specific pages
+│   │   │   │       ├── competitions/    # Competition browser
+│   │   │   │       ├── fixtures/        # Fixtures list
+│   │   │   │       ├── teams/           # Team profiles
+│   │   │   │       ├── players/         # Player profiles
+│   │   │   │       └── seasons/         # Season pages
+│   │   │   ├── mens/                    # Men's sports hub
+│   │   │   └── sports/                  # Sport categories
+│   │   │       └── [sport]/standings/   # Dynamic standings
+│   │   ├── (dashboard)/                 # Protected dashboard
+│   │   ├── api/                         # API routes
+│   │   │   ├── sports/                  # Public sports data API
+│   │   │   │   ├── matches/             # Match endpoints
+│   │   │   │   ├── teams/               # Team endpoints
+│   │   │   │   ├── players/             # Player endpoints
+│   │   │   │   ├── competitions/        # Competition endpoints
+│   │   │   │   ├── moments/             # Moments endpoints
+│   │   │   │   ├── articles/            # Articles endpoints
+│   │   │   │   ├── seasons/             # Season endpoints
+│   │   │   │   └── search/              # Global search
+│   │   │   ├── cache/                   # Cache management
+│   │   │   └── health/                  # Health checks
+│   │   ├── layout.tsx                   # Root layout
+│   │   └── page.tsx                     # Homepage
 │   ├── components/
-│   │   ├── ui/                 # shadcn components
-│   │   ├── layout/             # Navigation, Footer
-│   │   ├── games/              # Game components
-│   │   ├── dashboard/          # Dashboard components
-│   │   └── shared/             # Shared components
+│   │   ├── ui/                          # shadcn components
+│   │   ├── layout/                      # Navigation, Footer
+│   │   ├── sports/                      # Sports components
+│   │   └── shared/                      # Shared components
 │   ├── lib/
-│   │   ├── salesforce/         # SF connection & queries
-│   │   │   ├── client.ts       # Native REST API client
-│   │   │   ├── types.ts        # TypeScript types
-│   │   │   └── queries/        # Query functions
-│   │   ├── cache/              # Redis caching (optional)
-│   │   └── utils/              # Utilities
-│   ├── types/                  # TypeScript types
-│   └── middleware.ts           # Auth middleware
-├── public/                     # Static assets
-├── SETUP.md                    # Detailed setup guide
-└── README.md                   # This file
+│   │   ├── salesforce/                  # SF connection & queries
+│   │   │   ├── client.ts                # Native REST API client
+│   │   │   ├── types.ts                 # TypeScript types
+│   │   │   └── queries/                 # Query functions
+│   │   │       ├── matches.ts           # Match queries
+│   │   │       ├── teams.ts             # Team queries
+│   │   │       ├── players.ts           # Player queries
+│   │   │       ├── competitions.ts      # Competition queries
+│   │   │       ├── moments.ts           # Moment queries
+│   │   │       └── seasons.ts           # Season queries
+│   │   ├── mappers/                     # SF to domain mappers
+│   │   ├── cache/                       # Redis caching (optional)
+│   │   │   ├── redis.ts                 # Redis client
+│   │   │   └── strategies.ts            # Cache strategies
+│   │   ├── data/                        # Server-side data fetchers
+│   │   └── utils/                       # Utilities
+│   ├── types/
+│   │   ├── domain/                      # Clean domain types
+│   │   └── salesforce/                  # SF-specific types
+│   └── middleware.ts                    # Auth middleware
+├── __tests__/                           # Test files
+│   ├── unit/                            # Unit tests
+│   └── integration/                     # Integration tests
+├── public/                              # Static assets
+├── SETUP.md                             # Detailed setup guide
+└── README.md                            # This file
 \`\`\`
 
 ## 🔐 Authentication & Authorization
@@ -380,6 +422,81 @@ See [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) for complete design specifications.
 - **UI**: Ionicons 5 (IoSearchOutline, IoMenuOutline, etc.)
 - **Special**: Bootstrap icons (BsFireFlame, BsTrophy)
 
+## 📄 Pages & Routes
+
+### Public Pages
+
+#### Core Pages
+- `/` - Homepage with live scores, trending moments, featured competitions
+- `/fixtures` - Comprehensive fixture browser with date range and sport filtering
+- `/games` - All matches
+- `/games/[id]` - Individual match page with live updates, periods, and moments
+- `/moments` - Moments gallery with viral highlights
+- `/articles` - News articles
+- `/articles/[id]` - Individual article page
+
+#### Gender-Specific Hubs
+- `/womens` - Women's sports hub (featured competitions, recent matches, trending moments)
+- `/mens` - Men's sports hub (same structure)
+- `/womens/[sport]` - Sport-specific women's page (soccer, basketball, etc.)
+- `/mens/[sport]` - Sport-specific men's page
+
+#### Detailed Sport Pages (Example: Women's Soccer)
+- `/womens/soccer` - Women's soccer landing page
+- `/womens/soccer/fixtures` - Fixtures list
+- `/womens/soccer/fixtures/[id]` - Match detail
+- `/womens/soccer/fixtures/[id]/moments/[momentId]` - Specific moment page
+- `/womens/soccer/competitions` - Competition browser
+- `/womens/soccer/competitions/[id]` - Competition detail with standings
+- `/womens/soccer/teams/[id]` - Team profile
+- `/womens/soccer/players/[id]` - Player profile with stats and awards
+- `/womens/soccer/seasons` - Seasons list
+- `/womens/soccer/seasons/[id]` - Season detail page
+
+#### General Sport Pages
+- `/sports` - All sports overview
+- `/sports/[sport]` - Individual sport page (soccer, basketball, etc.)
+- `/sports/[sport]/standings` - Dynamic standings page for any sport
+
+#### Utility Pages
+- `/about` - About page
+- `/contact` - Contact page
+- `/podcasts` - Podcasts (placeholder)
+- `/videos` - Videos (placeholder)
+
+### Page Features
+
+**Fixtures Browser** (`/fixtures`)
+- Date range selection (From/To dates)
+- Sport filtering (Soccer, Basketball, Cricket, Tennis, NFL, Rugby)
+- Quick date selector (shows 15 days: 7 before, today, 7 after)
+- "View All" mode to see all matches in range grouped by date
+- Single date mode to see matches grouped by competition
+- Live match indicators
+- Match stats (total, live, finished, upcoming)
+
+**Match Detail Page** (`/games/[id]`)
+- Live score updates
+- Period-by-period breakdown
+- Match moments carousel
+- Team information
+- Venue and attendance
+- Referee information
+
+**Team Profile** (`/womens/soccer/teams/[id]`)
+- Team information and logo
+- Current season stats
+- Squad roster
+- Recent matches
+- Trophies and honors
+
+**Player Profile** (`/womens/soccer/players/[id]`)
+- Player information and photo
+- Current season stats
+- Career statistics
+- Awards and honors (Transfermarkt-style)
+- Career history/transfer history
+
 ## 🚢 Deployment
 
 ### Deploy to Vercel
@@ -403,30 +520,62 @@ Configure in `vercel.json`:
 
 ## 🧪 Testing
 
+The project uses **Vitest** for testing with full TypeScript support.
+
 \`\`\`bash
-# Run tests
+# Run all tests
 npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with UI
+npm run test:ui
+
+# Run only unit tests
+npm run test:unit
+
+# Run only integration tests
+npm run test:integration
+
+# Run tests with coverage
+npm run test:coverage
 
 # Run linter
 npm run lint
 
-# Check types
-npm run type-check
+# Build project (includes type checking)
+npm run build
 \`\`\`
 
+### Test Structure
+- **Unit Tests** (`__tests__/unit/`): Test individual functions, mappers, and utilities
+- **Integration Tests** (`__tests__/integration/`): Test API routes and data flows
+- **Test Utilities** (`__tests__/utils/`): Mock data and helper functions
+
 ### Test Checklist
-- [ ] All roles can access permitted pages
-- [ ] Role boundaries enforced (403 errors for unauthorized access)
+- [ ] All API endpoints return correct data structure
 - [ ] Salesforce queries return data correctly
+- [ ] Mappers correctly transform SF data to domain types
 - [ ] Redis caching working (check logs for HIT/MISS)
-- [ ] Live scores update automatically
+- [ ] Gender filtering works correctly (from teams, not competitions)
+- [ ] Date range filtering shows all matches in range
 - [ ] Mobile responsive on all pages
+- [ ] Type safety: `npm run build` completes without errors
 
 ## 📚 API Documentation
 
 ### Public Sports API Routes
 
 All routes return JSON with `{ success: boolean, data: any, count?: number }` format.
+
+#### Important Notes on Data Model
+- **Gender Classification**: `Gender_Class__c` exists on Teams (Account), not on Competitions
+- When filtering by gender:
+  - **Matches**: Use `gender=Women's Team` (filters by `Home_Team__r.Gender_Class__c`)
+  - **Moments**: Use `gender=Women's Team` (filters by `Match__r.Home_Team__r.Gender_Class__c`)
+  - **Competitions**: Gender filter not available (query teams instead)
+  - **Teams/Players**: Use `gender=Women's Team` directly
 
 #### Matches
 \`\`\`
@@ -459,7 +608,8 @@ GET /api/sports/players/[id]/career
 #### Competitions
 \`\`\`
 GET /api/sports/competitions
-  ?sport=Soccer&gender=Women's%20Team&tier=Level%201
+  ?sport=Soccer&tier=Level%201&country=England
+  Note: Gender filter removed (Gender_Class__c exists on Teams, not Competitions)
 GET /api/sports/competitions/[id]
 GET /api/sports/competitions/[id]/standings?season=seasonId
 GET /api/sports/competitions/[id]/top-scorers?limit=20
@@ -477,8 +627,43 @@ GET /api/sports/articles/latest?limit=10
 \`\`\`
 GET /api/sports/moments
   ?sport=Soccer&gender=Women's%20Team&minViralScore=50
+  Note: Gender filter uses Match__r.Home_Team__r.Gender_Class__c
 GET /api/sports/moments/[id]
-GET /api/sports/moments/trending?limit=20
+GET /api/sports/moments/trending?limit=20&sport=Soccer
+\`\`\`
+
+#### Seasons
+\`\`\`
+GET /api/sports/seasons
+  ?sport=Soccer&limit=50
+GET /api/sports/seasons/[id]
+GET /api/sports/seasons/[id]/stats
+GET /api/sports/seasons/current?sport=Soccer
+\`\`\`
+
+#### Search
+\`\`\`
+GET /api/sports/search
+  ?q=arsenal&type=teams,players,competitions
+  Returns: { teams: Team[], players: Player[], competitions: Competition[], matches: Match[] }
+\`\`\`
+
+### Utility API Routes
+
+#### Cache Management
+\`\`\`
+GET /api/cache/stats
+  Returns cache statistics and hit rates
+  
+DELETE /api/cache/invalidate?scope=fixtures
+  Clear cache by scope (fixtures, matches, teams, players, competitions, moments, all)
+\`\`\`
+
+#### Health Checks
+\`\`\`
+GET /api/health/salesforce
+  Check Salesforce connection status
+  Response: { status: "healthy", authentication: { connected: true } }
 \`\`\`
 
 ### Protected API Routes (Require Authentication)
@@ -496,6 +681,23 @@ GET /api/dashboard/sales/pipeline
 Headers: { Cookie: session token }
 Response: { stages: Stage[] }
 \`\`\`
+
+## 🆕 Recent Updates
+
+### December 2025
+- **Gender Field Architecture**: Removed `Gender_Class__c` from Competition queries (field only exists on Teams/Account objects)
+- **Fixtures Page Enhancement**: Added "View All" mode to show entire date range, not just single selected date
+- **Match Mapper**: Updated to source gender from teams (`Home_Team__r.Gender_Class__c`) instead of competitions
+- **Type Safety**: Made Competition gender field optional in domain types for backward compatibility
+
+### Cache Strategies
+The application uses intelligent caching with different TTLs based on data volatility:
+- **Live Data** (30s): Live matches, current scores
+- **Frequent Updates** (5min): Today's fixtures, trending moments
+- **Moderate Updates** (30min): Upcoming fixtures, standings, season stats
+- **Static Data** (1hr): Team info, player profiles, competition details
+
+All cache strategies are defined in `src/lib/cache/strategies.ts` and can be customized per deployment needs.
 
 ## 🐛 Troubleshooting
 
@@ -534,7 +736,27 @@ Response: { stages: Stage[] }
 ### Build Errors
 - Clear `.next` folder: `rm -rf .next`
 - Delete node_modules and reinstall: `rm -rf node_modules && npm install`
-- Check TypeScript errors: `npm run type-check`
+- Check TypeScript errors: `npm run build` (includes type checking)
+- Check for linter errors: `npm run lint`
+
+### Common Data Issues
+
+**Gender Filtering Not Working**
+- ✅ Use gender filter on **Matches**, **Moments**, **Teams**, and **Players**
+- ❌ Don't use gender filter on **Competitions** (field doesn't exist on Competition object)
+- Gender data comes from Teams: `Gender_Class__c` is on Account (Teams), not Competition
+
+**Fixtures Page Showing Wrong Date Range**
+- Ensure you click "ALL" button or select specific date
+- Check that From Date and To Date are set correctly
+- Click "Update" button after changing date range
+- Matches are grouped by date when viewing full range
+
+**Cache Not Working**
+- Check Redis environment variables are set correctly
+- Visit `/api/cache/stats` to see cache status
+- Look for `[CACHE HIT]` or `[CACHE MISS]` in server logs
+- Clear cache if needed: `curl -X DELETE "http://localhost:3000/api/cache/invalidate?scope=all"`
 
 ## 🤝 Contributing
 
