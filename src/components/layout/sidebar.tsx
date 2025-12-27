@@ -72,6 +72,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             <SidebarLink href="/games" onClick={onClose}>
               Games
             </SidebarLink>
+            <SidebarLink href="/fixtures" onClick={onClose}>
+              Fixtures
+            </SidebarLink>
             <SidebarLink href="/news" onClick={onClose}>
               News
             </SidebarLink>

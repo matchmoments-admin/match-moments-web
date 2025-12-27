@@ -83,7 +83,7 @@ export function Header() {
             <NavPill href="/sports/tennis">Tennis</NavPill>
             <NavPill href="/sports/nfl">NFL</NavPill>
             <NavPill href="/sports/rugby">Rugby</NavPill>
-            <NavPill href="/games">Fixtures</NavPill>
+            <NavPill href="/fixtures">Fixtures</NavPill>
             <NavPill href="/videos">Videos</NavPill>
             <NavPill href="/podcasts">Podcasts</NavPill>
           </div>

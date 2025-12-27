@@ -18,6 +18,12 @@ export function Navigation() {
         {/* Navigation */}
         <nav className="flex items-center gap-4">
           <Link 
+            href="/fixtures" 
+            className="text-base font-normal text-black hover:underline transition-all duration-150"
+          >
+            Fixtures
+          </Link>
+          <Link 
             href="/games" 
             className="text-base font-normal text-black hover:underline transition-all duration-150"
           >
