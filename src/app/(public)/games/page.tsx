@@ -1,40 +1,26 @@
 import Link from 'next/link';
 import { ArticleCard } from '@/components/shared/article-card';
-import { LiveScore } from '@/components/games/live-score';
-import { getTodayFixtures, getLiveFixtures, getUpcomingFixtures } from '@/lib/salesforce/queries/fixtures';
-import { getCached } from '@/lib/cache/redis';
-import { CacheKeys, CacheStrategy } from '@/lib/cache/strategies';
+import { getLiveMatchesForDisplay, getTodayMatchesForDisplay, getUpcomingMatchesForDisplay } from '@/lib/data/matches';
 
 export const dynamic = 'force-dynamic';
 
-async function fetchLiveGames() {
-  return getCached(CacheKeys.FIXTURES_LIVE, () => getLiveFixtures(), CacheStrategy.fixturesLive);
-}
-
-async function fetchTodayGames() {
-  return getCached(CacheKeys.FIXTURES_TODAY, () => getTodayFixtures(), CacheStrategy.fixturesToday);
-}
-
-async function fetchUpcomingGames() {
-  return getCached(CacheKeys.FIXTURES_UPCOMING, () => getUpcomingFixtures(), CacheStrategy.fixturesUpcoming);
-}
-
 export default async function GamesPage() {
+  // Fetch matches with error handling
   const [liveGames, todayGames, upcomingGames] = await Promise.all([
-    fetchLiveGames(),
-    fetchTodayGames(),
-    fetchUpcomingGames(),
+    getLiveMatchesForDisplay().catch(() => []),
+    getTodayMatchesForDisplay().catch(() => []),
+    getUpcomingMatchesForDisplay().catch(() => []),
   ]);
 
   // Convert games to article cards format
   const gameArticles = [...todayGames, ...upcomingGames].slice(0, 12).map((game: any) => ({
-    title: `${game.Home_Team__r?.Name || 'TBD'} vs ${game.Away_Team__r?.Name || 'TBD'}`,
-    description: `${game.Competition__r?.Name || 'Game'} - ${game.Venue__c || 'Venue TBD'}`,
-    category: game.Competition__r?.Name || 'Games',
+    title: `${game.homeTeam?.name || 'TBD'} vs ${game.awayTeam?.name || 'TBD'}`,
+    description: `${game.competition?.name || 'Game'} - ${game.venue || 'Venue TBD'}`,
+    category: game.competition?.name || 'Games',
     categoryHref: '/games',
     imageUrl: '/placeholder.jpg',
-    imageAlt: `${game.Home_Team__r?.Name} vs ${game.Away_Team__r?.Name}`,
-    href: `/games/${game.Id}`,
+    imageAlt: `${game.homeTeam?.name} vs ${game.awayTeam?.name}`,
+    href: `/games/${game.id}`,
   }));
 
   return (
@@ -47,13 +33,13 @@ export default async function GamesPage() {
         {liveGames.length > 0 && (
           <section className="mb-12">
             <ArticleCard
-              title={`${liveGames[0].Home_Team__r?.Name || 'Team'} vs ${liveGames[0].Away_Team__r?.Name || 'Team'}`}
-              description={`Live: ${liveGames[0].Home_Score_Final__c || 0} - ${liveGames[0].Away_Score_Final__c || 0}`}
+              title={`${liveGames[0].homeTeam?.name || 'Team'} vs ${liveGames[0].awayTeam?.name || 'Team'}`}
+              description={`Live: ${liveGames[0].homeScore || 0} - ${liveGames[0].awayScore || 0}`}
               category="Live Now"
               categoryHref="/games"
               imageUrl="/placeholder.jpg"
               imageAlt="Live game"
-              href={`/games/${liveGames[0].Id}`}
+              href={`/games/${liveGames[0].id}`}
               variant="featured"
             />
           </section>
@@ -61,15 +47,25 @@ export default async function GamesPage() {
 
         {/* Games Grid */}
         <section>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {gameArticles.map((article, index) => (
-              <ArticleCard
-                key={index}
-                {...article}
-                variant="standard"
-              />
-            ))}
-          </div>
+          {gameArticles.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {gameArticles.map((article, index) => (
+                <ArticleCard
+                  key={index}
+                  {...article}
+                  variant="standard"
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 bg-gray-50 rounded-3xl">
+              <div className="text-6xl mb-4">🏆</div>
+              <h3 className="text-2xl font-bold mb-2">No Games Available</h3>
+              <p className="text-gray-600 max-w-md mx-auto">
+                There are no scheduled games at the moment. Check back soon for upcoming matches!
+              </p>
+            </div>
+          )}
         </section>
 
         {/* Load More */}
