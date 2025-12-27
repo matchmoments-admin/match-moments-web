@@ -255,12 +255,12 @@ export interface Season extends SalesforceRecord {
 
 /**
  * Competition__c - Leagues, tournaments, seasons
+ * Note: Gender_Class__c doesn't exist on Competition__c (only on Account/Teams)
  */
 export interface Competition extends SalesforceRecord {
   Season__c?: string; // Lookup to Season__c
   ESPN_League_ID__c?: string; // External ID - Use for display
   Sport__c?: string;
-  Gender_Class__c?: string;
   Tier__c?: string; // Level 1, Level 2, Level 3, Cup, Tournament
   Country__c?: string;
   Competition_Type__c?: string;
@@ -688,10 +688,10 @@ export interface PlayerFilters {
 
 /**
  * Query filters for competitions
+ * Note: Gender filtering removed as Gender_Class__c doesn't exist on Competition__c
  */
 export interface CompetitionFilters {
   sport?: string;
-  gender?: string;
   season?: string;
   country?: string;
   tier?: string;

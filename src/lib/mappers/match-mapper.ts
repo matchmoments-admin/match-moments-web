@@ -21,11 +21,13 @@ export function mapMatch(sf: SF_Match__c): Match {
   
   const status = mapMatchStatus(sf.Status__c);
   const competition = mapCompetition(sf.Competition__r);
+  const homeTeam = mapTeam(sf.Home_Team__r);
+  const awayTeam = mapTeam(sf.Away_Team__r);
   
   return {
     id: sf.Id,
-    homeTeam: mapTeam(sf.Home_Team__r),
-    awayTeam: mapTeam(sf.Away_Team__r),
+    homeTeam,
+    awayTeam,
     competition,
     homeScore: sf.Home_Score_Final__c ?? 0,
     awayScore: sf.Away_Score_Final__c ?? 0,
@@ -38,7 +40,7 @@ export function mapMatch(sf: SF_Match__c): Match {
     isLive: isMatchLive(status),
     isNeutralVenue: sf.Neutral_Venue__c,
     sport: competition.sport,
-    gender: competition.gender,
+    gender: homeTeam.gender, // Get gender from team, not competition (Competition__c doesn't have Gender_Class__c)
     referee: sf.Referee__c,
     broadcastUrl: sf.Broadcast_URL__c,
   };

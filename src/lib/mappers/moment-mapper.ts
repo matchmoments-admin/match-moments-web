@@ -16,8 +16,9 @@ import { getSportsPlaceholder } from '@/lib/image-utils';
  */
 export function mapMoment(sf: SF_Match_Moment__c): Moment {
   // Extract sport and gender from match context
+  // Note: Gender comes from team, not competition (Competition__c doesn't have Gender_Class__c)
   const sport = normalizeSportName(sf.Match__r?.Competition__r?.Sport__c);
-  const gender = mapGenderClass(sf.Match__r?.Competition__r?.Gender_Class__c);
+  const gender = mapGenderClass(sf.Match__r?.Home_Team__r?.Gender_Class__c);
   
   // Generate thumbnail from video or use sports placeholder
   const fallbackUrl = getSportsPlaceholder(sport, { width: 640, height: 360 });

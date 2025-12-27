@@ -31,7 +31,7 @@ export const createMockCompetition = (overrides?: Partial<SF_Competition__c>): S
   Name: 'Premier League',
   Competition_Code__c: 'EPL',
   Sport__c: 'Soccer',
-  Gender_Class__c: "Men's Team",
+  // Gender_Class__c removed - doesn't exist on Competition__c (only on Account/Teams)
   Country__c: 'England',
   Tier__c: 'Tier 1',
   Competition_Type__c: 'League',

@@ -23,9 +23,6 @@ export async function getCompetitions(filters: CompetitionFilters = {}): Promise
       if (filters.sport) {
         conditions.push(`Sport__c = '${filters.sport}'`);
       }
-      if (filters.gender) {
-        conditions.push(`Gender_Class__c = '${filters.gender}'`);
-      }
       if (filters.season) {
         conditions.push(`Season__c = '${filters.season}'`);
       }
@@ -42,7 +39,7 @@ export async function getCompetitions(filters: CompetitionFilters = {}): Promise
       const sfCompetitions = await client.query<SF_Competition__c>(`
         SELECT 
           Id, Name, ESPN_League_ID__c,
-          Sport__c, Gender_Class__c, Tier__c, Country__c,
+          Sport__c, Tier__c, Country__c,
           Competition_Type__c, Logo_URL__c, Status__c,
           Season__c, Season__r.Id, Season__r.Name, Season__r.Start_Date__c, Season__r.End_Date__c,
           Season__r.Sport__c, Season__r.Season_Type__c
@@ -70,7 +67,7 @@ export async function getCompetitionById(competitionId: string): Promise<Competi
       const sfCompetitions = await client.query<SF_Competition__c>(`
         SELECT 
           Id, Name, ESPN_League_ID__c,
-          Sport__c, Gender_Class__c, Tier__c, Country__c,
+          Sport__c, Tier__c, Country__c,
           Competition_Type__c, Logo_URL__c, Status__c,
           Season__c, Season__r.Id, Season__r.Name, Season__r.Start_Date__c, Season__r.End_Date__c,
           Season__r.Sport__c, Season__r.Season_Type__c
@@ -132,7 +129,7 @@ export async function getCompetitionByESPNId(espnLeagueId: string) {
       const sfCompetitions = await client.query<SF_Competition__c>(`
         SELECT 
           Id, Name, ESPN_League_ID__c,
-          Sport__c, Gender_Class__c, Tier__c, Country__c,
+          Sport__c, Tier__c, Country__c,
           Competition_Type__c, Logo_URL__c, Status__c,
           Season__c, Season__r.Id, Season__r.Name, Season__r.Start_Date__c, Season__r.End_Date__c,
           Season__r.Sport__c, Season__r.Season_Type__c
@@ -152,12 +149,12 @@ export async function getCompetitionByESPNId(espnLeagueId: string) {
 }
 
 /**
- * Get competitions by sport and gender
+ * Get competitions by sport
+ * Note: Gender filtering removed as Gender_Class__c doesn't exist on Competition__c
  */
-export async function getCompetitionsBySportAndGender(sport: string, gender: string) {
+export async function getCompetitionsBySport(sport: string) {
   return getCompetitions({
     sport,
-    gender,
     limit: 100
   });
 }
@@ -174,11 +171,11 @@ export async function getCompetitionsBySeason(seasonId: string) {
 
 /**
  * Get featured competitions (Tier 1)
+ * Note: Gender filtering removed as Gender_Class__c doesn't exist on Competition__c
  */
-export async function getFeaturedCompetitions(sport?: string, gender?: string): Promise<Competition[]> {
+export async function getFeaturedCompetitions(sport?: string): Promise<Competition[]> {
   return getCompetitions({
     sport,
-    gender,
     tier: 'Level 1',
     limit: 20
   });

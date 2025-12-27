@@ -172,9 +172,10 @@ describe('mapMoment', () => {
     expect(result.sport).toBe('basketball');
   });
 
-  it('should extract gender from match competition', () => {
+  it('should extract gender from match home team', () => {
     const sfMoment = createMockMoment();
-    sfMoment.Match__r!.Competition__r!.Gender_Class__c = "Women's Team";
+    // Gender comes from team, not competition (Competition__c doesn't have Gender_Class__c)
+    sfMoment.Match__r!.Home_Team__r!.Gender_Class__c = "Women's Team";
 
     const result = mapMoment(sfMoment);
 

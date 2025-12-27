@@ -63,7 +63,7 @@ export interface Competition {
   id: string;
   name: string;
   sport: string;
-  gender: GenderType;
+  gender?: GenderType; // Optional - Gender_Class__c doesn't exist on Competition__c
   logoUrl?: string;
   tier: number;
   country?: string;

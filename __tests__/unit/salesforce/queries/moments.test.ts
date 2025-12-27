@@ -136,7 +136,8 @@ describe('getMoments', () => {
     await getMoments({ gender: "Women's Team" });
 
     const soqlQuery = mockClient.query.mock.calls[0][0];
-    expect(soqlQuery).toContain("Match__r.Competition__r.Gender_Class__c = 'Women's Team'");
+    // Gender filter uses Home_Team__r.Gender_Class__c, not Competition__r.Gender_Class__c
+    expect(soqlQuery).toContain("Match__r.Home_Team__r.Gender_Class__c = 'Women's Team'");
   });
 
   it('should filter by minimum viral score', async () => {
@@ -162,7 +163,8 @@ describe('getMoments', () => {
 
     const soqlQuery = mockClient.query.mock.calls[0][0];
     expect(soqlQuery).toContain("Match__r.Competition__r.Sport__c = 'Soccer'");
-    expect(soqlQuery).toContain("Match__r.Competition__r.Gender_Class__c = 'Men's Team'");
+    // Gender filter uses Home_Team__r.Gender_Class__c, not Competition__r.Gender_Class__c
+    expect(soqlQuery).toContain("Match__r.Home_Team__r.Gender_Class__c = 'Men's Team'");
     expect(soqlQuery).toContain('Viral_Score__c >= 50');
     expect(soqlQuery).toContain('LIMIT 10');
   });
@@ -313,7 +315,8 @@ describe('getTrendingMoments', () => {
     await getTrendingMoments(20, undefined, "Women's Team");
 
     const soqlQuery = mockClient.query.mock.calls[0][0];
-    expect(soqlQuery).toContain("Match__r.Competition__r.Gender_Class__c = 'Women's Team'");
+    // Gender filter uses Home_Team__r.Gender_Class__c, not Competition__r.Gender_Class__c
+    expect(soqlQuery).toContain("Match__r.Home_Team__r.Gender_Class__c = 'Women's Team'");
   });
 });
 

@@ -9,9 +9,9 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     
+    // Note: Gender filtering removed - Competition__c doesn't have Gender_Class__c field
     const filters: CompetitionFilters = {
       sport: searchParams.get('sport') || undefined,
-      gender: searchParams.get('gender') || undefined,
       season: searchParams.get('season') || undefined,
       country: searchParams.get('country') || undefined,
       tier: searchParams.get('tier') || undefined,

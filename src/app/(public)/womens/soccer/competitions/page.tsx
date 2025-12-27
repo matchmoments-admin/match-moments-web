@@ -10,9 +10,9 @@ export const metadata = {
 export const revalidate = 1800; // ISR: 30 minutes
 
 export default async function WomensSoccerCompetitionsPage() {
+  // Note: Gender filtering removed - Competition__c doesn't have Gender_Class__c field
   const soccerCompetitions = await getCompetitions({
     sport: 'soccer',
-    gender: "Women's Team",
     limit: 50
   }).catch(() => []);
 

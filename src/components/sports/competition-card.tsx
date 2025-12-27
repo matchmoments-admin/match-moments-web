@@ -8,7 +8,9 @@ interface CompetitionCardProps {
 }
 
 export function CompetitionCard({ competition, variant = 'standard' }: CompetitionCardProps) {
-  const href = `/${competition.gender}/${competition.sport}/competitions/${competition.id}`;
+  // Competition__c doesn't have Gender_Class__c, so default to 'mens' for routing
+  const gender = competition.gender || 'mens';
+  const href = `/${gender}/${competition.sport}/competitions/${competition.id}`;
 
   if (variant === 'featured') {
     return (
@@ -30,13 +32,15 @@ export function CompetitionCard({ competition, variant = 'standard' }: Competiti
               {competition.country} • {competition.season.name}
             </p>
             {/* Number of teams not available in current data model */}
-            <div className={`mt-4 inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide ${
-              competition.gender === 'womens'
-                ? 'bg-purple-500/20'
-                : 'bg-blue-500/20'
-            }`}>
-              {competition.gender === 'womens' ? "Women's" : "Men's"}
-            </div>
+            {competition.gender && (
+              <div className={`mt-4 inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide ${
+                competition.gender === 'womens'
+                  ? 'bg-purple-500/20'
+                  : 'bg-blue-500/20'
+              }`}>
+                {competition.gender === 'womens' ? "Women's" : "Men's"}
+              </div>
+            )}
           </div>
         </div>
       </Link>
@@ -62,13 +66,15 @@ export function CompetitionCard({ competition, variant = 'standard' }: Competiti
             {competition.country} • {competition.season.name}
           </p>
         </div>
-        <div className={`rounded-full px-2 py-1 text-xs font-medium ${
-          competition.gender === 'womens'
-            ? 'bg-purple-100 text-purple-800'
-            : 'bg-blue-100 text-blue-800'
-        }`}>
-          {competition.gender === 'womens' ? "W" : "M"}
-        </div>
+        {competition.gender && (
+          <div className={`rounded-full px-2 py-1 text-xs font-medium ${
+            competition.gender === 'womens'
+              ? 'bg-purple-100 text-purple-800'
+              : 'bg-blue-100 text-blue-800'
+          }`}>
+            {competition.gender === 'womens' ? "W" : "M"}
+          </div>
+        )}
       </div>
     </Link>
   );

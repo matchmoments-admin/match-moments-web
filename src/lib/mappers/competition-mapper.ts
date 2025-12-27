@@ -24,6 +24,7 @@ export function mapSeason(sf: SF_Season__c): Season {
 
 /**
  * Map Salesforce Competition to Domain Competition
+ * Note: Gender_Class__c doesn't exist on Competition__c, so gender is not mapped
  */
 export function mapCompetition(sf: SF_Competition__c): Competition {
   const season = sf.Season__r ? mapSeason(sf.Season__r) : {
@@ -35,7 +36,6 @@ export function mapCompetition(sf: SF_Competition__c): Competition {
     id: sf.Id,
     name: sf.Name || 'Unknown Competition',
     sport: normalizeSportName(sf.Sport__c),
-    gender: mapGenderClass(sf.Gender_Class__c),
     logoUrl: sf.Logo_URL__c,
     tier: getTierNumber(sf.Tier__c),
     country: sf.Country__c,

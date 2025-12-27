@@ -9,7 +9,7 @@ import {
   getCompetitionById as queryCompetitionById,
   getStandings as queryStandings,
   getFeaturedCompetitions as queryFeaturedCompetitions,
-  getCompetitionsBySportAndGender,
+  getCompetitionsBySport as queryCompetitionsBySport,
 } from '@/lib/salesforce/queries/competitions';
 import type { Competition, TeamSeasonStats } from '@/types/domain';
 import type { CompetitionFilters } from '@/lib/salesforce/types';
@@ -37,16 +37,19 @@ export async function getCompetitionStandings(competitionId: string, seasonId?: 
 
 /**
  * Get featured competitions (Tier 1)
+ * Note: Gender parameter deprecated as Gender_Class__c doesn't exist on Competition__c
  */
 export async function getFeaturedCompetitions(options?: { sport?: string; gender?: string; limit?: number }): Promise<Competition[]> {
-  const { sport, gender } = options || {};
-  return await queryFeaturedCompetitions(sport, gender);
+  const { sport } = options || {};
+  // Note: gender parameter is ignored - Competition__c doesn't have Gender_Class__c field
+  return await queryFeaturedCompetitions(sport);
 }
 
 /**
- * Get competitions by sport and gender
+ * Get competitions by sport
+ * Note: Gender parameter removed as Gender_Class__c doesn't exist on Competition__c
  */
-export async function getCompetitionsBySport(sport: string, gender: string): Promise<Competition[]> {
-  return await getCompetitionsBySportAndGender(sport, gender);
+export async function getCompetitionsBySport(sport: string): Promise<Competition[]> {
+  return await queryCompetitionsBySport(sport);
 }
 
