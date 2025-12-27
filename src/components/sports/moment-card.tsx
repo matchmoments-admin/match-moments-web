@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { TrendingMoment } from '@/types/sports';
+import { type Moment } from '@/types/domain';
 import { ICONS } from '@/lib/sport-icons';
 
 interface MomentCardProps {
-  moment: TrendingMoment;
+  moment: Moment;
 }
 
 export function MomentCard({ moment }: MomentCardProps) {
-  const momentUrl = `/${moment.gender}/${moment.sport}/fixtures/${moment.fixtureId}/moments/${moment.id}`;
+  const momentUrl = `/${moment.gender}/${moment.sport}/fixtures/${moment.match.id}/moments/${moment.id}`;
 
   return (
     <Link href={momentUrl} className="group">
@@ -17,7 +17,7 @@ export function MomentCard({ moment }: MomentCardProps) {
         <div className="relative aspect-video overflow-hidden">
           <Image
             src={moment.thumbnailUrl}
-            alt={moment.socialShareTitle || moment.description}
+            alt={moment.shareTitle || moment.description}
             fill
             className="object-cover transition-transform group-hover:scale-105"
           />
@@ -63,32 +63,32 @@ export function MomentCard({ moment }: MomentCardProps) {
 
           {/* Title */}
           <h3 className="mb-2 text-lg font-bold leading-tight text-black group-hover:underline">
-            {moment.socialShareTitle || moment.description}
+            {moment.shareTitle || moment.description}
           </h3>
 
           {/* Match info */}
           <p className="mb-3 text-sm text-gray-600">
-            {moment.fixture.homeTeam} vs {moment.fixture.awayTeam}
+            {moment.match.homeTeam} vs {moment.match.awayTeam}
           </p>
 
           {/* Competition */}
           <div className="text-xs text-gray-500">
-            {moment.fixture.competition}
+            {moment.match.competition}
           </div>
 
           {/* Engagement stats */}
-          {(moment.totalViews || moment.totalShares) && (
+          {(moment.viewCount || moment.shareCount) && (
             <div className="mt-3 flex gap-4 border-t border-gray-100 pt-3 text-xs text-gray-500">
-              {moment.totalViews && (
+              {moment.viewCount && (
                 <div className="flex items-center gap-1">
                   <ICONS.eye className="h-4 w-4" strokeWidth={1.5} />
-                  {(moment.totalViews / 1000000).toFixed(1)}M
+                  {(moment.viewCount / 1000000).toFixed(1)}M
                 </div>
               )}
-              {moment.totalShares && (
+              {moment.shareCount && (
                 <div className="flex items-center gap-1">
                   <ICONS.share className="h-4 w-4" strokeWidth={1.5} />
-                  {(moment.totalShares / 1000).toFixed(0)}K
+                  {(moment.shareCount / 1000).toFixed(0)}K
                 </div>
               )}
             </div>

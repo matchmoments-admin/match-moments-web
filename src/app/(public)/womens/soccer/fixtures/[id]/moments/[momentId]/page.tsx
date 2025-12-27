@@ -4,7 +4,8 @@ import { format } from 'date-fns';
 import { BreadcrumbNav } from '@/components/sports/breadcrumb-nav';
 import { MatchTimeline } from '@/components/sports/match-timeline';
 import { MomentCard } from '@/components/sports/moment-card';
-import { mockWomensFixtures, mockTrendingWomensMoments } from '@/lib/mock-data';
+import { getMomentById, getMomentsByMatchId } from '@/lib/data/moments';
+import { getMatchById } from '@/lib/data/matches';
 import { notFound } from 'next/navigation';
 import type { CommentaryEvent } from '@/types/sports';
 
@@ -47,22 +48,28 @@ const mockEvents: CommentaryEvent[] = [
   },
 ];
 
+export const revalidate = 300; // ISR: 5 minutes
+
 export default async function WomensMomentDetailPage({
   params,
 }: {
   params: Promise<{ id: string; momentId: string }>;
 }) {
   const { id, momentId } = await params;
-  const fixture = mockWomensFixtures.find((f) => f.id === id);
-  const moment = mockEvents.find((e) => e.id === momentId);
+  
+  // Fetch real data from Salesforce
+  const [fixture, moment, relatedMoments] = await Promise.all([
+    getMatchById(id),
+    getMomentById(momentId),
+    getMomentsByMatchId(id).catch(() => []),
+  ]);
   
   if (!fixture || !moment) {
     notFound();
   }
 
-  const relatedMoments = mockTrendingWomensMoments.filter(
-    (m) => m.fixtureId === id && m.id !== momentId
-  );
+  // Filter out current moment from related moments
+  const filteredRelatedMoments = relatedMoments.filter((m) => m.id !== momentId);
 
   return (
     <main className="bg-background">
@@ -74,7 +81,7 @@ export default async function WomensMomentDetailPage({
             { label: 'Soccer', href: '/womens/soccer' },
             { label: 'Fixtures', href: '/womens/soccer/fixtures' },
             { label: `${fixture.homeTeam.name} vs ${fixture.awayTeam.name}`, href: `/womens/soccer/fixtures/${id}` },
-            { label: moment.socialShareTitle || moment.eventType, href: `/womens/soccer/fixtures/${id}/moments/${momentId}`, current: true },
+            { label: moment.shareTitle || moment.eventType, href: `/womens/soccer/fixtures/${id}/moments/${momentId}`, current: true },
           ]}
         />
 
@@ -138,30 +145,16 @@ export default async function WomensMomentDetailPage({
           </div>
         </section>
 
-        {/* Period Context */}
-        {moment.period && (
-          <section className="mb-8 rounded-3xl bg-purple-50 border border-purple-200 p-6">
-            <h3 className="text-lg font-bold mb-2">Match Situation</h3>
-            <div className="flex gap-6 text-sm">
-              <div>
-                <span className="text-gray-600">Period:</span>{' '}
-                <span className="font-medium">{moment.period.periodType} {moment.period.periodNumber}</span>
-              </div>
-              <div>
-                <span className="text-gray-600">Score at {moment.eventMinute}':</span>{' '}
-                <span className="font-medium">
-                  {moment.period.cumulativeHomeScore} - {moment.period.cumulativeAwayScore}
-                </span>
-              </div>
-              <div>
-                <span className="text-gray-600">Period score:</span>{' '}
-                <span className="font-medium">
-                  {moment.period.homeScore} - {moment.period.awayScore}
-                </span>
-              </div>
+        {/* Event Time */}
+        <section className="mb-8 rounded-3xl bg-purple-50 border border-purple-200 p-6">
+          <h3 className="text-lg font-bold mb-2">Event Time</h3>
+          <div className="flex gap-6 text-sm">
+            <div>
+              <span className="text-gray-600">Minute:</span>{' '}
+              <span className="font-medium">{moment.eventMinute}'</span>
             </div>
-          </section>
-        )}
+          </div>
+        </section>
 
         {/* Event Details */}
         <section className="mb-8 rounded-3xl bg-white border border-gray-200 p-8">
@@ -170,7 +163,7 @@ export default async function WomensMomentDetailPage({
               {moment.eventType}
             </span>
             <h1 className="text-4xl font-bold mb-4">
-              {moment.socialShareTitle || moment.description}
+              {moment.shareTitle || moment.description}
             </h1>
           </div>
 
@@ -230,7 +223,7 @@ export default async function WomensMomentDetailPage({
           <section>
             <h3 className="text-2xl font-bold mb-6">Other Moments from This Match</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {relatedMoments.map((m) => (
+              {filteredRelatedMoments.map((m) => (
                 <MomentCard key={m.id} moment={m} />
               ))}
             </div>

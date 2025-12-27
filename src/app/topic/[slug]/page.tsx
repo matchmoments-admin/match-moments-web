@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import { StandardCard } from '@/components/shared/cards/standard-card';
-import { mockNBAArticles } from '@/lib/mock-data';
+import { getLatestArticles } from '@/lib/data/articles';
 import { getSportsImage } from '@/lib/image-utils';
 
-// This is a placeholder - in production, fetch real data based on topic
+// Fetch real topic data
 async function getTopicData(slug: string) {
   const topicMap: Record<string, { title: string; category: string }> = {
     nba: { title: 'NBA', category: 'nba' },
@@ -14,11 +14,14 @@ async function getTopicData(slug: string) {
   };
 
   const topic = topicMap[slug] || { title: 'Sports', category: 'sports' };
+  
+  // Fetch real articles
+  const articles = await getLatestArticles(20).catch(() => []);
 
   return {
     title: topic.title,
     heroImage: getSportsImage(topic.category as any, { width: 1920, height: 600 }),
-    articles: mockNBAArticles, // In production, filter by topic
+    articles,
   };
 }
 
@@ -87,9 +90,23 @@ export default async function TopicPage({
         {/* Articles */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {topicData.articles.map((article) => (
-            <StandardCard key={article.id} {...article} />
+            <StandardCard
+              key={article.id}
+              title={article.title}
+              category={article.type}
+              author={article.author || 'Match Moments'}
+              readTime={article.readingTime || 5}
+              imageUrl={article.imageUrl || topicData.heroImage}
+              href={`/articles/${article.id}`}
+              date={article.publishedDate.toLocaleDateString()}
+            />
           ))}
         </div>
+        {topicData.articles.length === 0 && (
+          <div className="text-center py-12 text-gray-500">
+            No articles available for this topic at the moment.
+          </div>
+        )}
 
         {/* Pagination (placeholder) */}
         <div className="mt-12 flex justify-center gap-2">

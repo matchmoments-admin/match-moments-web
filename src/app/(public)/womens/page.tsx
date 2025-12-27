@@ -4,13 +4,9 @@ import { FixtureCard } from '@/components/sports/fixture-card';
 import { TrendingTabs } from '@/components/sports/trending-tabs';
 import { CompetitionCard } from '@/components/sports/competition-card';
 import { SectionHeader } from '@/components/shared/sections/section-header';
-import {
-  mockWomensCompetitions,
-  mockWomensFixtures,
-  mockTrendingWomensMoments,
-  mockTrendingMensMoments,
-  mockAllTrendingMoments,
-} from '@/lib/mock-data';
+import { getMatches } from '@/lib/data/matches';
+import { getTrendingMoments } from '@/lib/data/moments';
+import { getFeaturedCompetitions } from '@/lib/data/competitions';
 import type { SportType } from '@/types/sports';
 
 export const metadata = {
@@ -18,8 +14,21 @@ export const metadata = {
   description: "60% of our coverage focuses on women's athletes and competitions",
 };
 
-export default function WomensHubPage() {
+export const revalidate = 300; // ISR: 5 minutes
+
+export default async function WomensHubPage() {
   const womensSports: SportType[] = ['soccer', 'basketball', 'cricket', 'tennis', 'rugby'];
+  
+  // Fetch real data for women's sports
+  const [womensFixtures, moments, womensCompetitions] = await Promise.all([
+    getMatches({ gender: "Women's Team", limit: 6 }).catch(() => []),
+    getTrendingMoments({ limit: 12 }).catch(() => []),
+    getFeaturedCompetitions({ gender: 'womens', limit: 3 }).catch(() => []),
+  ]);
+  
+  // Split moments by gender
+  const womensMoments = moments.filter(m => m.gender === 'womens');
+  const mensMoments = moments.filter(m => m.gender === 'mens');
 
   return (
     <main className="bg-background">
@@ -90,10 +99,15 @@ export default function WomensHubPage() {
             viewAllText="View All"
           />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockWomensFixtures.map((fixture) => (
+            {womensFixtures.map((fixture) => (
               <FixtureCard key={fixture.id} fixture={fixture} />
             ))}
           </div>
+          {womensFixtures.length === 0 && (
+            <div className="text-center py-12 text-gray-500">
+              No women's fixtures available at the moment.
+            </div>
+          )}
         </div>
       </section>
 
@@ -105,9 +119,9 @@ export default function WomensHubPage() {
             description="The most viral moments from women's sports"
           />
           <TrendingTabs
-            womensMoments={mockTrendingWomensMoments}
-            mensMoments={mockTrendingMensMoments}
-            allMoments={mockAllTrendingMoments}
+            womensMoments={womensMoments}
+            mensMoments={mensMoments}
+            allMoments={moments}
             defaultTab="womens"
           />
         </div>
@@ -122,7 +136,7 @@ export default function WomensHubPage() {
             viewAllText="View All"
           />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {mockWomensCompetitions.slice(0, 6).map((competition) => (
+            {womensCompetitions.slice(0, 6).map((competition) => (
               <CompetitionCard
                 key={competition.id}
                 competition={competition}

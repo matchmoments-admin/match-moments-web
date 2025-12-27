@@ -1,12 +1,15 @@
 import { getSalesforceClient } from '../client';
-import type { Match, MatchPeriod, MatchEvent, MatchMoment, Lineup, MatchFilters } from '../types';
+import type { SF_Match__c, SF_Match_Period__c, SF_Match_Event__c, SF_Match_Moment__c, SF_Lineup__c } from '@/types/salesforce/raw';
+import type { MatchFilters } from '../types';
+import type { Match } from '@/types/domain';
 import { getCached } from '../../cache/redis';
 import { CacheKeys, CacheStrategy } from '../../cache/strategies';
+import { mapMatches, mapMatch } from '@/lib/mappers';
 
 /**
  * Get matches with flexible filtering
  */
-export async function getMatches(filters: MatchFilters = {}) {
+export async function getMatches(filters: MatchFilters = {}): Promise<Match[]> {
   const cacheKey = `matches:${JSON.stringify(filters)}`;
   
   return getCached(
@@ -42,21 +45,25 @@ export async function getMatches(filters: MatchFilters = {}) {
       const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
       const limit = filters.limit || 50;
 
-      const matches = await client.query<Match>(`
+      const sfMatches = await client.query<SF_Match__c>(`
         SELECT 
           Id, Name, Match_Date_Time__c, Status__c, Venue__c,
-          Home_Score_Final__c, Away_Score_Final__c, Attendance__c,
+          Home_Score_Final__c, Away_Score_Final__c, Home_Sub_Score__c, Away_Sub_Score__c,
+          Neutral_Venue__c, Attendance__c, Referee__c, Broadcast_URL__c,
           Home_Team__r.Id, Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
+          Home_Team__r.Gender_Class__c, Home_Team__r.Sport__c, Home_Team__r.Venue_Name__c, Home_Team__r.Primary_Color__c,
           Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
-          Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, Competition__r.Sport__c,
-          Season__r.Id, Season__r.Name
+          Away_Team__r.Gender_Class__c, Away_Team__r.Sport__c,
+          Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, 
+          Competition__r.Sport__c, Competition__r.Gender_Class__c, Competition__r.Tier__c, Competition__r.Country__c,
+          Season__r.Id, Season__r.Name, Season__r.Start_Date__c, Season__r.End_Date__c
         FROM Match__c
         ${whereClause}
         ORDER BY Match_Date_Time__c DESC
         LIMIT ${limit}
       `);
 
-      return matches;
+      return mapMatches(sfMatches);
     },
     filters.status === 'Live' ? CacheStrategy.fixturesLive : CacheStrategy.fixturesUpcoming
   );
@@ -65,35 +72,35 @@ export async function getMatches(filters: MatchFilters = {}) {
 /**
  * Get match by ID with full details
  */
-export async function getMatchById(matchId: string) {
+export async function getMatchById(matchId: string): Promise<Match | null> {
   return getCached(
     CacheKeys.FIXTURE_DETAIL(matchId),
     async () => {
       const client = getSalesforceClient();
 
       // Fetch match details
-      const matches = await client.query<Match>(`
+      const sfMatches = await client.query<SF_Match__c>(`
         SELECT 
           Id, Name, Match_Date_Time__c, Status__c, Venue__c, Attendance__c,
           Home_Score_Final__c, Away_Score_Final__c, Home_Sub_Score__c, Away_Sub_Score__c, 
-          Neutral_Venue__c, Referee__c, Weather_Conditions__c, ESPN_Event_ID__c,
+          Neutral_Venue__c, Referee__c, Weather_Conditions__c, ESPN_Event_ID__c, Broadcast_URL__c,
           Home_Team__r.Id, Home_Team__r.Name, Home_Team__r.Logo_Url__c, 
-          Home_Team__r.Primary_Color__c, Home_Team__r.Abbreviation__c,
+          Home_Team__r.Primary_Color__c, Home_Team__r.Abbreviation__c, Home_Team__r.Gender_Class__c, Home_Team__r.Sport__c,
           Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, 
-          Away_Team__r.Primary_Color__c, Away_Team__r.Abbreviation__c,
+          Away_Team__r.Primary_Color__c, Away_Team__r.Abbreviation__c, Away_Team__r.Gender_Class__c, Away_Team__r.Sport__c,
           Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Sport__c, 
-          Competition__r.Logo_URL__c, Competition__r.Gender_Class__c,
-          Season__r.Id, Season__r.Name
+          Competition__r.Logo_URL__c, Competition__r.Gender_Class__c, Competition__r.Tier__c, Competition__r.Country__c,
+          Season__r.Id, Season__r.Name, Season__r.Start_Date__c, Season__r.End_Date__c
         FROM Match__c
         WHERE Id = '${matchId}'
         LIMIT 1
       `);
 
-      if (!matches || matches.length === 0) {
+      if (!sfMatches || sfMatches.length === 0) {
         return null;
       }
 
-      return matches[0];
+      return mapMatch(sfMatches[0]);
     },
     CacheStrategy.fixtureDetail
   );
@@ -108,7 +115,7 @@ export async function getMatchPeriods(matchId: string) {
     async () => {
       const client = getSalesforceClient();
 
-      const periods = await client.query<MatchPeriod>(`
+      const periods = await client.query<SF_Match_Period__c>(`
         SELECT 
           Id, Name, Period_Number__c, Period_Type__c,
           Home_Score__c, Away_Score__c,
@@ -133,7 +140,7 @@ export async function getMatchEvents(matchId: string) {
     async () => {
       const client = getSalesforceClient();
 
-      const events = await client.query<MatchEvent>(`
+      const events = await client.query<SF_Match_Event__c>(`
         SELECT 
           Id, Name, Event_Type__c, Event_Minute__c,
           Description__c, Event_Time__c
@@ -157,7 +164,7 @@ export async function getMatchMoments(matchId: string) {
     async () => {
       const client = getSalesforceClient();
 
-      const moments = await client.query<MatchMoment>(`
+      const moments = await client.query<SF_Match_Moment__c>(`
         SELECT 
           Id, Name, Event_Type__c, Event_Minute__c, Event_Second__c,
           Description__c, Social_Share_Title__c, Video_URL__c, Public_URL__c,
@@ -186,7 +193,7 @@ export async function getMatchLineups(matchId: string) {
     async () => {
       const client = getSalesforceClient();
 
-      const lineups = await client.query<Lineup>(`
+      const lineups = await client.query<SF_Lineup__c>(`
         SELECT 
           Id, Name, Formation__c, Starting_XI_Count__c,
           Lineup_JSON__c,
@@ -205,26 +212,31 @@ export async function getMatchLineups(matchId: string) {
 /**
  * Get live matches
  */
-export async function getLiveMatches() {
+export async function getLiveMatches(): Promise<Match[]> {
   return getCached(
     CacheKeys.FIXTURES_LIVE,
     async () => {
       const client = getSalesforceClient();
 
-      const matches = await client.query<Match>(`
+      const sfMatches = await client.query<SF_Match__c>(`
         SELECT 
           Id, Name, Match_Date_Time__c, Status__c, Venue__c,
-          Home_Score_Final__c, Away_Score_Final__c,
-          Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
-          Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
-          Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, Competition__r.Sport__c
+          Home_Score_Final__c, Away_Score_Final__c, Home_Sub_Score__c, Away_Sub_Score__c,
+          Neutral_Venue__c,
+          Home_Team__r.Id, Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
+          Home_Team__r.Gender_Class__c, Home_Team__r.Sport__c,
+          Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
+          Away_Team__r.Gender_Class__c, Away_Team__r.Sport__c,
+          Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, 
+          Competition__r.Sport__c, Competition__r.Gender_Class__c, Competition__r.Tier__c,
+          Season__r.Id, Season__r.Name
         FROM Match__c
         WHERE Status__c LIKE 'Live%'
         ORDER BY Match_Date_Time__c DESC
         LIMIT 20
       `);
 
-      return matches;
+      return mapMatches(sfMatches);
     },
     CacheStrategy.fixturesLive
   );
@@ -233,7 +245,7 @@ export async function getLiveMatches() {
 /**
  * Get upcoming matches
  */
-export async function getUpcomingMatches(days: number = 7) {
+export async function getUpcomingMatches(days: number = 7): Promise<Match[]> {
   return getCached(
     CacheKeys.FIXTURES_UPCOMING,
     async () => {
@@ -241,12 +253,17 @@ export async function getUpcomingMatches(days: number = 7) {
       const today = new Date().toISOString().split('T')[0];
       const futureDate = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
-      const matches = await client.query<Match>(`
+      const sfMatches = await client.query<SF_Match__c>(`
         SELECT 
           Id, Name, Match_Date_Time__c, Status__c, Venue__c,
-          Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
-          Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
-          Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, Competition__r.Sport__c
+          Home_Score_Final__c, Away_Score_Final__c,
+          Home_Team__r.Id, Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
+          Home_Team__r.Gender_Class__c, Home_Team__r.Sport__c,
+          Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
+          Away_Team__r.Gender_Class__c, Away_Team__r.Sport__c,
+          Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, 
+          Competition__r.Sport__c, Competition__r.Gender_Class__c, Competition__r.Tier__c,
+          Season__r.Id, Season__r.Name
         FROM Match__c
         WHERE Match_Date_Time__c >= ${today}T00:00:00Z
           AND Match_Date_Time__c < ${futureDate}T23:59:59Z
@@ -255,7 +272,7 @@ export async function getUpcomingMatches(days: number = 7) {
         LIMIT 50
       `);
 
-      return matches;
+      return mapMatches(sfMatches);
     },
     CacheStrategy.fixturesUpcoming
   );
@@ -272,13 +289,17 @@ export async function getRecentMatches(days: number = 7) {
       const today = new Date().toISOString().split('T')[0];
       const pastDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
-      const matches = await client.query<Match>(`
+      const sfMatches = await client.query<SF_Match__c>(`
         SELECT 
           Id, Name, Match_Date_Time__c, Status__c, Venue__c,
           Home_Score_Final__c, Away_Score_Final__c,
-          Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
-          Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
-          Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, Competition__r.Sport__c
+          Home_Team__r.Id, Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
+          Home_Team__r.Gender_Class__c, Home_Team__r.Sport__c,
+          Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
+          Away_Team__r.Gender_Class__c, Away_Team__r.Sport__c,
+          Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, 
+          Competition__r.Sport__c, Competition__r.Gender_Class__c, Competition__r.Tier__c,
+          Season__r.Id, Season__r.Name
         FROM Match__c
         WHERE Match_Date_Time__c >= ${pastDate}T00:00:00Z
           AND Match_Date_Time__c < ${today}T23:59:59Z
@@ -287,7 +308,7 @@ export async function getRecentMatches(days: number = 7) {
         LIMIT 50
       `);
 
-      return matches;
+      return mapMatches(sfMatches);
     },
     3600
   );
@@ -296,7 +317,7 @@ export async function getRecentMatches(days: number = 7) {
 /**
  * Get today's matches
  */
-export async function getTodayMatches() {
+export async function getTodayMatches(): Promise<Match[]> {
   return getCached(
     CacheKeys.FIXTURES_TODAY,
     async () => {
@@ -304,20 +325,24 @@ export async function getTodayMatches() {
       const today = new Date().toISOString().split('T')[0];
       const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
-      const matches = await client.query<Match>(`
+      const sfMatches = await client.query<SF_Match__c>(`
         SELECT 
           Id, Name, Match_Date_Time__c, Status__c, Venue__c,
           Home_Score_Final__c, Away_Score_Final__c,
-          Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
-          Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
-          Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, Competition__r.Sport__c
+          Home_Team__r.Id, Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
+          Home_Team__r.Gender_Class__c, Home_Team__r.Sport__c,
+          Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
+          Away_Team__r.Gender_Class__c, Away_Team__r.Sport__c,
+          Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, 
+          Competition__r.Sport__c, Competition__r.Gender_Class__c, Competition__r.Tier__c,
+          Season__r.Id, Season__r.Name
         FROM Match__c
         WHERE Match_Date_Time__c >= ${today}T00:00:00Z
           AND Match_Date_Time__c < ${tomorrow}T00:00:00Z
         ORDER BY Match_Date_Time__c ASC
       `);
 
-      return matches;
+      return mapMatches(sfMatches);
     },
     CacheStrategy.fixturesToday
   );
@@ -342,19 +367,24 @@ export async function getMatchesByCompetition(competitionId: string, limit: numb
     async () => {
       const client = getSalesforceClient();
 
-      const matches = await client.query<Match>(`
+      const sfMatches = await client.query<SF_Match__c>(`
         SELECT 
           Id, Name, Match_Date_Time__c, Status__c, Venue__c,
           Home_Score_Final__c, Away_Score_Final__c,
-          Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
-          Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c
+          Home_Team__r.Id, Home_Team__r.Name, Home_Team__r.Logo_Url__c, Home_Team__r.Abbreviation__c,
+          Home_Team__r.Gender_Class__c, Home_Team__r.Sport__c,
+          Away_Team__r.Id, Away_Team__r.Name, Away_Team__r.Logo_Url__c, Away_Team__r.Abbreviation__c,
+          Away_Team__r.Gender_Class__c, Away_Team__r.Sport__c,
+          Competition__r.Id, Competition__r.Name, Competition__r.ESPN_League_ID__c, Competition__r.Logo_URL__c, 
+          Competition__r.Sport__c, Competition__r.Gender_Class__c, Competition__r.Tier__c,
+          Season__r.Id, Season__r.Name
         FROM Match__c
         WHERE Competition__c = '${competitionId}'
         ORDER BY Match_Date_Time__c DESC
         LIMIT ${limit}
       `);
 
-      return matches;
+      return mapMatches(sfMatches);
     },
     CacheStrategy.fixturesByCompetition
   );

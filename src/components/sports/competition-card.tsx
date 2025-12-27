@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Competition } from '@/types/sports';
+import { type Competition } from '@/types/domain';
 
 interface CompetitionCardProps {
   competition: Competition;
@@ -27,13 +27,9 @@ export function CompetitionCard({ competition, variant = 'standard' }: Competiti
             )}
             <h3 className="text-2xl font-bold mb-2">{competition.name}</h3>
             <p className="text-sm opacity-90 mb-4">
-              {competition.country} • {competition.season}
+              {competition.country} • {competition.season.name}
             </p>
-            {competition.numberOfTeams && (
-              <p className="text-sm opacity-75">
-                {competition.numberOfTeams} Teams
-              </p>
-            )}
+            {/* Number of teams not available in current data model */}
             <div className={`mt-4 inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide ${
               competition.gender === 'womens'
                 ? 'bg-purple-500/20'
@@ -61,9 +57,9 @@ export function CompetitionCard({ competition, variant = 'standard' }: Competiti
           </div>
         )}
         <div className="flex-1 min-w-0">
-          <h4 className="text-lg font-bold truncate">{competition.shortName || competition.name}</h4>
+          <h4 className="text-lg font-bold truncate">{competition.name}</h4>
           <p className="text-sm text-gray-600 truncate">
-            {competition.country} • {competition.season}
+            {competition.country} • {competition.season.name}
           </p>
         </div>
         <div className={`rounded-full px-2 py-1 text-xs font-medium ${

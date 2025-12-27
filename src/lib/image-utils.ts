@@ -1,6 +1,6 @@
 /**
  * Image utilities for Match Moments sports website
- * Uses Lorem Picsum for placeholder images (reliable service)
+ * Uses LoremFlickr for sports-specific placeholder images
  * For production, replace with actual sports images from your CDN
  */
 
@@ -8,6 +8,7 @@ export interface ImageOptions {
   width?: number;
   height?: number;
   query?: string;
+  sport?: string;
   category?: 'sports' | 'nfl' | 'nba' | 'nhl' | 'soccer' | 'baseball' | 'basketball' | 'football';
 }
 
@@ -166,5 +167,77 @@ export function getImageByAspectRatio(
  */
 export function getImageAttribution(): string {
   return 'Placeholder images provided by Lorem Picsum (https://picsum.photos)';
+}
+
+// ============================================================================
+// SPORTS-SPECIFIC PLACEHOLDERS (LoremFlickr)
+// ============================================================================
+
+/**
+ * Free sports-specific placeholder services
+ */
+const PLACEHOLDER_SERVICES = {
+  loremflickr: (sport: string, w: number, h: number) => 
+    `https://loremflickr.com/${w}/${h}/${sport},sports`,
+  unsplash: (sport: string, w: number, h: number) => 
+    `https://source.unsplash.com/${w}x${h}/?${sport},sports`,
+  picsum: (w: number, h: number) => 
+    `https://picsum.photos/${w}/${h}?grayscale&blur=2`,
+};
+
+/**
+ * Get sports-specific placeholder image (used by mappers)
+ * Uses LoremFlickr for best sports-related images
+ */
+export function getSportsPlaceholder(
+  sport: string, 
+  options: ImageOptions = {}
+): string {
+  const { width = 640, height = 360 } = options;
+  
+  // Try LoremFlickr first (best for sports)
+  return PLACEHOLDER_SERVICES.loremflickr(sport, width, height);
+}
+
+/**
+ * Get team logo placeholder
+ */
+export function getTeamPlaceholder(teamName?: string): string {
+  return '/placeholder-team.png';
+}
+
+/**
+ * Get player photo placeholder
+ */
+export function getPlayerPlaceholder(playerName?: string): string {
+  return '/placeholder-player.jpg';
+}
+
+/**
+ * Get moment thumbnail - extract from video or use placeholder
+ */
+export function getMomentThumbnail(videoUrl?: string, sport: string = 'soccer'): string {
+  if (videoUrl) {
+    // Extract YouTube thumbnail
+    const youtubeMatch = videoUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
+    if (youtubeMatch) {
+      return `https://img.youtube.com/vi/${youtubeMatch[1]}/hqdefault.jpg`;
+    }
+  }
+  return getSportsPlaceholder(sport, { width: 640, height: 360 });
+}
+
+/**
+ * Get article header image - use provided or generate sports placeholder
+ */
+export function getArticleImage(headerImageUrl?: string, sport?: string): string {
+  return headerImageUrl || getSportsPlaceholder(sport || 'sports', { width: 1200, height: 630 });
+}
+
+/**
+ * Get competition logo placeholder
+ */
+export function getCompetitionPlaceholder(): string {
+  return '/placeholder-competition.png';
 }
 

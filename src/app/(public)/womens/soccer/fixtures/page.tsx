@@ -1,14 +1,20 @@
 import { FixtureCard } from '@/components/sports/fixture-card';
 import { BreadcrumbNav } from '@/components/sports/breadcrumb-nav';
-import { mockWomensFixtures } from '@/lib/mock-data';
+import { getMatches } from '@/lib/data/matches';
 
 export const metadata = {
   title: "Women's Soccer Fixtures | Match Moments",
   description: "All women's soccer matches and results",
 };
 
-export default function WomensSoccerFixturesPage() {
-  const soccerFixtures = mockWomensFixtures.filter((f) => f.sport === 'soccer');
+export const revalidate = 300; // ISR: 5 minutes
+
+export default async function WomensSoccerFixturesPage() {
+  const soccerFixtures = await getMatches({
+    sport: 'soccer',
+    gender: "Women's Team",
+    limit: 50
+  }).catch(() => []);
 
   return (
     <main className="bg-background">
@@ -29,6 +35,11 @@ export default function WomensSoccerFixturesPage() {
             <FixtureCard key={fixture.id} fixture={fixture} />
           ))}
         </div>
+        {soccerFixtures.length === 0 && (
+          <div className="text-center py-12 text-gray-500">
+            No women's soccer fixtures available at the moment.
+          </div>
+        )}
       </div>
     </main>
   );

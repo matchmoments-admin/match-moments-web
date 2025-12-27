@@ -18,6 +18,11 @@ export const CacheKeys = {
   FIXTURES_BY_COMPETITION: (competitionId: string) => `matches:competition:${competitionId}`,
   MATCHES_BY_TEAM: (teamId: string) => `matches:team:${teamId}`,
   MATCHES_RECENT: (days: number) => `matches:recent:${days}`,
+  
+  // Gender/Sport-specific matches
+  MATCHES_LIVE_BY_GENDER: (gender: string) => `matches:live:${gender}`,
+  MATCHES_LIVE_BY_SPORT: (sport: string) => `matches:live:sport:${sport}`,
+  MATCHES_UPCOMING_BY_GENDER: (gender: string, days: number) => `matches:upcoming:${gender}:${days}`,
 
   // Teams
   TEAM: (id: string) => `team:${id}`,
@@ -36,6 +41,11 @@ export const CacheKeys = {
   COMPETITION: (id: string) => `competition:${id}`,
   COMPETITIONS_BY_SPORT: (sport: string, gender: string) => `competitions:${sport}:${gender}`,
   STANDINGS: (competitionId: string) => `standings:competition:${competitionId}`,
+  
+  // Gender/Sport-specific competitions
+  COMPETITIONS_FEATURED: (gender: string, sport?: string) => 
+    sport ? `competitions:featured:${gender}:${sport}` : `competitions:featured:${gender}`,
+  COMPETITIONS_BY_GENDER: (gender: string) => `competitions:gender:${gender}`,
   
   // Stats
   TOP_SCORERS: (competitionId: string) => `stats:scorers:${competitionId}`,
@@ -61,6 +71,11 @@ export const CacheKeys = {
   MOMENTS_BY_PLAYER: (playerId: string) => `moments:player:${playerId}`,
   MOMENTS_TRENDING: 'moments:trending',
   MOMENTS_MOST_VIEWED: 'moments:most-viewed',
+  
+  // Gender/Sport-specific moments
+  MOMENTS_TRENDING_BY_GENDER: (gender: string) => `moments:trending:${gender}`,
+  MOMENTS_TRENDING_BY_SPORT: (sport: string) => `moments:trending:sport:${sport}`,
+  MOMENTS_BY_GENDER_SPORT: (gender: string, sport: string) => `moments:${gender}:${sport}`,
 
   // Revenue (Dashboard)
   REVENUE_METRICS: 'dashboard:revenue:metrics',
@@ -87,7 +102,36 @@ export const CacheKeys = {
   WOMENS_REVENUE: 'dashboard:womens:revenue',
   WOMENS_ENGAGEMENT: 'dashboard:womens:engagement',
   WOMENS_COVERAGE: 'dashboard:womens:coverage',
+  
+  // Homepage data
+  HOMEPAGE_DATA: 'homepage:all-data',
+  HOMEPAGE_LIVE_MATCHES: 'homepage:live-matches',
+  HOMEPAGE_TRENDING_MOMENTS: 'homepage:trending-moments',
+  HOMEPAGE_FEATURED_COMPETITIONS: 'homepage:featured-competitions',
 };
+
+/**
+ * Cache warming function for homepage
+ */
+export async function warmHomepageCache() {
+  try {
+    // Dynamically import to avoid circular dependencies
+    const { getLiveMatchesForDisplay, getUpcomingMatchesForDisplay } = await import('@/lib/data/matches');
+    const { getTrendingMoments } = await import('@/lib/data/moments');
+    const { getFeaturedCompetitions } = await import('@/lib/data/competitions');
+    
+    await Promise.all([
+      getLiveMatchesForDisplay(),
+      getUpcomingMatchesForDisplay(7),
+      getTrendingMoments({ limit: 12 }),
+      getFeaturedCompetitions({ gender: 'womens', limit: 3 }),
+    ]);
+    
+    console.log('✅ Homepage cache warmed successfully');
+  } catch (error) {
+    console.error('❌ Error warming homepage cache:', error);
+  }
+}
 
 // Cache TTL assignments
 export const CacheStrategy = {

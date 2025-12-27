@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Fixture } from '@/types/sports';
+import { type Match } from '@/types/domain';
 import { format } from 'date-fns';
 
 interface FixtureCardProps {
-  fixture: Fixture;
+  fixture: Match;
 }
 
 export function FixtureCard({ fixture }: FixtureCardProps) {
@@ -86,7 +86,7 @@ export function FixtureCard({ fixture }: FixtureCardProps) {
             ) : fixture.status === 'scheduled' ? (
               <span>{format(new Date(fixture.matchDate), 'MMM d, h:mm a')}</span>
             ) : (
-              <span className="font-medium">{fixture.currentMinute}'</span>
+              <span className="font-medium">LIVE</span>
             )}
           </div>
           {fixture.venue && <div className="text-xs">{fixture.venue}</div>}

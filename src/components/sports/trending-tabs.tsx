@@ -1,14 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { TrendingMoment, GenderCategory } from '@/types/sports';
+import { type Moment, type GenderType } from '@/types/domain';
 import { MomentCard } from './moment-card';
 
 interface TrendingTabsProps {
-  womensMoments: TrendingMoment[];
-  mensMoments: TrendingMoment[];
-  allMoments: TrendingMoment[];
-  defaultTab?: GenderCategory | 'all';
+  womensMoments: Moment[];
+  mensMoments: Moment[];
+  allMoments: Moment[];
+  defaultTab?: GenderType | 'all';
 }
 
 export function TrendingTabs({
@@ -17,7 +17,7 @@ export function TrendingTabs({
   allMoments,
   defaultTab = 'womens',
 }: TrendingTabsProps) {
-  const [activeTab, setActiveTab] = useState<GenderCategory | 'all'>(defaultTab);
+  const [activeTab, setActiveTab] = useState<GenderType | 'all'>(defaultTab);
 
   const getMoments = () => {
     switch (activeTab) {

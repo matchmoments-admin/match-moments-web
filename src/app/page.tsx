@@ -3,22 +3,28 @@ import { SportGrid } from '@/components/sports/sport-grid';
 import { TrendingTabs } from '@/components/sports/trending-tabs';
 import { FixtureCard } from '@/components/sports/fixture-card';
 import { SectionHeader } from '@/components/shared/sections/section-header';
-import {
-  mockTrendingWomensMoments,
-  mockTrendingMensMoments,
-  mockAllTrendingMoments,
-  mockWomensFixtures,
-  mockMensFixtures,
-  mockWomensCompetitions,
-} from '@/lib/mock-data';
 import { CompetitionCard } from '@/components/sports/competition-card';
-import Link from 'next/link';
+import { getLiveMatchesForDisplay, getUpcomingMatchesForDisplay } from '@/lib/data/matches';
+import { getTrendingMoments } from '@/lib/data/moments';
+import { getFeaturedCompetitions } from '@/lib/data/competitions';
 
-export default function HomePage() {
-  // Combine fixtures for "today" section
-  const allFixtures = [...mockWomensFixtures, ...mockMensFixtures].sort(
-    (a, b) => new Date(b.matchDate).getTime() - new Date(a.matchDate).getTime()
-  );
+export const revalidate = 300; // ISR: 5 minutes
+
+export default async function HomePage() {
+  // Fetch real data from Salesforce
+  const [liveMatches, upcomingMatches, moments, competitions] = await Promise.all([
+    getLiveMatchesForDisplay().catch(() => []),
+    getUpcomingMatchesForDisplay().catch(() => []),
+    getTrendingMoments({ limit: 12 }).catch(() => []),
+    getFeaturedCompetitions({ gender: 'womens', limit: 3 }).catch(() => []),
+  ]);
+  
+  // Split moments by gender for tabs
+  const womensMoments = moments.filter(m => m.gender === 'womens');
+  const mensMoments = moments.filter(m => m.gender === 'mens');
+  
+  // Combine live and upcoming for "today" section
+  const allFixtures = [...liveMatches, ...upcomingMatches];
 
   return (
     <main className="bg-background">
@@ -56,9 +62,9 @@ export default function HomePage() {
             description="The most viral sports moments right now"
           />
           <TrendingTabs
-            womensMoments={mockTrendingWomensMoments}
-            mensMoments={mockTrendingMensMoments}
-            allMoments={mockAllTrendingMoments}
+            womensMoments={womensMoments}
+            mensMoments={mensMoments}
+            allMoments={moments}
             defaultTab="womens"
           />
         </div>
@@ -68,8 +74,8 @@ export default function HomePage() {
       <section className="py-16 bg-secondary">
         <div className="container-main">
           <SectionHeader
-            title="Today's Fixtures"
-            viewAllHref="/womens"
+            title={liveMatches.length > 0 ? "Live Now & Upcoming" : "Today's Fixtures"}
+            viewAllHref="/games"
             viewAllText="View All"
           />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -77,6 +83,11 @@ export default function HomePage() {
               <FixtureCard key={fixture.id} fixture={fixture} />
             ))}
           </div>
+          {allFixtures.length === 0 && (
+            <div className="text-center py-12 text-gray-500">
+              No matches scheduled at the moment. Check back soon!
+            </div>
+          )}
         </div>
       </section>
 
@@ -89,7 +100,7 @@ export default function HomePage() {
             viewAllText="View All"
           />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {mockWomensCompetitions.slice(0, 3).map((competition) => (
+            {competitions.slice(0, 3).map((competition) => (
               <CompetitionCard
                 key={competition.id}
                 competition={competition}
@@ -97,6 +108,11 @@ export default function HomePage() {
               />
             ))}
           </div>
+          {competitions.length === 0 && (
+            <div className="text-center py-12 text-gray-500">
+              No featured competitions available at the moment.
+            </div>
+          )}
         </div>
       </section>
 

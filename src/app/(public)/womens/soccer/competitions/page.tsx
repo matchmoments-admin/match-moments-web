@@ -1,14 +1,20 @@
 import { CompetitionCard } from '@/components/sports/competition-card';
 import { BreadcrumbNav } from '@/components/sports/breadcrumb-nav';
-import { mockWomensCompetitions } from '@/lib/mock-data';
+import { getCompetitions } from '@/lib/data/competitions';
 
 export const metadata = {
   title: "Women's Soccer Competitions | Match Moments",
   description: "All women's soccer leagues and competitions worldwide",
 };
 
-export default function WomensSoccerCompetitionsPage() {
-  const soccerCompetitions = mockWomensCompetitions.filter((c) => c.sport === 'soccer');
+export const revalidate = 1800; // ISR: 30 minutes
+
+export default async function WomensSoccerCompetitionsPage() {
+  const soccerCompetitions = await getCompetitions({
+    sport: 'soccer',
+    gender: "Women's Team",
+    limit: 50
+  }).catch(() => []);
 
   return (
     <main className="bg-background">
@@ -33,6 +39,11 @@ export default function WomensSoccerCompetitionsPage() {
             />
           ))}
         </div>
+        {soccerCompetitions.length === 0 && (
+          <div className="text-center py-12 text-gray-500">
+            No women's soccer competitions available at the moment.
+          </div>
+        )}
       </div>
     </main>
   );
