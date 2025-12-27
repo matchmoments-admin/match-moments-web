@@ -53,7 +53,7 @@ export default function AllFixturesPage() {
   
   const [startDate, setStartDate] = useState(defaultStartDate);
   const [endDate, setEndDate] = useState(defaultEndDate);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null); // null = show all dates in range
   const [selectedSport, setSelectedSport] = useState<string>('all');
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
@@ -108,23 +108,45 @@ export default function AllFixturesPage() {
     }
   };
 
-  // Filter matches by selected date for display
-  const filteredMatches = matches.filter(match => {
-    const matchDate = new Date(match.matchDate);
-    const selectedDateStr = format(selectedDate, 'yyyy-MM-dd');
-    const matchDateStr = format(matchDate, 'yyyy-MM-dd');
-    return matchDateStr === selectedDateStr;
-  });
+  // Filter matches by selected date for display (if a specific date is selected)
+  const filteredMatches = selectedDate 
+    ? matches.filter(match => {
+        const matchDate = new Date(match.matchDate);
+        const selectedDateStr = format(selectedDate, 'yyyy-MM-dd');
+        const matchDateStr = format(matchDate, 'yyyy-MM-dd');
+        return matchDateStr === selectedDateStr;
+      })
+    : matches; // Show all matches in range if no specific date selected
 
-  // Group filtered matches by competition
-  const matchesByCompetition: MatchesByCompetition = filteredMatches.reduce((acc, match) => {
-    const competitionName = match.competition.name;
-    if (!acc[competitionName]) {
-      acc[competitionName] = [];
-    }
-    acc[competitionName].push(match);
-    return acc;
-  }, {} as MatchesByCompetition);
+  // Group filtered matches by date (if viewing all) or by competition (if viewing single date)
+  interface MatchesByGroup {
+    [key: string]: Match[];
+  }
+  
+  const matchesByGroup: MatchesByGroup = selectedDate
+    ? // Group by competition for single date view
+      filteredMatches.reduce((acc, match) => {
+        const competitionName = match.competition.name;
+        if (!acc[competitionName]) {
+          acc[competitionName] = [];
+        }
+        acc[competitionName].push(match);
+        return acc;
+      }, {} as MatchesByGroup)
+    : // Group by date for range view
+      filteredMatches.reduce((acc, match) => {
+        const dateKey = format(new Date(match.matchDate), 'yyyy-MM-dd');
+        if (!acc[dateKey]) {
+          acc[dateKey] = [];
+        }
+        acc[dateKey].push(match);
+        return acc;
+      }, {} as MatchesByGroup);
+  
+  // Sort date keys chronologically when viewing all dates
+  const sortedGroupKeys = selectedDate 
+    ? Object.keys(matchesByGroup).sort() // Alphabetical for competitions
+    : Object.keys(matchesByGroup).sort(); // Chronological for dates
 
   // Stats for selected date
   const liveCount = filteredMatches.filter(m => m.status === 'live').length;
@@ -202,11 +224,31 @@ export default function AllFixturesPage() {
           {/* Date Selector (for viewing specific days) */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select Date to View
+              Select Date to View (optional - leave unselected to view all)
             </label>
             <div className="flex gap-2 overflow-x-auto pb-2">
+              <button
+                onClick={() => setSelectedDate(null)}
+                className={`flex-shrink-0 px-4 py-3 rounded-lg border-2 transition-all ${
+                  selectedDate === null
+                    ? 'border-black bg-black text-white'
+                    : 'border-gray-200 bg-white hover:border-gray-300'
+                }`}
+              >
+                <div className="text-center">
+                  <div className={`text-xs font-medium mb-1 ${selectedDate === null ? 'text-white' : 'text-gray-500'}`}>
+                    ALL
+                  </div>
+                  <div className="text-xl font-bold">
+                    📅
+                  </div>
+                  <div className={`text-xs ${selectedDate === null ? 'text-white' : 'text-gray-500'}`}>
+                    Dates
+                  </div>
+                </div>
+              </button>
               {dateRange.map((date) => {
-                const isSelected = format(date, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
+                const isSelected = selectedDate && format(date, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
                 const isToday = format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
                 
                 return (
@@ -260,7 +302,10 @@ export default function AllFixturesPage() {
             <div className="text-6xl mb-4">📅</div>
             <h3 className="text-2xl font-bold mb-2">No Fixtures</h3>
             <p className="text-gray-600">
-              No matches scheduled for {format(selectedDate, 'MMMM d, yyyy')}
+              {selectedDate 
+                ? `No matches scheduled for ${format(selectedDate, 'MMMM d, yyyy')}`
+                : `No matches found in date range (${format(startDate, 'MMM d')} - ${format(endDate, 'MMM d')})`
+              }
             </p>
             <p className="text-sm text-gray-500 mt-2">
               Total matches in date range: {matches.length}
@@ -268,31 +313,37 @@ export default function AllFixturesPage() {
           </div>
         ) : (
           <div className="space-y-8">
-            {Object.entries(matchesByCompetition).map(([competitionName, competitionMatches]) => (
-              <div key={competitionName} className="bg-white rounded-lg overflow-hidden shadow-sm">
-                {/* Competition Header */}
-                <div className="bg-gray-100 px-6 py-4 border-b">
-                  <div className="flex items-center gap-3">
-                    {competitionMatches[0]?.competition.logoUrl && (
-                      <div className="relative h-6 w-6">
-                        <Image
-                          src={competitionMatches[0].competition.logoUrl}
-                          alt={competitionName}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
-                    )}
-                    <h2 className="text-xl font-bold">{competitionName}</h2>
-                    <span className="text-sm text-gray-600">
-                      ({competitionMatches.length} {competitionMatches.length === 1 ? 'match' : 'matches'})
-                    </span>
+            {sortedGroupKeys.map((groupKey) => {
+              const groupMatches = matchesByGroup[groupKey];
+              const groupTitle = selectedDate 
+                ? groupKey // Competition name
+                : format(new Date(groupKey), 'EEEE, MMMM d, yyyy'); // Date string
+              
+              return (
+                <div key={groupKey} className="bg-white rounded-lg overflow-hidden shadow-sm">
+                  {/* Group Header */}
+                  <div className="bg-gray-100 px-6 py-4 border-b">
+                    <div className="flex items-center gap-3">
+                      {selectedDate && groupMatches[0]?.competition.logoUrl && (
+                        <div className="relative h-6 w-6">
+                          <Image
+                            src={groupMatches[0].competition.logoUrl}
+                            alt={groupTitle}
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      )}
+                      <h2 className="text-xl font-bold">{groupTitle}</h2>
+                      <span className="text-sm text-gray-600">
+                        ({groupMatches.length} {groupMatches.length === 1 ? 'match' : 'matches'})
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                {/* Matches List */}
-                <div className="divide-y">
-                  {competitionMatches.map((match) => (
+                  {/* Matches List */}
+                  <div className="divide-y">
+                    {groupMatches.map((match) => (
                     <Link
                       key={match.id}
                       href={`/games/${match.id}`}
@@ -371,11 +422,12 @@ export default function AllFixturesPage() {
                           )}
                         </div>
                       </div>
-                    </Link>
-                  ))}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -385,7 +437,10 @@ export default function AllFixturesPage() {
         <div className="container mx-auto px-4 py-8">
           <div className="bg-white rounded-lg p-6 shadow-sm">
             <h3 className="text-lg font-semibold mb-4 text-center">
-              Stats for {format(selectedDate, 'MMMM d, yyyy')}
+              {selectedDate 
+                ? `Stats for ${format(selectedDate, 'MMMM d, yyyy')}`
+                : `Stats for ${format(startDate, 'MMM d')} - ${format(endDate, 'MMM d')}`
+              }
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               <div>
